@@ -1,0 +1,23 @@
+.cv-tooltip-content
+{    
+    .description_dNa
+    {
+        width: 100%;
+    }
+
+    .description_dNa, .title_lCJ
+    {
+        text-align: left;
+        color: var(--menuText1Normal);
+
+        &.center
+        {
+            text-align: center;
+        }
+
+        &.right
+        {
+            text-align: right;
+        }
+    }
+}

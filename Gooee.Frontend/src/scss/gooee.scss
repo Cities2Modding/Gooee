@@ -1,0 +1,96 @@
+@import "_variables.scss";
+@import "_mixins.scss";
+
+@import "utilities/_display.scss";
+@import "utilities/_flex.scss";
+@import "utilities/_position.scss";
+@import "utilities/_colours.scss";
+@import "utilities/_border.scss";
+@import "utilities/_margin.scss";
+@import "utilities/_padding.scss";
+@import "utilities/_text.scss";
+@import "utilities/_size.scss";
+
+@import "components/_grid.scss";
+@import "components/_button.scss";
+@import "components/_button_group.scss";
+@import "components/_heading.scss";
+@import "components/_modal.scss";
+@import "components/_tooltip.scss";
+@import "components/_icon.scss";
+@import "components/_forms.scss";
+@import "components/_badge.scss";
+@import "components/_scrollable.scss";
+@import "components/_code.scss";
+@import "components/_dropdown.scss";
+@import "components/_alert.scss";
+@import "components/_slider.scss";
+
+@import "_font-awesome.scss";
+
+.gooee
+{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+
+    b
+    {
+        color: $white;
+    }
+
+    div
+    {
+        width: 100%;
+    }
+}
+
+// Fix for HookUI's incorrect margin
+.infoview-menu-toggle_bYF
+{
+    .button_ke4:nth-child(2)
+    {
+        margin-left: 10rem !important;
+    }
+}
+
+.gooee
+{
+    .tool-layout
+    {
+        position: absolute;
+        top: calc($spacing - 2.5rem);
+        bottom: calc($spacing - 6.5rem);
+        left: calc($spacing - 2.5rem - $spacing + 2px);
+        right: calc($spacing - 2.5rem);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-end;
+
+        > .col
+        {
+            position: relative;
+            width: 330rem;
+        }
+
+        > .col:nth-child(2)
+        {
+            position: relative;
+            width: calc( var(--assetMenuColumns) * ( var(--assetMenuItemSize) + var(--assetMenuItemGap) ) - var(--assetMenuItemGap) + 40rem);
+            margin-top: 0px;
+            margin-left: 6rem;
+            margin-right: 6rem;
+            margin-bottom: 0px;
+        }
+    }
+
+    .asset-menu
+    {
+        height: calc( var(--assetMenuRows) * ( var(--assetMenuItemSize) + var(--assetMenuItemGap) ) - var(--assetMenuItemGap) + 16rem)
+    }
+}

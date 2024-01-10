@@ -1,0 +1,15 @@
+.d-flex
+{
+    display: flex;
+    flex-direction: column; // Used to reset it to browser standard default
+}
+
+.d-none
+{ 
+    display: none;
+}
+
+.d-inline
+{ 
+    display: inline;
+}

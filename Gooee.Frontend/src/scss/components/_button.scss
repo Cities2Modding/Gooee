@@ -1,0 +1,316 @@
+.btn
+{
+    font-size: $font-size-base;
+    font-family: $font-family-sans-serif;
+    padding-left: calc($button-padding-h + $border-thickness);
+    padding-right: calc($button-padding-h + $border-thickness);
+    padding-top: calc($button-padding-v + $border-thickness);
+    padding-bottom: calc($button-padding-v + $border-thickness);
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+    pointer-events: auto;
+    font-weight: bold;
+    width: auto !important;
+    transition: color .15s ease-in-out,
+        background-color .15s ease-in-out,
+        border-color .15s ease-in-out;
+    white-space: nowrap;
+    letter-spacing: normal;
+    font-style: normal;
+    line-height: normal;
+    text-transform: none;
+
+    &.btn-disabled
+    {
+        opacity: 0.35 !important;
+        pointer-events: none !important;
+    }
+}
+
+.btn-sm
+{
+    font-size: $font-size-sm;
+    padding-left: calc($button-sm-padding-h + $border-thickness);
+    padding-right: calc($button-sm-padding-h + $border-thickness);
+    padding-top: calc($button-sm-padding-v + $border-thickness);
+    padding-bottom: calc($button-sm-padding-v + $border-thickness);
+    border-bottom-left-radius: $border-radius-sm;
+    border-bottom-right-radius: $border-radius-sm;
+    border-top-left-radius: $border-radius-sm;
+    border-top-right-radius: $border-radius-sm;        
+    
+    > .fa, > .icon
+    {
+        width: $icon-size-sm !important;
+        height: $icon-size-sm !important;
+        margin-top: 1.25rem !important;
+    }
+}
+
+.btn-lg
+{
+    font-size: $font-size-xl;
+    padding-left: calc($button-lg-padding-h + $border-thickness);
+    padding-right: calc($button-lg-padding-h + $border-thickness);
+    padding-top: calc($button-lg-padding-v + $border-thickness);
+    padding-bottom: calc($button-lg-padding-v + $border-thickness);
+    border-bottom-left-radius: $border-radius-lg;
+    border-bottom-right-radius: $border-radius-lg;
+    border-top-left-radius: $border-radius-lg;
+    border-top-right-radius: $border-radius-lg;
+
+    > .fa, > .icon
+    {
+        width: $icon-size-lg !important;
+        height: $icon-size-lg !important;
+    }
+}
+
+.btn-link
+{
+    color: $primary;
+    background-color: transparent;
+    text-decoration: underline;
+    font-weight: normal;
+}
+
+.btn-block
+{
+    width: 100% !important;
+}
+
+.btn-icon
+{
+    padding: 0 !important;
+    pointer-events: auto;
+    background-color: rgba(255, 255, 255, 0);
+    @include borderRadius($border-radius-min);
+
+    &.btn-circular
+    {            
+        @include borderRadius(50%);
+    }
+
+    > .icon
+    {
+        width: $icon-button !important;
+        height: $icon-button !important;
+    }
+
+    &.btn-lg
+    {
+        > .icon
+        {
+            width: $icon-button-lg !important;
+            height: $icon-button-lg !important;
+        }
+    }
+        
+    &.btn-sm
+    {
+        > .icon
+        {
+            width: $icon-button-sm !important;
+            height: $icon-button-sm !important;
+        }
+    }
+
+    &:hover
+    {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    &:active
+    {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+}
+
+@mixin buttonColourUtilities
+{    
+    @each $key in $button-colours 
+    {
+        $colour-map: map-get($colours, $key);
+        $colour: map-get($colour-map, "base");
+        $dark-colour: map-get($colour-map, "dark");
+        $darker-colour: map-get($colour-map, "darker");
+        $colour-trans: map-get($colour-map, "trans");
+        $dark-colour-trans: map-get($colour-map, "trans-dark");
+        $darker-colour-trans: map-get($colour-map, "trans-darker");
+        
+        .btn-#{$key} 
+        {
+            background-color: $colour;
+            color: map-get($text-colours, $key);
+            border-top-color: $colour;
+            border-bottom-color: $colour;
+            border-left-color: $colour;
+            border-right-color: $colour;
+
+            .fa
+            {                    
+                background-color: map-get($text-colours, $key) !important;
+                margin-top: 5rem;
+            }
+
+            &:hover
+            {
+                background-color: $dark-colour;
+                border-top-color: $dark-colour;
+                border-bottom-color: $dark-colour;
+                border-left-color: $dark-colour;
+                border-right-color: $dark-colour;
+            }
+                
+            &:focus, &:active
+            {
+                background-color: $darker-colour;
+                border-top-color: $darker-colour;
+                border-bottom-color: $darker-colour;
+                border-left-color: $darker-colour;
+                border-right-color: $darker-colour;
+            }
+        }
+
+        .btn-outline-#{$key} 
+        {
+            background-color: transparent;
+            color: $colour;
+            @include borderAll($colour, $border-thickness);
+                
+            padding-left: $button-padding-h;
+            padding-right: $button-padding-h;
+            padding-top: $button-padding-v;
+            padding-bottom: $button-padding-v;
+                
+            .fa
+            {                    
+                background-color: $colour !important;
+            }
+
+            &:hover
+            {
+                .fa
+                {                    
+                    background-color: $dark-colour !important;
+                }
+
+                color: $dark-colour;
+                border-top-color: $dark-colour;
+                border-bottom-color: $dark-colour;
+                border-left-color: $dark-colour;
+                border-right-color: $dark-colour;
+            }                
+                
+            &:focus, &:active
+            {
+                .fa
+                {                    
+                    background-color: $darker-colour !important;
+                }
+
+                color: $darker-colour;
+                border-top-color: $darker-colour;
+                border-bottom-color: $darker-colour;
+                border-left-color: $darker-colour;
+                border-right-color: $darker-colour;
+            }
+        }
+
+        .btn-trans-#{$key} 
+        {
+            color: map-get($text-colours, $key);
+            background-color: $colour-trans;
+            border-top-color: $colour-trans;
+            border-bottom-color: $colour-trans;
+            border-left-color: $colour-trans;
+            border-right-color: $colour-trans;
+                
+            .fa
+            {                    
+                background-color: map-get($text-colours, $key) !important;
+            }
+
+            &:hover
+            {
+                background-color: $dark-colour-trans;
+                border-top-color: $dark-colour-trans;
+                border-bottom-color: $dark-colour-trans;
+                border-left-color: $dark-colour-trans;
+                border-right-color: $dark-colour-trans;
+            }
+
+            &:focus, &:active
+            {
+                background-color: $darker-colour-trans;
+                border-top-color: $darker-colour-trans;
+                border-bottom-color: $darker-colour-trans;
+                border-left-color: $darker-colour-trans;
+                border-right-color: $darker-colour-trans;
+            }
+        }
+    }
+}
+
+@include buttonColourUtilities;
+
+.btn-tool
+{
+    display: flex;
+    flex-direction: row;
+    width: 28rem !important;
+    height: 28rem !important;
+    background-color: getColour("tool", "base");
+    color: $light;
+    border-top-color: getColour("tool", "base");
+    border-bottom-color: getColour("tool", "base");
+    border-left-color: getColour("tool", "base");
+    border-right-color: getColour("tool", "base");
+    align-items: center;
+    justify-content: center;
+    @include borderRadius($border-radius-sm);
+
+    .fa, .mask-icon
+    {                    
+        background-color: $light !important;
+    }
+
+    .mask-icon, .icon
+    {
+        width: 24rem !important;
+        height: 24rem !important;
+        filter: saturate(1.000000) brightness(1.250000) drop-shadow(0.000000px 0.000000px 1.000000rem rgba(0, 0, 0, 0.500000));
+    }
+
+    .fa
+    {                    
+        margin-top: 5rem;
+    }
+
+    &:hover
+    {        
+        background-color: getColour("tool", "light");
+    }
+    
+    &:active, &:focus
+    {        
+        background-color: getColour("tool", "lighter");
+    }
+
+    &.active
+    {
+        background-color: getColour("primary", "darker");
+        
+        &:hover
+        {        
+            background-color: getColour("primary", "darkest");
+        }
+    
+        &:active, &:focus
+        {        
+            background-color: getColour("primary", "base");
+        }
+    }
+}

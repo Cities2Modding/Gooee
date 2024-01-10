@@ -1,0 +1,56 @@
+.dropdown
+{
+    position: relative;
+
+    > .dropdown-toggle
+    {        
+        @include formControl;    
+        display: flex;        
+        flex-direction: row;
+
+        > .caption
+        {
+            width: auto !important;
+            flex: 1;
+            text-align: left;
+        }
+
+        > .icon
+        {
+            margin-left: auto;
+            justify-self: flex-end;
+        }
+    }
+}
+    
+.dropdown-menu
+{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    pointer-events: auto;
+    background-color: getColour("grey", "dark");
+    @include borderAll($input-border-colour, $input-border-thickness);
+    border-top-width: 0 !important;
+
+    > .dropdown-item
+    {
+        @include paddingAll($input-padding-h, $input-padding-v);
+        color: map-get($text-colours, "grey");
+        text-align: left;
+        font-size: $font-size-lg;
+        font-family: $font-family-sans-serif;
+        white-space: nowrap;
+        letter-spacing: normal;
+        font-style: normal;
+        font-weight: normal;
+        line-height: normal;
+        text-transform: none;
+
+        &:hover
+        {            
+            background-color: getColour("grey", "base");
+        }
+    }
+}

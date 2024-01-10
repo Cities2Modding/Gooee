@@ -1,0 +1,46 @@
+@mixin generateMarginUtilities 
+{
+    @each $key, $value in $spacers 
+    {
+        .m-#{$key} 
+        { 
+            margin-top: $value !important; 
+            margin-bottom: $value !important; 
+            margin-left: $value !important; 
+            margin-right: $value !important; 
+        }
+        .mt-#{$key} 
+        { 
+            margin-top: $value !important;
+        }
+
+        .mb-#{$key} 
+        { 
+            margin-bottom: $value !important;
+        }
+
+        .ml-#{$key} 
+        { 
+            margin-left: $value !important;
+        }
+
+        .mr-#{$key} 
+        { 
+            margin-right: $value !important;
+        }
+
+        .mx-#{$key} 
+        { 
+            margin-left: $value !important; 
+            margin-right: $value !important;
+        }
+
+        .my-#{$key} 
+        { 
+            margin-top: $value !important; 
+            margin-bottom: $value !important;
+        }
+    }
+}
+
+@include generateMarginUtilities;

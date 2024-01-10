@@ -1,0 +1,9 @@
+code
+{
+    width: 100%;
+    background-color: getColour("dark", "trans-less-faded");
+    padding: $spacing;
+    font-family: $font-family-monospace;
+    font-size: 16px;
+    @include borderRadius;
+}

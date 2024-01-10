@@ -1,0 +1,98 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>LegacyFlavour.Frontend</Name>
+    <RootNamespace>LegacyFlavour.Frontend</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>0181c160-850a-4e11-97c5-c5a2d26ec3b5</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>gulpfile.js</StartupFile>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <StartWebBrowser>false</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="gulpfile.js" />
+    <Content Include="package.json" />
+    <Content Include="src\jsx\components\_form-checkbox.jsx" />
+    <Content Include="src\jsx\components\_checkbox-group.jsx" />
+    <Content Include="src\jsx\components\_modal.jsx" />
+    <Content Include="src\jsx\components\_radio-group.jsx" />
+    <Content Include="src\jsx\components\_icon.jsx" />
+    <Content Include="src\jsx\components\_form-group.jsx" />
+    <Content Include="src\jsx\components\_gradient-slider.jsx" />
+    <Content Include="src\jsx\components\_slider.jsx" />
+    <Content Include="src\jsx\components\_textbox.jsx" />
+    <Content Include="src\jsx\components\_code.jsx" />
+    <Content Include="src\jsx\components\_grid.jsx" />
+    <Content Include="src\jsx\components\_button.jsx" />
+    <Content Include="src\jsx\components\_radio-item.jsx" />
+    <Content Include="src\jsx\components\_checkbox.jsx" />
+    <Content Include="src\jsx\components\_scrollable.jsx" />
+    <Content Include="src\jsx\components\_dropdown.jsx" />
+    <Content Include="src\jsx\components\_tab-modal.jsx" />
+    <Content Include="src\jsx\components\_tooltip-content.jsx" />
+    <Content Include="src\jsx\components\_tooltip.jsx" />
+    <Content Include="src\jsx\gooee.jsx" />
+    <Content Include="src\js\gooee.core.js" />
+    <Content Include="src\scss\components\_alert.scss" />
+    <Content Include="src\scss\components\_badge.scss" />
+    <Content Include="src\scss\components\_button.scss" />
+    <Content Include="src\scss\components\_button_group.scss" />
+    <Content Include="src\scss\components\_cards.scss" />
+    <Content Include="src\scss\components\_code.scss" />
+    <Content Include="src\scss\components\_collapse.scss" />
+    <Content Include="src\scss\components\_container.scss" />
+    <Content Include="src\scss\components\_dropdown.scss" />
+    <Content Include="src\scss\components\_forms.scss" />
+    <Content Include="src\scss\components\_grid.scss" />
+    <Content Include="src\scss\components\_heading.scss" />
+    <Content Include="src\scss\components\_icon.scss" />
+    <Content Include="src\scss\components\_scrollable.scss" />
+    <Content Include="src\scss\components\_slider.scss" />
+    <Content Include="src\scss\utilities\_border.scss" />
+    <Content Include="src\scss\utilities\_display.scss" />
+    <Content Include="src\scss\utilities\_flex.scss" />
+    <Content Include="src\scss\components\_modal.scss" />
+    <Content Include="src\scss\components\_navbar.scss" />
+    <Content Include="src\scss\components\_navs.scss" />
+    <Content Include="src\scss\gooee.scss" />
+    <Content Include="src\scss\components\_tooltip-content.scss" />
+    <Content Include="src\scss\components\_tooltip.scss" />
+    <Content Include="src\scss\utilities\_colours.scss" />
+    <Content Include="src\scss\utilities\_margin.scss" />
+    <Content Include="src\scss\utilities\_padding.scss" />
+    <Content Include="src\scss\utilities\_position.scss" />
+    <Content Include="src\scss\utilities\_size.scss" />
+    <Content Include="src\scss\utilities\_text.scss" />
+    <Content Include="src\scss\_font-awesome.scss" />
+    <Content Include="src\scss\_mixins.scss" />
+    <Content Include="src\scss\_variables.scss" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\" />
+    <Folder Include="src\jsx\" />
+    <Folder Include="src\jsx\components\" />
+    <Folder Include="src\js\" />
+    <Folder Include="src\scss\components\" />
+    <Folder Include="src\scss\" />
+    <Folder Include="src\scss\utilities\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+</Project>

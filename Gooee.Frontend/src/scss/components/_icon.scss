@@ -1,0 +1,49 @@
+.icon, .fa
+{
+    width: $icon-size !important;
+    height: $icon-size !important;
+
+    &.icon-sm
+    {
+        width: $icon-size-sm !important;
+        height: $icon-size-sm !important;
+    }
+
+    &.icon-lg
+    {
+        width: $icon-size-lg !important;
+        height: $icon-size-lg !important;
+    }
+
+    &.icon-spin
+    {
+        animation: Spin linear 1.5s infinite;
+    }
+}
+
+@keyframes Spin
+{
+    0% 
+    {
+        transform: rotate(0deg);
+    }
+    100% 
+    {
+        transform: rotate(359deg);
+    }
+}
+
+.mask-icon
+{
+    background-color: var(--iconColor);
+    mask-size: contain;
+    mask-position: 50% 50%;
+}
+
+@each $key, $icon in $mask-icons
+{
+    .icon-#{$key}
+    {
+        mask-image: url("coui://GameUI/Media/Glyphs/#{$icon}.svg");
+    }
+}

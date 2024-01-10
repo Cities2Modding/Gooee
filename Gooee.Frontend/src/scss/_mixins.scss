@@ -1,0 +1,235 @@
+@mixin panelBackground()
+{    
+    background-color: var(--panelColorNormal);
+    backdrop-filter: var(--panelBlur);
+    pointer-events: auto;
+}
+
+@mixin panelDarkBackground()
+{
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
+    pointer-events: auto;
+}
+
+@mixin paddingAll($padding-h, $padding-v)
+{
+    padding-left: $padding-h;
+    padding-right: $padding-h;
+    padding-top: $padding-v;
+    padding-bottom: $padding-v;
+}
+
+@mixin borderNone()
+{
+    border-top-width: 0;
+    border-left-width: 0;
+    border-bottom-width: 0;
+    border-right-width: 0;
+    border-top-style: none;
+    border-left-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
+}
+
+@mixin borderAll($colour, $thickness)
+{
+    border-top-width: $thickness;
+    border-left-width: $thickness;
+    border-bottom-width: $thickness;
+    border-right-width: $thickness;
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-top-color: $colour;
+    border-left-color: $colour;
+    border-right-color: $colour;
+    border-bottom-color: $colour;
+}
+
+@mixin borderTop($colour, $thickness)
+{
+    border-top-width: $thickness;
+    border-top-style: solid;
+    border-top-color: $colour;
+}
+
+@mixin borderBottom($colour, $thickness)
+{
+    border-bottom-width: $thickness;
+    border-bottom-style: solid;
+    border-bottom-color: $colour;
+}
+
+@mixin borderLeft($colour, $thickness)
+{
+    border-left-width: $thickness;
+    border-left-style: solid;
+    border-left-color: $colour;
+}
+
+@mixin borderRight($colour, $thickness)
+{
+    border-right-width: $thickness;
+    border-right-style: solid;
+    border-right-color: $colour;
+}
+
+@mixin borderRadius($radius: $border-radius)
+{
+    border-top-left-radius: $radius;
+    border-top-right-radius: $radius;
+    border-bottom-right-radius: $radius;
+    border-bottom-left-radius: $radius;
+}
+
+@mixin borderRadiusTop($radius: $border-radius)
+{    
+    border-top-left-radius: $radius;
+    border-top-right-radius: $radius;
+}
+
+@mixin borderRadiusBottom($radius: $border-radius)
+{    
+    border-bottom-right-radius: $radius;
+    border-bottom-left-radius: $radius;
+}
+
+@mixin borderRadiusLeft($radius: $border-radius)
+{    
+    border-top-left-radius: $radius;
+    border-bottom-left-radius: $radius;
+}
+
+@mixin borderRadiusRight($radius: $border-radius)
+{    
+    border-top-right-radius: $radius;
+    border-bottom-right-radius: $radius;
+}
+
+@mixin mutedBorder()
+{
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-top-width:  var(--stroke2);
+    border-left-width:  var(--stroke2);
+    border-bottom-width:  var(--stroke2);
+    border-right-width:  var(--stroke2);
+    border-top-color: rgba(255, 255, 255, 0.05);
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+@mixin tabControl()
+{
+    --tabGap: var(--gap4);
+    --minTabWidth: 200rem;
+    padding-top: 0.000000px;
+    padding-left: 10.000000rem;
+    padding-right: 10.000000rem;
+    padding-bottom: 0.000000px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-width: var(--stroke2);
+    border-bottom-color: getColour("primary", "dark");
+    justify-content: flex-start;
+
+    &.tabs-center
+    {        
+        justify-content: center;
+    }
+    
+    &.tabs-end
+    {        
+        justify-content: flex-end;
+    }
+
+    > .tab
+    {
+        margin-left: 2.5rem;
+        margin-right: 2.5rem;
+        padding-top: 7rem;
+        padding-left: 15rem;
+        padding-right: 15rem;
+        padding-bottom: 5rem;
+        background-color: getColour("light", "trans-faded");
+        border-top-left-radius: 9rem 9rem;
+        border-top-right-radius: 9rem 9rem;
+        color: map-get($text-colours, "dark");
+        text-align: center;
+        font-size:  var(--fontSizeL);
+        text-transform: uppercase;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        position: relative;
+        width: initial !important;
+
+        &:hover
+        {            
+            background-color: getColour("light", "trans-less-faded");
+        }
+
+        &.active
+        {
+            background-image: linear-gradient(getColour("primary", "base"), getColour("primary", "darker"));
+            background-color: rgba(0, 0, 0, 0.000000);
+            color: map-get($text-colours, "dark");
+        }
+
+        .icon, .fa
+        {
+            margin-top: calc(map-get($spacers,"1")*0.4);
+        }
+    }
+}
+
+@mixin formControl($bg-color: $input-background-colour)
+{
+    width: 100%;
+    color: $input-colour;
+    background-color: $bg-color;
+    @include borderAll($input-border-colour, $input-border-thickness);
+    @include borderRadius($input-border-radius);     
+    @include paddingAll($input-padding-h, $input-padding-v);
+    font-size: $font-size-lg;
+    font-family: $font-family-sans-serif;
+    white-space: nowrap;
+    letter-spacing: normal;
+    font-style: normal;
+    font-weight: normal;
+    line-height: normal;
+    text-transform: none;
+    transition: color .15s ease-in-out,
+        background-color .15s ease-in-out,
+        border-color .15s ease-in-out;
+    
+    &:hover
+    {
+        @include borderAll($input-border-colour-hover, $input-border-thickness);
+    }
+
+    &:active, &:focus
+    {
+        @include borderAll($input-border-colour-active, $input-border-thickness);
+    }
+
+    &.input-disabled
+    {
+        @include borderAll($input-border-colour-disabled, $input-border-thickness);
+        opacity: 0.35 !important;
+        pointer-events: none !important;
+    }
+}
+
+@mixin dropShadow()
+{
+    filter: drop-shadow(0px 0px 1rem rgba(0, 0, 0, 0.6));
+}

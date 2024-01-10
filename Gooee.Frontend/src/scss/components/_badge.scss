@@ -1,0 +1,106 @@
+.badge
+{
+    display: inline;
+    font-size: $font-size-base;
+    font-family: $font-family-sans-serif;
+    padding-left: calc($badge-padding-h + $border-thickness);
+    padding-right: calc($badge-padding-h + $border-thickness);
+    padding-top: $badge-padding-top;
+    padding-bottom: $badge-padding-bottom;
+    border-bottom-left-radius: $badge-border-radius;
+    border-bottom-right-radius: $badge-border-radius;
+    border-top-left-radius: $badge-border-radius;
+    border-top-right-radius: $badge-border-radius;
+    pointer-events: auto;
+    font-weight: bold;
+    width: auto;
+    transition: color .15s ease-in-out,
+        background-color .15s ease-in-out,
+        border-color .15s ease-in-out,
+        box-shadow .15s ease-in-out;
+    white-space: nowrap;
+    letter-spacing: normal;
+    font-style: normal;
+    line-height: normal;
+    text-transform: none;
+    width: auto !important;
+    height: $badge-height;
+    max-height: $badge-height;
+    margin-right: map-get($spacers, "1");
+}
+
+.badge-sm
+{
+    font-size: $font-size-sm;
+    border-bottom-left-radius: $badge-border-radius;
+    border-bottom-right-radius: $badge-border-radius;
+    border-top-left-radius: $badge-border-radius;
+    border-top-right-radius: $badge-border-radius;
+}
+
+.badge-lg
+{
+    font-size: $font-size-lg;
+    border-bottom-left-radius: $badge-border-radius;
+    border-bottom-right-radius: $badge-border-radius;
+    border-top-left-radius: $badge-border-radius;
+    border-top-right-radius: $badge-border-radius;
+}
+
+.badge-block
+{
+    width: 100%;
+}
+
+.badge-circular
+{
+    pointer-events: auto;
+    background-color: rgba(255, 255, 255, 0);
+    @include borderRadius(50%);
+
+    &:hover
+    {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    &:active
+    {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+}
+
+.badge-pill
+{
+    @include borderRadius($badge-pill-border-radius);
+}
+
+@mixin badgeColourUtilities
+{    
+    @each $key in $button-colours 
+    {
+        $colour-map: map-get($colours, $key);
+        $colour: map-get($colour-map, "base");
+        $dark-colour: map-get($colour-map, "dark");
+        $light-colour: map-get($colour-map, "light");
+        $lighter-colour: map-get($colour-map, "lighter");
+        
+        .badge-#{$key} 
+        {
+            background-color: $colour;
+            color: map-get($text-colours, $key);
+            border-top-color: $colour;
+            border-bottom-color: $colour;
+            border-left-color: $colour;
+            border-right-color: $colour;
+        }
+
+        .badge-outline-#{$key} 
+        {
+            background-color: transparent;
+            color: $colour;        
+            @include paddingAll($button-padding-h, $button-padding-v);
+        }
+    }
+}
+
+@include badgeColourUtilities;

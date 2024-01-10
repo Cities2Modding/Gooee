@@ -1,0 +1,92 @@
+.form-slider
+{
+    position: relative;
+    @include formControl($grey);
+    height: $input-slider-base;
+    padding: 0 !important;
+
+    > .form-slider-grip
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: $input-border-colour;
+    }
+
+    @each $key in $button-colours 
+    {
+        $colour-map: map-get($colours, $key);
+        $colour: map-get($colour-map, "trans-less-faded");
+        $darker-colour: map-get($colour-map, "base");
+        
+        &.slider-#{$key} 
+        {
+            @include borderAll($darker-colour, var(--stroke2));
+            
+            > .form-slider-grip
+            {
+                background-color: $darker-colour;
+            }
+        }
+    }
+}
+
+.form-gradient-slider
+{
+    display: flex;
+    position: relative;
+    height: $input-slider-base;
+    padding: $spacing !important;
+    border-radius: $input-slider-base;
+
+    $thumb-size: calc($input-slider-sm - 4rem);
+
+    > .form-gradient-slider-container
+    {
+        flex: 1;
+        position: relative;
+
+        > .form-slider-grip
+        {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: $thumb-size;
+
+            > .form-slider-thumb
+            {
+                margin-left: calc($thumb-size * -1);
+                width: $thumb-size;
+                height: $thumb-size;
+                border-top-left-radius: 50.000000% 50.000000%;
+                border-top-right-radius: 50.000000% 50.000000%;
+                border-bottom-left-radius: 50.000000% 50.000000%;
+                border-bottom-right-radius: 50.000000% 50.000000%;
+                border-top-style: solid;
+                border-left-style: solid;
+                border-right-style: solid;
+                border-bottom-style: solid;
+                border-top-width:  var(--stroke2) ;
+                border-left-width:  var(--stroke2) ;
+                border-bottom-width:  var(--stroke2) ;
+                border-right-width:  var(--stroke2) ;
+                border-top-color: rgba(255, 255, 255, 1.000000);
+                border-left-color: rgba(255, 255, 255, 1.000000);
+                border-right-color: rgba(255, 255, 255, 1.000000);
+                border-bottom-color: rgba(255, 255, 255, 1.000000);
+                transform: scale3d(1.000000, 1.000000, 1.000000);
+                box-shadow: 0px 0px 3rem 0px rgb(0 0 0 / 50%), 0px 0px 0px 1rem rgb(0 0 0 / 20%) inset;
+                transition-property: transform;
+                transition-duration: 0.100000s;
+                transition-delay: 0.000000s;
+                transition-timing-function: ease;
+            }
+        }
+    }
+}

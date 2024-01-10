@@ -1,0 +1,39 @@
+.w-x
+{
+    width: auto !important;
+}
+
+.h-x
+{
+    height: auto !important;
+}
+
+.w-0
+{
+    width: 0 !important;
+}
+
+.h-0
+{
+    height: 0 !important;
+}
+
+@each $key in $percent-sizes
+{    
+    $percent: $key + "%";
+
+    @if ($key == "33")
+    {
+        $percent: "33.33333333%"
+    }
+
+    .w-#{$key}
+    {
+        width: #{$percent} !important;
+    }
+
+    .h-#{$key}
+    {
+        height: #{$percent} !important;
+    }
+}

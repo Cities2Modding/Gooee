@@ -1,0 +1,27 @@
+.text-left 
+{ 
+    text-align: left;
+}
+
+.text-right 
+{ 
+    text-align: right;
+}
+
+.text-center 
+{ 
+    text-align: center;
+}
+
+@mixin fontSizeUtilities 
+{
+    @each $size-name, $size-value in $font-sizes 
+    {
+        .fs-#{$size-name} 
+        {
+            font-size: $size-value;
+        }
+    }
+}
+
+@include fontSizeUtilities;

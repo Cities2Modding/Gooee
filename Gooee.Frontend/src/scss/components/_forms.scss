@@ -1,0 +1,248 @@
+.form
+{
+    &.was-validated
+    {
+        .form-control
+        {
+            @include borderAll(getColour("success", "dark"), $input-border-thickness);
+            color: getColour("success", "dark");            
+            
+            &:hover
+            {
+                color: getColour("success", "light");
+                @include borderAll(getColour("success", "light"), $input-border-thickness);
+            }
+
+            &:active, &:focus
+            {
+                color: getColour("success", "base");
+                @include borderAll(getColour("success", "base"), $input-border-thickness);
+            }
+
+            &.is-invalid
+            {
+                color: getColour("danger", "dark");
+                @include borderAll(getColour("danger", "dark"), $input-border-thickness);
+                
+                &:hover
+                {
+                    color: getColour("danger", "light");
+                    @include borderAll(getColour("danger", "light"), $input-border-thickness);
+                }
+
+                &:active, &:focus
+                {
+                    color: getColour("danger", "base");
+                    @include borderAll(getColour("danger", "base"), $input-border-thickness);
+                }
+            }
+        }
+    }
+}
+
+.form-group
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: $text;
+    margin-bottom: $spacing;
+
+    &:last-child
+    {
+        margin-bottom: 0 !important;
+    }
+
+    small
+    {
+        color: getColour("muted", "light");
+        font-size: $font-size-sm;
+        margin-top: calc($spacing / 3.5);
+    }
+
+    > label
+    {
+        margin-bottom: calc($spacing / 2);
+        color: var(--gTextLighter);
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+}
+
+.invalid-feedback
+{
+    margin-top: calc($spacing / 3.5);
+    color: getColour("danger", "base");
+}
+
+.form-control
+{
+    @include formControl;
+    
+    &.form-control-sm
+    {        
+        font-size: $font-size-sm;
+    }
+
+    &.form-control-lg
+    {        
+        font-size: $font-size-xl;
+    }
+}
+
+.form-check
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    > .form-check-input
+    {
+        justify-self: flex-start;
+    }
+
+    > .form-check-label
+    {
+        flex: 1;
+        margin-left: map-get($spacers, "2");
+    }
+}
+
+.form-check-input
+{
+    display: inline;
+    @include formControl;
+    width: auto !important;
+    padding: calc(map-get($spacers, "1") / 4 ) !important;    
+
+    > .icon
+    {
+        opacity: 0;
+    }
+
+    &.checked
+    {            
+        > .icon
+        {
+            opacity: 1;
+        }
+    }
+}
+
+
+.form-radio
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    > .form-radio-input
+    {
+        justify-self: flex-start;
+    }
+
+    > .form-radio-label
+    {
+        flex: 1;
+        margin-left: map-get($spacers, "2");
+    }
+}
+
+.form-radio-input
+{
+    display: inline;
+    @include formControl;
+    width: auto !important;
+    padding: calc(map-get($spacers, "1") / 4 ) !important;
+    @include borderRadius(100%);
+        
+
+    &.checked
+    {      
+        > .dot-container
+        {
+            opacity: 1;
+        }
+    }
+
+    > .dot-container
+    {
+        opacity: 0;
+        width: $icon-size;
+        height: $icon-size;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+            
+        > .dot
+        {
+            width: 45%;
+            height: 45%;
+            background-color: $light;
+            @include borderRadius(100%);
+            pointer-events: none;
+        }
+    }
+
+    &.checked
+    {      
+        > .dot-container
+        {
+            opacity: 1;
+        }
+    }
+}
+
+.form-radio-group
+{
+    > .form-radio
+    {
+        margin-bottom: map-get($spacers, "2");
+
+        &:last-child
+        {
+            margin-bottom: 0 !important;
+        }
+    }
+}
+
+.form-check-group
+{
+    > .form-check
+    {
+        margin-bottom: map-get($spacers, "2");
+
+        &:last-child
+        {
+            margin-bottom: 0 !important;
+        }
+    }
+}
+
+.form-check-input, .form-radio-input
+{
+    @each $key in $button-colours 
+    {
+        $colour-map: map-get($colours, $key);
+        $colour: map-get($colour-map, "base");
+        $light-colour: map-get($colour-map, "light");
+        $darker-colour: map-get($colour-map, "dark");
+        
+        &.input-#{$key} 
+        {
+            @include borderAll($darker-colour, var(--stroke2));
+
+            &:hover
+            {
+                @include borderAll($light-colour, var(--stroke2));
+            }
+
+            &:active, &:focus
+            {
+                @include borderAll($colour, var(--stroke2));
+            }
+        }
+    }
+}

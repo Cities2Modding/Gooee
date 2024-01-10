@@ -1,0 +1,136 @@
+.scrollable
+{
+    --scrollbarPadding: 0rem;
+    --scrollbarSize: 16rem;
+    --scrollbarMarginVertical: 6rem;
+    max-height: 100.000000%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    position: relative;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+
+    display: flex;
+
+    &.no-overflow
+    {
+        > .content
+        {
+            padding-right: 0 !important;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        > .track
+        {
+            opacity: 0;
+            pointer-events: none;
+        }
+    }
+
+    > .content
+    {
+        max-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-top: 0;
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 0;
+        flex: 1;
+    }
+
+    > .track
+    {
+        position: relative;
+        background-color: getColour("light", "trans-darker");
+        border-top-left-radius: $scrollbar-radius $scrollbar-radius;
+        border-top-right-radius: $scrollbar-radius $scrollbar-radius;
+        border-bottom-left-radius: $scrollbar-radius $scrollbar-radius;
+        border-bottom-right-radius: $scrollbar-radius $scrollbar-radius;
+        opacity: 1;
+        pointer-events: auto;
+        height: 100%;
+
+        > .thumb
+        {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            background-color: getColour("light", "trans");
+            border-top-left-radius: $scrollbar-radius $scrollbar-radius;
+            border-top-right-radius: $scrollbar-radius $scrollbar-radius;
+            border-bottom-left-radius: $scrollbar-radius $scrollbar-radius;
+            border-bottom-right-radius: $scrollbar-radius $scrollbar-radius;
+            pointer-events: auto;
+            width: 100%;
+            height: 0px;
+
+            &:hover
+            {
+                background-color: getColour("light", "base");
+            }
+        }
+    }
+
+    &.vertical
+    {
+        flex-direction: row;
+        height: 100%;
+        flex: 1;
+
+        > .content
+        {
+            padding-right: $scrollbar-thickness;
+        }
+
+        > .track
+        {            
+            //right: $scrollbar-thickness;
+            //top: 0;
+            //bottom: 0;
+            width: $scrollbar-thickness;
+            align-self: flex-end;
+        }
+    }
+
+    &.scrollable-sm
+    {
+        &.vertical
+        {
+            > .content
+            {                
+                padding-right: $scrollbar-thickness-sm;
+            }
+
+            > .track
+            {            
+                //right: $scrollbar-thickness-sm;
+                //top: 0;
+                //bottom: 0;
+                width: $scrollbar-thickness-sm;
+            }
+        }
+    }
+
+    &.scrollable-lg
+    {
+        &.vertical
+        {
+            > .content
+            {                
+                padding-right: $scrollbar-thickness-lg;
+            }
+
+            > .track
+            {            
+                //right: $scrollbar-thickness-lg;
+                //top: 0;
+                //bottom: 0;
+                width: $scrollbar-thickness-lg;
+            }
+        }
+    }
+}

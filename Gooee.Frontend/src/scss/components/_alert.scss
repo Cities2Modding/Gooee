@@ -1,0 +1,24 @@
+.alert
+{
+    padding: $spacing;
+
+    @each $key in $button-colours 
+    {
+        $colour-map: map-get($colours, $key);
+        $colour: map-get($colour-map, "trans-less-faded");
+        $darker-colour: map-get($colour-map, "base");
+        
+        &.alert-#{$key} 
+        {
+            background-color: $colour;
+            color: $light;           
+            @include borderAll($darker-colour, var(--stroke2));
+            @include borderRadius($border-radius);
+
+            .fa, .icon.mask-icon
+            {                    
+                background-color: $light !important;
+            }
+        }
+    }
+}

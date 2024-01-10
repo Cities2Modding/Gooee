@@ -1,0 +1,130 @@
+@mixin borderColourUtilities 
+{
+    @each $key, $colour-map in $colours
+    {        
+        @each $cm-key, $value in $colour-map
+        {
+            $key-name: "-" + $cm-key;
+
+            @if $cm-key == "base"
+            {
+                $key-name: "";
+            }
+
+            .border-#{$key}#{$key-name} 
+            {
+                @include borderAll($value, $border-thickness);
+            }
+        }
+    }
+}
+
+.border
+{
+    @include borderAll($border-colour, $border-thickness);
+}
+
+.border-icon
+{
+    @include mutedBorder();
+}
+
+.border-top
+{
+    @include borderTop($border-colour, $border-thickness);
+
+}
+.border-right
+{
+    @include borderRight($border-colour, $border-thickness);
+
+}
+.border-bottom
+{
+    @include borderBottom($border-colour, $border-thickness);
+
+}
+.border-left
+{
+    @include borderLeft($border-colour, $border-thickness);
+}
+
+.border-0
+{
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+}
+
+.border-top-0
+{
+    border-top: 0;
+}
+
+.border-right-0
+{
+    border-right: 0;
+}
+
+.border-bottom-0
+{
+    border-bottom: 0;
+}
+
+.border-left-0
+{
+    border-left: 0;
+}
+
+@include borderColourUtilities;
+
+.rounded 
+{
+    @include borderRadius;
+}
+
+.rounded-sm
+{
+    @include borderRadius(calc($border-radius/2));
+}
+
+.rounded-top 
+{ 
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+}
+
+.rounded-right 
+{ 
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+}
+
+.rounded-bottom 
+{ 
+    border-bottom-right-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+}
+
+.rounded-left 
+{ 
+    border-top-left-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+}
+
+.rounded-circle 
+{
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+
+.rounded-pill 
+{     
+    border-top-left-radius: 50rem;
+    border-top-right-radius: 50rem;
+    border-bottom-right-radius: 50rem;
+    border-bottom-left-radius: 50rem;
+}

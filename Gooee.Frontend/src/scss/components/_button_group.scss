@@ -1,0 +1,63 @@
+.btn-group
+{
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    flex-wrap: wrap;
+
+    > .btn
+    {
+        margin-right: 0;
+        margin-left: 0;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        width: auto;
+
+        &:first-child
+        {
+            border-top-left-radius: $border-radius;
+            border-bottom-left-radius: $border-radius;
+        }
+
+        &:last-child
+        {
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+        }
+    }
+}
+
+.btn-group-vertical
+{
+    display: flex;
+    flex-direction: column;
+    width: auto;
+
+    > .btn
+    {
+        width: auto;
+        margin-bottom: 0;
+        margin-left: 0;
+        margin-top: 0;
+        margin-right: 0;
+        
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+
+        &:first-child
+        {
+            border-top-left-radius: $border-radius;
+            border-top-right-radius: $border-radius;
+        }
+
+        &:last-child
+        {
+            border-bottom-left-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+        }
+    }
+}

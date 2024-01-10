@@ -1,0 +1,333 @@
+@use "sass:color";
+
+@mixin colourVariable($key, $colour)
+{
+    #{$key}: $colour;
+    #{$key}Lighter: color.scale($colour, $lightness: 45%, $saturation: -55%);
+    #{$key}Light: color.scale($colour, $lightness: 20%, $saturation: -25%);
+    #{$key}Dark: color.scale($colour, $lightness: -15%, $saturation: -25%);
+    #{$key}Darker: color.scale($colour, $lightness: -30%, $saturation: -35%);
+    #{$key}Darkest: color.scale($colour, $lightness: -40%, $saturation: -35%);
+    #{$key}Trans: fade-out($colour, 0.25);
+    #{$key}TransLighter: fade-out(color.scale($colour, $lightness: 45%, $saturation: -55%), 0.25);
+    #{$key}TransLight: fade-out(color.scale($colour, $lightness: 20%, $saturation: -25%), 0.25);
+    #{$key}TransDark: fade-out(color.scale($colour, $lightness: -25%, $saturation: -25%), 0.25);
+    #{$key}TransDarker: fade-out(color.scale($colour, $lightness: -35%, $saturation: -35%), 0.25);
+    #{$key}TransLessFaded: fade-out($colour, 0.75);
+    #{$key}TransFaded: fade-out($colour, 0.9);
+}
+
+:root
+{
+    @include colourVariable("--gPrimary", #4bc3f1);
+    @include colourVariable("--gSecondary", #ffd45d);
+    @include colourVariable("--gInfo", #4b81f1);
+    @include colourVariable("--gSuccess", #8bdb46);
+    @include colourVariable("--gWarning", #ffa42d);
+    @include colourVariable("--gDanger", #e95f4a);
+    @include colourVariable("--gLight", #d9d9d9);
+    @include colourVariable("--gDark", #0C1A28);
+    @include colourVariable("--gText", #d9d9d9);
+    @include colourVariable("--gMuted", #adadad);
+    @include colourVariable("--gWhite", #f5f5f5);
+    @include colourVariable("--gBlack", #121212);
+    @include colourVariable("--gTextInverted", #0c131f);
+    @include colourVariable("--gGrey", #5a5a5a);
+    @include colourVariable("--gTool", #0F1013);
+}
+
+body.style--dark-grey-orange
+{
+    @include colourVariable("--gPrimary", #ffb222);
+    @include colourVariable("--gSecondary", #4bc3f1);
+    @include colourVariable("--gInfo", #4b81f1);
+}
+
+body.style--bright-blue
+{
+    @include colourVariable("--gPrimary", #2391db);
+    @include colourVariable("--gText", #0c131f);
+    @include colourVariable("--gTextInverted", #d9d9d9);
+    @include colourVariable("--gMuted", #1a263b);
+}
+
+@function colourMap($key)
+{    
+    $map-colours: (
+        "lighter": var(--g#{$key}Lighter),
+        "light": var(--g#{$key}Light),
+        "base": var(--g#{$key}),
+        "dark": var(--g#{$key}Dark),
+        "darker": var(--g#{$key}Darker),    
+        "darkest": var(--g#{$key}Darkest),    
+        "trans-lighter": var(--g#{$key}TransLighter),
+        "trans-light": var(--g#{$key}TransLight),
+        "trans": var(--g#{$key}Trans),
+        "trans-dark": var(--g#{$key}TransDark),
+        "trans-darker": var(--g#{$key}TransDarker),
+        "trans-less-faded": var(--g#{$key}TransLessFaded),
+        "trans-faded": var(--g#{$key}TransFaded),
+    );
+
+    @return $map-colours;
+}
+
+// Colours
+$primary: var(--gPrimary);
+$secondary: var(--gSecondary);
+$success: var(--gSuccess);
+$info: var(--gInfo);
+$warning: var(--gWarning);
+$danger: var(--gDanger);
+$muted: var(--gMuted);
+$light: var(--gLight);
+$dark: var(--gDark);
+$white: var(--gWhite);
+$black: var(--gBlack);
+$grey: var(--gGrey);
+
+$colours: (
+    "primary": colourMap("Primary"),
+    "secondary": colourMap("Secondary"),
+    "info": colourMap("Info"),
+    "success": colourMap("Success"),
+    "warning": colourMap("Warning"),
+    "danger": colourMap("Danger"),
+    "light": colourMap("Light"),
+    "dark": colourMap("Dark"),
+    "muted": colourMap("Muted"),
+    "white": colourMap("White"),
+    "black": colourMap("Black"),
+    "grey": colourMap("Grey"),
+    "tool": colourMap("Tool")
+);
+
+@function getColour($key, $shade)
+{
+    $colour-map: map-get($colours, $key);
+    @return map-get($colour-map, $shade);
+}
+
+// Borders
+$border-colour: #dee2e6;
+$border-thickness: var(--stroke2);
+$border-radius: 7.5rem;
+$border-radius-lg: 7.5rem;
+$border-radius-md: 6.5rem;
+$border-radius-sm: 5rem;
+$border-radius-min: 2.5rem;
+
+// Spacing (Margins, Padding)
+$spacers: (
+    "0": 0,
+    "1": 5rem,
+    "2": 7.5rem,
+    "3": 10rem,
+    "4": 12.5rem,
+    "5": 15rem,
+    "6": 30rem,
+);
+
+// Default spacing
+$spacing: map-get($spacers, "4");
+
+// Typography
+// -------------------------
+
+$text: var(--gText);
+$text-inverted: var(--gTextInverted);
+
+$text-colours: (
+    "primary": $black,
+    "secondary": $black,
+    "success": $black,
+    "info": $white,
+    "warning": $black,
+    "danger": $white,
+    "light": $black,
+    "dark": $white,
+    "muted": $black,
+    "white": $black,
+    "black": $white,
+    "grey": $white,
+    "tool": $white
+);
+
+// Font Family
+$font-family-sans-serif: var(--fontFamily);
+$font-family-monospace: "Perfect DOS VGA 437";
+
+// Font Sizes
+$font-size-base: var(--fontSizeM);
+$font-size-xl: var(--fontSizeXL);
+$font-size-lg: var(--fontSizeL);
+$font-size-sm: var(--fontSizeS);
+$font-size-xs: var(--fontSizeXS);
+
+$font-sizes: (
+    xs: $font-size-xs,
+    sm: $font-size-sm,
+    normal: $font-size-base,
+    lg: $font-size-lg,
+    xl: $font-size-xl
+);
+
+// Font Weights
+$font-weight-normal: normal;
+$font-weight-bold: bold;
+
+// Line Heights
+$line-height-base: 1.5;
+
+// Headings
+$headings-font-family: inherit;
+$headings-font-weight: 500;
+$headings-line-height: 1.1;
+
+$h1-font-size: 2em;
+$h2-font-size: $font-size-xl;
+$h3-font-size: $font-size-lg;
+$h4-font-size: $font-size-base;
+$h5-font-size: $font-size-sm;
+$h6-font-size: $font-size-xs;
+
+// Buttons
+
+$button-colours:
+    "primary",
+    "secondary",
+    "success",
+    "info",
+    "warning",
+    "danger",
+    "light",
+    "dark",
+    "white",
+    "black";
+
+$button-padding-h: 12.5rem;
+$button-padding-v: calc($button-padding-h / 1.5);
+
+$button-sm-padding-h: 7.5rem;
+$button-sm-padding-v: calc($button-sm-padding-h / 1.5);
+
+$button-lg-padding-h: 17.5rem;
+$button-lg-padding-v: calc($button-lg-padding-h / 2);
+
+$icon-button: 30rem;
+$icon-button-sm: 24rem;
+$icon-button-lg: 39rem;
+
+// Badges
+
+$badge-padding-h: 0.25em;
+$badge-padding-top: 0.55rem;
+$badge-padding-bottom: 0;
+$badge-height: 25rem;
+$badge-pill-border-radius: 50rem;
+$badge-border-radius: $border-radius;
+$badge-border-thickness: var(--stroke2);
+
+// Modals
+$modal-border-radius: var(--panelRadius);
+$modal-width: calc(var(--leftPanelWidth) * 2);
+$modal-height: calc(var(--leftPanelWidth) * 1.5);
+$modal-sm-width: var(--leftPanelWidth);
+$modal-sm-height: auto;
+$modal-lg-width: var(--centerPanelWidth);
+$modal-lg-height: var(--centerPanelHeight);
+$modal-padding: 7.5rem;
+$modal-content-padding: 10rem;
+
+// Inputs
+$input-padding-h: 8rem;
+$input-padding-v: 4rem;
+$input-colour: var(--menuText1Normal);
+$input-background-colour: var(--menuControl1);
+$input-border-radius: 3rem;
+$input-border-thickness: var(--stroke2);
+$input-border-colour: var(--menuControlBorder);
+$input-border-colour-active: $primary;
+$input-border-colour-hover: getColour("primary", "light");
+$input-border-colour-disabled: getColour("grey", "base");
+
+$scrollbar-thickness: $spacing;
+$scrollbar-radius: $scrollbar-thickness;
+
+$scrollbar-thickness-sm: $spacing * 0.5;
+$scrollbar-thickness-lg: $spacing * 1.5;
+
+// Icons
+$mask-icons: ( "advisor": "Advisor",
+    "angle": "Angle",
+    "arrow-circular": "ArrowCircular",
+    "arrow-left": "ArrowLeft",
+    "arrow-right": "ArrowRight",
+    "check": "Checkmark",
+    "circle": "Circle",
+    "clear": "Clear",
+    "close": "Close",
+    "copy": "Copy",
+    "credits": "Credits",
+    "dev-point": "DevPoint",
+    "dice": "Dice",
+    "education": "Education",
+    "eye-closed": "EyeClosed",
+    "eye": "EyeOpen",
+    "solid-arrow-left": "FilledArrowLeft",
+    "solid-arrow-right": "FilledArrowRight",
+    "gdk-cloud": "GdkCloud",
+    "gear": "Gear",
+    "solid-heart": "HeartFilled",
+    "heart": "HeartOutline",
+    "info": "Info",
+    "length": "Length",
+    "lock": "Lock",
+    "money": "Money",
+    "on-off": "OnOff",
+    "pdx-cloud": "PDXCloud",
+    "pen": "Pen",
+    "plus": "Plus",
+    "progress": "Progress",
+    "residence": "Residence",
+    "save": "Save",
+    "school": "School",
+    "pause": "SimulationPause",
+    "play": "SimulationPlay",
+    "speed1": "SimulationSpeed1",
+    "speed2": "SimulationSpeed2",
+    "speed3": "SimulationSpeed3",
+    "slope": "Slope",
+    "solid-star": "StarFilled",
+    "star": "StarOutline",
+    "steam-cloud": "SteamCloud",
+    "stroke-arrow-down": "StrokeArrowDown",
+    "stroke-arrow-up": "StrokeArrowUp",
+    "student": "Student",
+    "thick-stroke-arrow-down": "ThickStrokeArrowDown",
+    "thick-stroke-arrow-left": "ThickStrokeArrowLeft",
+    "thick-stroke-arrow-right": "ThickStrokeArrowRight",
+    "thick-stroke-arrow-up": "ThickStrokeArrowUp",
+    "trash": "Trash",
+    "trend-down": "TrendDown",
+    "trend-down-high": "TrendDownHigh",
+    "trend-down-med": "TrendDownMedium",
+    "trend-up": "TrendUp",
+    "trend-up-high": "TrendUpHigh",
+    "trend-up-med": "TrendUpMedium",
+    "triangle-arrow-left": "TriangleArrowLeft",
+    "view-info": "ViewInfo",
+    "warning": "Warning",
+    "wide-arrow-down": "WideArrowDown",
+    "wide-arrow-up": "WideArrowUp",
+    "workplace": "Workplace" );
+
+$icon-size: 24rem;
+$icon-size-sm: 20rem;
+$icon-size-lg: 36rem;
+
+$percent-sizes: "5", "10", "20", "25", "30", "33", "50", "70", "80", "90", "100";
+
+$input-slider-base: 28rem;
+$input-slider-sm: 20rem;
+$input-slider-lg: 34rem;
