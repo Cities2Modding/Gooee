@@ -1,29 +1,37 @@
-import React from 'react'
+import React from "react";
 
-const Scrollable = ({ children }) => {
+const Scrollable = ({ className, children, size = null }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
     const contentRef = react.useRef(null);
     const [thumbHeight, setThumbHeight] = react.useState(0);
     const [thumbTop, setThumbTop] = react.useState(0);
     const [mouseDown, setMouseDown] = react.useState(false);
+    const [canScroll, setCanScroll] = react.useState(false);
+
+    const sizeClass = size ? ` scrollable-${size}` : "";
 
     function getCurrentScrollPosition() {
         if (scrollRef.current) {
             return scrollRef.current.scrollTop;
         }
         return 0;
-    }
+    };
+
     const calculateThumbSizeAndPosition = () => {
         if (scrollRef.current && contentRef.current) {
             const viewableHeight = scrollRef.current.clientHeight;
             const totalContentHeight = contentRef.current.scrollHeight;
 
-            if (totalContentHeight > viewableHeight) {
-                let newThumbHeight = Math.max((viewableHeight / totalContentHeight) * viewableHeight, 30);
+            if (totalContentHeight <= viewableHeight) {
+                setCanScroll(false);
+            }
+            else if (totalContentHeight > viewableHeight) {
+                setCanScroll(true);
 
-                // Replace this with your method of getting the current scroll position
-                const currentScrollPosition = getCurrentScrollPosition(); // Custom function
+                let newThumbHeight = Math.max((viewableHeight / totalContentHeight) * viewableHeight, 30);
+                
+                const currentScrollPosition = getCurrentScrollPosition();
 
                 let newThumbTop = (currentScrollPosition / totalContentHeight) * viewableHeight;
 
@@ -96,7 +104,7 @@ const Scrollable = ({ children }) => {
         };
     }, [mouseDown]);
 
-    const classNames = "scrollable vertical" + (thumbHeight <= 0 ? " no-overflow" : "");
+    const classNames = "scrollable vertical" + (thumbHeight <= 0 || !canScroll ? " no-overflow" : "") + sizeClass + (className ? " " + className : "");
     return <div className={classNames} onMouseOver={calculateThumbSizeAndPosition}>
         <div ref={scrollRef} onScroll={calculateThumbSizeAndPosition} className="content">
             <div ref={contentRef}>

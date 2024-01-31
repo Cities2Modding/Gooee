@@ -8,19 +8,21 @@ const CheckBoxGroup = ({ style, onChecked, selected, options }) => {
 
     react.useEffect(() => {
         if (selected) {
-            const arry = internalValue;
-            arry.push(selected);
-            setInternalValue(arry);
+            setInternalValue(selected);
         }
     }, [selected]);    
 
-    const onCheck = (value) => {
+    const onCheck = (value, isChecked) => {
         const arry = internalValue;
-        arry.push(value);
+        if (isChecked)
+            arry.push(value);
+        else
+            arry.remove(value);
+
         setInternalValue(arry);
 
         if (onChecked)
-            onChecked(value);
+            onChecked(value, isChecked);
     };
 
     const contains = (value) => {
@@ -34,7 +36,7 @@ const CheckBoxGroup = ({ style, onChecked, selected, options }) => {
         {
             options.map((option, index) => (
                 <div key={option.value} className="form-check">
-                    <CheckBox checked={contains(index)} onToggle={() => onCheck(option.value)} />
+                    <CheckBox checked={contains(option.value)} onToggle={(val) => onCheck(option.value, val)} />
                     <label className="form-check-label">{option.label}</label>
                 </div>))
         }

@@ -1,10 +1,10 @@
 import React from 'react'
 
-const TabModal = ({ tabs, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null }) => {
+const TabModal = ({ tabs, className, style, size = null, selected, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null }) => {
     const react = window.$_gooee.react;
-    const [activeTab, setActiveTab] = react.useState(tabs.length > 0 ? tabs[0].name : '');
+    const [activeTab, setActiveTab] = react.useState(selected ? selected : tabs.length > 0 ? tabs[0].name : '');
 
-    const { Button, Scrollable } = window.$_gooee.framework;
+    const { Button } = window.$_gooee.framework;
 
     react.useEffect(() => {
         if (activeTab === '')
@@ -20,7 +20,7 @@ const TabModal = ({ tabs, style, size = null, onClose, title, icon, fixed = null
         engine.trigger("audio.playSound", "hover-item", 1);
     };
 
-    const sizeClass = size ? `modal modal-${size}` : "modal";
+    const sizeClass = size ? `modal modal-${size}` + (hidden ? " hidden" : "") + (className ? " " + className : "") : "modal" + (hidden ? " hidden" : "") + (className ? " " + className : "");
     const fixedClass = fixed ? ` modal-fixed` : "";
     const classNames = sizeClass + fixedClass;
     const tabsClass = title ? "modal-tabs tabs-center" : "modal-tabs mt-1";
@@ -47,13 +47,11 @@ const TabModal = ({ tabs, style, size = null, onClose, title, icon, fixed = null
                         ))}
                     </div>
                 </div>
-                <div className={bodyClassNames}>
-                        {tabs.map(tab => (
-                            <div key={tab.name} style={activeTab !== tab.name ? { display: "none" } : null}>
-                                {tab.content}
-                            </div>
-                        ))}
-                </div>
+                {tabs.map(tab => (
+                    <div key={tab.name} className={bodyClassNames} style={activeTab !== tab.name ? { display: "none" } : null}>
+                        {tab.content}
+                    </div>
+                ))}
             </div>
         </div>
     </div>;

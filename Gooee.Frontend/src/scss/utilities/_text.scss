@@ -25,3 +25,19 @@
 }
 
 @include fontSizeUtilities;
+
+.gooee
+{
+    hr
+    {
+        display: block;
+        @include borderBottom(getColour("light", "trans-less-faded"), $border-thickness);
+        margin-top: map-get($spacers, "5");
+        margin-bottom: map-get($spacers, "5");
+    }
+}
+
+.inline-content
+{
+    @include inlineContent;
+}

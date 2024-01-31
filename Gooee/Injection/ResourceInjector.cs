@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using System.IO.Compression;
+using System.Linq;
 
 namespace Gooee.Injection
 {
@@ -20,8 +21,9 @@ namespace Gooee.Injection
         const string URL_PREFIX = $"coui://{UI_IDENTIFIER}/";
 
         static readonly string ASSEMBLY_PATH = Path.GetDirectoryName( Assembly.GetExecutingAssembly( ).Location );
-        static readonly string MOD_PATH = Path.Combine( Application.persistentDataPath, "Mods", "Gooee" );
+        public static readonly string MOD_PATH = Path.Combine( Application.persistentDataPath, "Mods", "Gooee" );
         static readonly string PLUGIN_PATH = Path.Combine( MOD_PATH, "Plugins" );
+        static readonly string CHANGELOG_READ_PATH = Path.Combine( MOD_PATH, "changelog.ini" );
 
         static readonly string UI_PATH = Path.Combine( Application.streamingAssetsPath, "~UI~" );
         static readonly string HOOKUI_PATH = Path.Combine( UI_PATH, "HookUI" );
@@ -38,14 +40,16 @@ namespace Gooee.Injection
 
         static readonly (string Search, string Replacement)[] INJECTION_POINTS = new[]
         {
-            ("(0,e.jsx)(HEe,{})]", "(0,e.jsx)(HEe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-right-toolbar'})]"),
+            ("(0,e.jsx)(ITe,{})]", "(0,e.jsx)(ITe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-right-toolbar'})]"),
             ("(0,e.jsx)(window._$hookui_menu,{react:i})", "(0,e.jsx)(window._$hookui_menu,{react:i}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-left-toolbar'})"),
-            ("className:oge.pauseMenuLayout,children:[R&&(0,e.jsx)", "className:oge.pauseMenuLayout,children:[(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-right-toolbar'}),R&&(0,e.jsx)"),
-            ("(0,e.jsx)(vEe,{})]", "(0,e.jsx)(vEe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-left-toolbar'})]"),
+            ("className:Bge.pauseMenuLayout,children:[R&&(0,e.jsx)", "className:Bge.pauseMenuLayout,children:[(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-right-toolbar'}),R&&(0,e.jsx)"),
+            ("(0,e.jsx)(JOe,{})]", "(0,e.jsx)(JOe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-left-toolbar'})]"),
 
-            ("(0,e.jsx)(xTe,{focusKey:QSe.toolbar})", "(0,e.jsx)(xTe,{focusKey:QSe.toolbar}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'default'})"),
-            ("]}),(0,e.jsx)(xTe,{focusKey:QSe.toolbar})", ",(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'main-container'})]}),(0,e.jsx)(xTe,{focusKey:QSe.toolbar})"),
+            ("(0,e.jsx)(rIe,{focusKey:MSe.toolbar})", "(0,e.jsx)(rIe,{focusKey:MSe.toolbar}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'default'})"),
+            ("]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})", ",(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'main-container'})]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})"),
         };
+
+        private static readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
 
         /// <summary>
         /// Inject Gooee into the HookUI index.html and index.js.
@@ -54,23 +58,19 @@ namespace Gooee.Injection
         {
             if ( !Directory.Exists( HOOKUI_PATH ) )
             {
-                UnityEngine.Debug.Log( "No HookUI folder found!" );
+                _log.Error( "No HookUI folder found!" );
                 return;
             }
 
-            UnityEngine.Debug.Log( "Saving Gooee resources!" );
             SaveResources( );
 
-            UnityEngine.Debug.Log( "Loading Gooee plugins!" );
             PluginLoader.Load( );
 
-            UnityEngine.Debug.Log( "Injecting Gooee js!" );
             InjectJS( );
-            UnityEngine.Debug.Log( "Injecting Gooee html!" );
             InjectHTML( );
 
             SetupFileWatcher( );
-            UnityEngine.Debug.Log( "Installed Gooee!" );
+            _log.Info( "Installed Gooee!" );
         }
 
         private static void InjectJS( )
@@ -123,22 +123,107 @@ namespace Gooee.Injection
         /// <param name="styleBuilder"></param>
         private static void IncludePlugins( StringBuilder scriptBuilder, StringBuilder styleBuilder )
         {
+            var pluginChangeLogs = new List<string>( );
+
             foreach ( var plugin in PluginLoader.Plugins.Values )
             {
                 if ( !string.IsNullOrEmpty( plugin.ScriptResource ) )
                 {
-                    var scriptFileName = plugin.Name + Path.GetExtension( plugin.ScriptResource );
+                    var scriptFileName = plugin.Name.Replace( " ", "_" ) + Path.GetExtension( plugin.ScriptResource );
                     var newScript = $"    <script src=\"{URL_PREFIX}Plugins/{scriptFileName}\"></script>";
                     scriptBuilder.AppendLine( newScript );
                 }
 
-                if ( !string.IsNullOrEmpty( plugin.StyleResource ) )
+                if ( plugin is IGooeeStyleSheet stPlugin && !string.IsNullOrEmpty( stPlugin.StyleResource ) )
                 {
-                    var styleFileName = plugin.Name + Path.GetExtension( plugin.StyleResource );
+                    var styleFileName = plugin.Name.Replace( " ", "_" ) + Path.GetExtension( stPlugin.StyleResource );
                     var newStyle = $"    <link href=\"{URL_PREFIX}Plugins/{styleFileName}\" rel=\"stylesheet\"/>";
                     styleBuilder.AppendLine( newStyle );
                 }
+
+                if ( plugin is IGooeeChangeLog clPlugin && !string.IsNullOrEmpty( clPlugin.ChangeLogResource ) )
+                {
+                    pluginChangeLogs.Add( "{ \"name\": \"" + plugin.Name + "\", \"version\": \"" + clPlugin.Version + "\", \"timestamp\": \"" + GetPluginTimeStamp( plugin.GetType().Assembly ).ToString() + "\" }" );
+                }
             }
+
+            if ( pluginChangeLogs.Count > 0 )
+            {
+                scriptBuilder.AppendLine( "" );
+                var pluginList = string.Join (",", pluginChangeLogs );
+                scriptBuilder.AppendLine( @"    <script type=""text/javascript"">window.$_gooee_changeLogShow = " + HasChangeLogUpdated().ToString().ToLower() + "; window.$_gooee_changeLogs = [" + pluginList + "];</script>" );
+            }
+            else
+            {
+                scriptBuilder.AppendLine( @"    <script type=""text/javascript"">window.$_gooee_changeLogShow = false; window.$_gooee_changeLogs = [];</script>" );
+            }
+        }
+
+        public static bool HasChangeLogUpdated( )
+        {
+            var changeLogPlugins = PluginLoader.Plugins.Values.Where( p => p is IGooeeChangeLog ).ToList( );
+
+            if ( changeLogPlugins.Count <= 0 )
+                return false;
+
+            if ( !File.Exists( CHANGELOG_READ_PATH ) )
+                return true;
+
+            var sb = new StringBuilder( );
+
+            foreach ( var plugin in changeLogPlugins )
+            {
+                var changeLog = plugin as IGooeeChangeLog;
+                sb.AppendLine( $"{plugin.Name},{changeLog.Version}" );
+            }
+
+            var existing = File.ReadAllText( CHANGELOG_READ_PATH );
+
+            if ( string.IsNullOrEmpty( existing ) )
+                return true;
+
+            return existing != sb.ToString( );
+        }
+
+        public static void WriteChangeLogRead( )
+        {
+            var sb = new StringBuilder();
+
+            foreach ( var plugin in PluginLoader.Plugins.Values.Where( p => p is IGooeeChangeLog ) )
+            {
+                var changeLog = plugin as IGooeeChangeLog;
+                sb.AppendLine($"{plugin.Name},{changeLog.Version}");
+            }
+
+            File.WriteAllText( CHANGELOG_READ_PATH, sb.ToString() );
+        }
+
+        public static void ResetChangeLog( )
+        {
+            if ( File.Exists( CHANGELOG_READ_PATH ) )
+                File.Delete( CHANGELOG_READ_PATH );
+        }
+
+        /// <summary>
+        /// Retrieves a plugin timestamp.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>The DateTime representing the linker timestamp.</returns>
+        private static DateTime GetPluginTimeStamp( Assembly assembly )
+        {
+            const int peHeaderOffset = 60;
+            const int linkerTimestampOffset = 8;
+            var b = new byte[2048];
+
+            using ( var s = new System.IO.FileStream( assembly.Location, FileMode.Open, FileAccess.Read ) )
+            {
+                s.Read( b, 0, 2048 );
+            }
+
+            var i = BitConverter.ToInt32( b, peHeaderOffset );
+            var secondsSince1970 = BitConverter.ToInt32( b, i + linkerTimestampOffset );
+            var dt = new DateTime( 1970, 1, 1, 0, 0, 0 ).AddSeconds( secondsSince1970 );
+            return dt.AddHours( TimeZone.CurrentTimeZone.GetUtcOffset( dt ).Hours );
         }
 
         /// <summary>
@@ -180,7 +265,7 @@ namespace Gooee.Injection
 
             if ( contents == null )
             {
-                UnityEngine.Debug.LogError( $"Failed to load resource: {resourceName}" );
+                _log.Error( $"Failed to load resource: {resourceName}" );
                 // Error
                 return;
             }
@@ -196,14 +281,14 @@ namespace Gooee.Injection
 
             if ( contents == null )
             {
-                UnityEngine.Debug.LogError( $"Failed to load resource: {resourceName}" );
+                _log.Error( $"Failed to load resource: {resourceName}" );
                 // Error
                 return;
             }
 
             var extension = Path.GetExtension( resourceName );
 
-            File.WriteAllText( Path.Combine( PLUGIN_PATH, pluginName + extension ), contents );
+            File.WriteAllText( Path.Combine( PLUGIN_PATH, pluginName.Replace( " ", "_" ) + extension ), contents );
         }
 
         /// <summary>
@@ -215,26 +300,32 @@ namespace Gooee.Injection
 
             if ( resourceHandler == null || resourceHandler.HostLocationsMap.ContainsKey( UI_IDENTIFIER ) )
             {
-                UnityEngine.Debug.Log( "Failed to setup resource handler for Gooee." );
+                _log.Error( "Failed to setup resource handler for Gooee." );
                 return;
             }
 
-            UnityEngine.Debug.Log( "Setup resource handler for Gooee." );
+            _log.Info( "Setup resource handler for Gooee." );
             resourceHandler.HostLocationsMap.Add( UI_IDENTIFIER, new List<string> { MOD_PATH } );
         }
 
+        static FileSystemWatcher _watcher;
+
         private static void SetupFileWatcher( )
         {
-            FileSystemWatcher watcher = new FileSystemWatcher
+            if ( _watcher != null )
+                return;
+
+            _watcher = new FileSystemWatcher
             {
                 Path = MOD_PATH,
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                Filter = "*.*"
+                Filter = "*.*", 
+                IncludeSubdirectories = true
             };
 
-            watcher.Changed += OnChanged;
-            watcher.Created += OnChanged;
-            watcher.EnableRaisingEvents = true;
+            _watcher.Changed += OnChanged;
+            _watcher.Created += OnChanged;
+            _watcher.EnableRaisingEvents = true;
         }
 
         static FieldInfo _liveReload = typeof( UIView ).GetField( "m_LiveReload", BindingFlags.NonPublic | BindingFlags.Instance );
@@ -247,14 +338,14 @@ namespace Gooee.Injection
                 return;
             }
 
-            if ( e.FullPath.EndsWith( ".js" ) || e.FullPath.EndsWith( ".css" ) )
+            if ( e.FullPath.EndsWith( ".js" ) || e.FullPath.EndsWith( ".css" ) || e.FullPath.EndsWith( ".md" ) )
             {
                 var liveReload = ( UILiveReload ) _liveReload.GetValue( GameManager.instance.userInterface.view );
 
                 // Redirect the on changed event to the internal UI so it reloads properly.
                 _onChanged.Invoke( liveReload, e.FullPath );
 
-                UnityEngine.Debug.Log( "Gooee reloaded the UI view." );
+                _log.Info( "Gooee reloaded the UI view." );
             }
         }
     }

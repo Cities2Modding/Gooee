@@ -21,6 +21,7 @@
     font-style: normal;
     line-height: normal;
     text-transform: none;
+    display: inline;
 
     &.btn-disabled
     {
@@ -138,7 +139,8 @@
         $darker-colour: map-get($colour-map, "darker");
         $colour-trans: map-get($colour-map, "trans");
         $dark-colour-trans: map-get($colour-map, "trans-dark");
-        $darker-colour-trans: map-get($colour-map, "trans-darker");
+        $darker-colour-trans: map-get($colour-map, "trans-darker");        
+        $colour-trans-faded: map-get($colour-map, "trans-faded");
         
         .btn-#{$key} 
         {
@@ -148,6 +150,11 @@
             border-bottom-color: $colour;
             border-left-color: $colour;
             border-right-color: $colour;
+
+            > span, > b
+            {                
+                color: map-get($text-colours, $key);
+            }
 
             .fa
             {                    
@@ -227,6 +234,39 @@
             border-bottom-color: $colour-trans;
             border-left-color: $colour-trans;
             border-right-color: $colour-trans;
+                
+            .fa
+            {                    
+                background-color: map-get($text-colours, $key) !important;
+            }
+
+            &:hover
+            {
+                background-color: $dark-colour-trans;
+                border-top-color: $dark-colour-trans;
+                border-bottom-color: $dark-colour-trans;
+                border-left-color: $dark-colour-trans;
+                border-right-color: $dark-colour-trans;
+            }
+
+            &:focus, &:active
+            {
+                background-color: $darker-colour-trans;
+                border-top-color: $darker-colour-trans;
+                border-bottom-color: $darker-colour-trans;
+                border-left-color: $darker-colour-trans;
+                border-right-color: $darker-colour-trans;
+            }
+        }
+
+        .btn-trans-faded-#{$key} 
+        {
+            color: map-get($text-colours, $key);
+            background-color: $colour-trans-faded;
+            border-top-color: $colour-trans-faded;
+            border-bottom-color: $colour-trans-faded;
+            border-left-color: $colour-trans-faded;
+            border-right-color: $colour-trans-faded;
                 
             .fa
             {                    

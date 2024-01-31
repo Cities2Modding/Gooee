@@ -25,6 +25,8 @@
 @import "components/_dropdown.scss";
 @import "components/_alert.scss";
 @import "components/_slider.scss";
+@import "components/_markdown.scss";
+@import "components/_list.scss";
 
 @import "_font-awesome.scss";
 
@@ -72,6 +74,11 @@
         justify-content: center;
         align-items: flex-end;
 
+        &.hidden
+        {
+            pointer-events: none !important;
+        }
+
         > .col
         {
             position: relative;
@@ -91,6 +98,87 @@
 
     .asset-menu
     {
-        height: calc( var(--assetMenuRows) * ( var(--assetMenuItemSize) + var(--assetMenuItemGap) ) - var(--assetMenuItemGap) + 16rem)
+        height: calc( var(--assetMenuRows) * ( var(--assetMenuItemSize) + var(--assetMenuItemGap) ) - var(--assetMenuItemGap) + 18rem);
+        
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 16rem !important;
+        padding-right: 0 !important;
+
+        > .asset-menu-container
+        {
+            height: 100%;
+            width: calc(8rem + var(--assetMenuColumns) * ( var(--assetMenuItemSize) + var(--assetMenuItemGap) ) - var(--assetMenuItemGap) + 4rem);
+            padding-top: 8rem !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+            padding-bottom: 8rem !important;
+        }
+
+        .asset-menu-item
+        {
+            margin-right: var(--assetMenuItemGap);
+            margin-bottom: var(--assetMenuItemGap);
+            width:  var(--assetMenuItemSize);
+            height:  var(--assetMenuItemSize);
+            padding: 0;
+
+            > img
+            {                
+                width: var(--assetMenuItemSize);
+                height: var(--assetMenuItemSize);
+            }
+            
+            &.auto
+            {
+                width: auto;
+                height: auto;
+
+                > img
+                {                
+                    width: calc(var(--assetMenuItemSize) * 0.5);
+                    height: calc(var(--assetMenuItemSize) * 0.5);
+                }                
+            }
+
+            &.sm
+            {
+                width: calc(var(--assetMenuItemSize) * 0.75);
+                height: calc(var(--assetMenuItemSize) * 0.75);
+
+                > img
+                {                
+                    width: calc(var(--assetMenuItemSize) * 0.75);
+                    height: calc(var(--assetMenuItemSize) * 0.75);
+                }                
+            }
+
+            &.lg
+            {
+                width: calc(var(--assetMenuItemSize) * 1.5);
+                height: calc(var(--assetMenuItemSize) * 1.5);
+
+                > img
+                {                
+                    width: calc(var(--assetMenuItemSize) * 1.5);
+                    height: calc(var(--assetMenuItemSize) * 1.5);
+                }
+            }
+        }    
+
+        &.asset-menu-xl
+        {            
+            --assetMenuRows: 4;
+        }
+
+        &.asset-menu-lg
+        {            
+            --assetMenuRows: 3;
+        }
+
+        &.asset-menu-sm
+        {            
+            --assetMenuRows: 1;
+        }
     }
 }

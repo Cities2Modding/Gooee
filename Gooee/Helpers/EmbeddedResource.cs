@@ -56,5 +56,34 @@ namespace Gooee.Helpers
                 }
             }
         }
+
+        /// <summary>
+        /// Check if a resource exists.
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="targetAssembly"></param>
+        /// <returns></returns>
+        public static bool Exists( string resourceName, Assembly targetAssembly = null )
+        {
+            if ( string.IsNullOrEmpty( resourceName ) || targetAssembly == null )
+                return false;
+
+            var assembly = targetAssembly ?? _assembly;
+
+            try
+            {
+                using ( var stream = assembly.GetManifestResourceStream( resourceName ) )
+                {
+                    if ( stream == null )
+                        return false;
+
+                    return true;
+                }
+            }
+            catch ( Exception )
+            {
+                return false;
+            }
+        }
     }
 }

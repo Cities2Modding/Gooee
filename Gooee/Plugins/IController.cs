@@ -2,6 +2,11 @@
 {
     public interface IController
     {
+        IGooeePlugin Plugin
+        {
+            get;
+        }
+
         void OnLoaded( );
     }
 }

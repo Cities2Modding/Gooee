@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const CheckBox = ({ className, style, checked, onToggle }) => {
     const react = window.$_gooee.react;
@@ -16,8 +16,8 @@ const CheckBox = ({ className, style, checked, onToggle }) => {
         setIsChecked(checked);
     }, [checked]);
 
-    const classNames = (isChecked ? "form-check-input checked" : "form-check-input") + (className ? " " + className : "" );
-    
+    const classNames = `form-check-input ${isChecked ? 'checked' : ''} ${className || ''}`;
+
     const onMouseEnter = (e) => {
         if (e.target !== e.currentTarget)
             return;
@@ -25,9 +25,16 @@ const CheckBox = ({ className, style, checked, onToggle }) => {
         engine.trigger("audio.playSound", "hover-item", 1);
     };
 
-    return <div className={classNames} onMouseEnter={onMouseEnter} style={style} onClick={handleClick}>
-        <div className="icon mask-icon icon-check"></div>
-    </div>;
+    return (
+        <div
+            className={classNames}
+            onMouseEnter={onMouseEnter}
+            style={style}
+            onClick={handleClick}
+        >
+            <div className="icon mask-icon icon-check"></div>
+        </div>
+    );
 };
 
 export default CheckBox;

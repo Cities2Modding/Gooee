@@ -1,0 +1,20 @@
+lang:
+ ModName: Gooee
+ 
+ General.Tab: General
+ Misc.Tab: Misc
+
+ General.Group: General
+ 
+ ChangeLog.Option: Show mod changelogs
+ ChangeLog.Option_desc: When mods configured to use Gooee changelogs are updated, a changelog window will popup.
+  
+ VersionNumber.Option: Version
+ VersionNumber.Option_desc: The Gooee version.
+
+ ShowChangeLog.Option: Show Change Log
+ ShowChangeLog.Option_desc: Force the change log to show when you are next in-game.
+
+ Another.Group: Another
+ Two.Group: Two
+ Five.Group: Five

@@ -233,3 +233,57 @@
 {
     filter: drop-shadow(0px 0px 1rem rgba(0, 0, 0, 0.6));
 }
+
+@mixin inlineContent()
+{
+    > *:first-child
+    {
+        margin-top: 0 !important;
+    }
+
+    p
+    {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-start;
+        margin-bottom: map-get($spacers, "4");
+    }
+
+    b
+    {
+        display: inline;
+        width: auto !important;
+    }
+
+    code
+    {
+        display: inline !important;
+        width: auto !important;
+        font-size: 90%;
+        padding: 5rem;
+        margin-right: 2.5rem;
+    }
+    
+    h1, h2, h3, h4, h5, h6
+    {        
+        display: block;
+        @include borderBottom(getColour("light", "trans-less-faded"), $border-thickness-sm);
+        padding-bottom: map-get($spacers, "1");
+        margin-top: map-get($spacers, "3");
+        margin-bottom: map-get($spacers, "5");
+    }
+}
+
+@mixin fadeAndVisible()
+{    
+    opacity: 1;
+    transition: opacity ease-out 0.2s;
+
+    &.hidden
+    {
+        opacity: 0;
+        pointer-events: none !important;
+    }
+}

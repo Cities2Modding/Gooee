@@ -19,7 +19,7 @@ const Grid = ({ children, noGutter = false, className, auto = null }) => {
                 key: key
             });
         });
-        const rowClassName = `row ${noGutter ? 'no-gutter' : ''}`;
+        const rowClassName = `row ${noGutter ? 'no-gutter' : ''} ${className}`;
         return <div className={rowClassName}>{row}</div>;
     };
 
@@ -29,11 +29,11 @@ const Grid = ({ children, noGutter = false, className, auto = null }) => {
             // Use child's className as is without auto-assigning column class
             return React.cloneElement(child, { key: key });
         });
-        const rowClassName = `row ${noGutter ? 'no-gutter' : ''}`;
+        const rowClassName = `row ${noGutter ? 'no-gutter' : ''} ${className}`;
         return <div className={rowClassName}>{row}</div>;
     };
 
-    return <div className={className}>{auto ? renderAutoRows() : renderManualRow()}</div>;
+    return <>{auto ? renderAutoRows() : renderManualRow()}</>;
 };
 
 export default Grid;

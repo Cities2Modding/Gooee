@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const RadioItem = ({ className, style, checked, onToggle }) => {
     const react = window.$_gooee.react;

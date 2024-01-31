@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-const Dropdown = ({ style, onSelectionChanged, selected, options }) => {
+const Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged, selected, options }) => {
     const react = window.$_gooee.react;
     const [active, setActive] = react.useState(false);
     const [internalValue, setInternalValue] = react.useState(selected);
@@ -70,7 +70,8 @@ const Dropdown = ({ style, onSelectionChanged, selected, options }) => {
     const changeSelection = (value) => {
         setInternalValue(value);
         engine.trigger("audio.playSound", "select-item", 1);
-        onSelectionChanged(value);
+        if (onSelectionChanged)
+            onSelectionChanged(value);
         setActive(false);
     };
 
@@ -94,8 +95,11 @@ const Dropdown = ({ style, onSelectionChanged, selected, options }) => {
         </div>
     ) : null;
 
-    return <div className="dropdown" style={{ ...style }}>
-        <button ref={dropdownRef} onMouseEnter={onMouseEnter} className="dropdown-toggle" onClick={onToggle}>
+    const classNames = (className ? `dropdown ${className}` : "dropdown") + ( size ? ` dropdown-${size}` : "" );
+    const toggleClassNames = toggleClassName ? "dropdown-toggle " + toggleClassName : "dropdown-toggle";
+
+    return <div className={classNames} style={{ ...style }}>
+        <button ref={dropdownRef} onMouseEnter={onMouseEnter} className={toggleClassNames} onClick={onToggle}>
             <div className="caption">{selectedIndex >= 0 ? options[selectedIndex].label : null}</div>
             <div className="icon mask-icon" style={{ maskImage: "url(Media/Glyphs/StrokeArrowDown.svg)" }}></div>
         </button>

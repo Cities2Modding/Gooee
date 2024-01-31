@@ -28,11 +28,15 @@
 	<ItemGroup>
 	  <None Remove="Resources\gooee.css" />
 	  <None Remove="Resources\gooee.js" />
+	  <None Remove="Resources\lang\en-US.yml" />
+	  <None Remove="Resources\settings.xml" />
 	</ItemGroup>
 	
 	<ItemGroup>
 	  <EmbeddedResource Include="Resources\gooee.css" />
 	  <EmbeddedResource Include="Resources\gooee.js" />
+	  <EmbeddedResource Include="Resources\lang\en-US.yml" />
+	  <EmbeddedResource Include="Resources\settings.xml" />
 	</ItemGroup>
 	
 	<ItemGroup>

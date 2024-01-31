@@ -111,6 +111,7 @@ $colours: (
 // Borders
 $border-colour: #dee2e6;
 $border-thickness: var(--stroke2);
+$border-thickness-sm: var(--stroke1);
 $border-radius: 7.5rem;
 $border-radius-lg: 7.5rem;
 $border-radius-md: 6.5rem;
@@ -126,6 +127,8 @@ $spacers: (
     "4": 12.5rem,
     "5": 15rem,
     "6": 30rem,
+    "7": 45rem,
+    "8": 60rem,
 );
 
 // Default spacing
@@ -234,8 +237,10 @@ $modal-width: calc(var(--leftPanelWidth) * 2);
 $modal-height: calc(var(--leftPanelWidth) * 1.5);
 $modal-sm-width: var(--leftPanelWidth);
 $modal-sm-height: auto;
-$modal-lg-width: var(--centerPanelWidth);
-$modal-lg-height: var(--centerPanelHeight);
+$modal-lg-width: calc(var(--centerPanelWidth)*0.8);
+$modal-lg-height: calc(var(--centerPanelHeight)*0.8);
+$modal-xl-width: var(--centerPanelWidth);
+$modal-xl-height: var(--centerPanelHeight);
 $modal-padding: 7.5rem;
 $modal-content-padding: 10rem;
 

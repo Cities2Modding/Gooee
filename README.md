@@ -14,7 +14,7 @@ Please note, this is a very early alpha and documentation is still WIP. Bugs are
 -- **Inject UI into various places in the game's UI**
 -- **Model View Controller paradigm**
 -- **Automatic binding setup**
--- **Re-usable React components wrapping in the Bootstrap-like elements.
+-- **Re-usable React components wrapping in the Bootstrap-like elements.**
 -- **Inject JS scripts and CSS stylesheets with your Plugin**
 
 ## Installation

@@ -6,5 +6,9 @@ namespace Gooee.Plugins
     /// </summary>
     public interface IModel
     {
+        IController Controller
+        {
+            get; 
+        }
     }
 }

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+	<group title="General">
+		<description>VersionNumber</description>
+		<field title="ChangeLog">
+			<checkbox isChecked="ChangeLog" />
+			<button>ShowChangeLog</button>
+		</field>
+	</group>
+	<group title="Another">
+		<field title="AVal">
+			<checkbox isChecked="AVal" />
+		</field>
+	</group>
+	<tab title="Misc">
+		<group title="Two">
+			<field title="BVal">
+				<checkbox isChecked="BVal" />
+			</field>
+		</group>
+		<group title="Five">
+			<field title="CVal">
+				<checkbox isChecked="CVal" />
+			</field>
+		</group>		
+	</tab>
+</settings>

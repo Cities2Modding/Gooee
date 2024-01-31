@@ -1,7 +1,6 @@
 import React from "react";
 
-const FormCheckBox = ({ className, label, checkClassName, style, checked, onToggle }) => {   
-    const react = window.$_gooee.react;
+const FormCheckBox = ({ className, label, checkClassName, style, checked, onToggle }) => {
     const classNames = "form-check" + (className ? " " + className : "" );
     const { CheckBox } = window.$_gooee.framework;
 

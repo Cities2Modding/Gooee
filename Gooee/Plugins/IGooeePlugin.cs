@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gooee.Helpers;
+using System;
 
 namespace Gooee.Plugins
 {
@@ -13,11 +14,6 @@ namespace Gooee.Plugins
         }
 
         string ScriptResource
-        {
-            get;
-        }
-
-        string StyleResource
         {
             get;
         }
@@ -41,6 +37,53 @@ namespace Gooee.Plugins
     public interface IGooeePluginWithControllers : IGooeePlugin
     {
         IController[] Controllers
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface IGooeeChangeLog
+    {
+        string Version
+        {
+            get;
+        }
+
+        string ChangeLogResource
+        {
+            get;
+        }
+    }
+
+    public interface IGooeeStyleSheet
+    {
+        string StyleResource
+        {
+            get;
+        }
+    }
+
+    public interface IGooeeSettings
+    {
+        GooeeSettings Settings
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface IGooeeLanguages
+    {
+        string LanguageResourceFolder
+        {
+            get;
+        }
+    }
+
+    public interface IGooeeLogger
+    {
+        GooeeLogger Log
         {
             get;
             set;

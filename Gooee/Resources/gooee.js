@@ -2398,9 +2398,9 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React21 = require_react();
+          var React24 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React21.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React24.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -4005,7 +4005,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React21.Children.forEach(props.children, function(child) {
+                  React24.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12452,7 +12452,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React21.Component().refs;
+          var emptyRefsObject = new React24.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -23493,7 +23493,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
   });
 
   // src/jsx/gooee.jsx
-  var import_react20 = __toESM(require_react());
+  var import_react23 = __toESM(require_react());
 
   // src/jsx/components/_button.jsx
   var import_react = __toESM(require_react());
@@ -23542,7 +23542,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
           key
         });
       });
-      const rowClassName = `row ${noGutter ? "no-gutter" : ""}`;
+      const rowClassName = `row ${noGutter ? "no-gutter" : ""} ${className}`;
       return /* @__PURE__ */ import_react2.default.createElement("div", { className: rowClassName }, row);
     };
     const renderManualRow = () => {
@@ -23550,10 +23550,10 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         const key = `col-manual-${index}`;
         return import_react2.default.cloneElement(child, { key });
       });
-      const rowClassName = `row ${noGutter ? "no-gutter" : ""}`;
+      const rowClassName = `row ${noGutter ? "no-gutter" : ""} ${className}`;
       return /* @__PURE__ */ import_react2.default.createElement("div", { className: rowClassName }, row);
     };
-    return /* @__PURE__ */ import_react2.default.createElement("div", { className }, auto ? renderAutoRows() : renderManualRow());
+    return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, auto ? renderAutoRows() : renderManualRow());
   };
   var grid_default = Grid;
 
@@ -23648,24 +23648,30 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
 
   // src/jsx/components/_scrollable.jsx
   var import_react5 = __toESM(require_react());
-  var Scrollable = ({ children }) => {
+  var Scrollable = ({ className, children, size = null }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
     const contentRef = react.useRef(null);
     const [thumbHeight, setThumbHeight] = react.useState(0);
     const [thumbTop, setThumbTop] = react.useState(0);
     const [mouseDown, setMouseDown] = react.useState(false);
+    const [canScroll, setCanScroll] = react.useState(false);
+    const sizeClass = size ? ` scrollable-${size}` : "";
     function getCurrentScrollPosition() {
       if (scrollRef.current) {
         return scrollRef.current.scrollTop;
       }
       return 0;
     }
+    ;
     const calculateThumbSizeAndPosition = () => {
       if (scrollRef.current && contentRef.current) {
         const viewableHeight = scrollRef.current.clientHeight;
         const totalContentHeight = contentRef.current.scrollHeight;
-        if (totalContentHeight > viewableHeight) {
+        if (totalContentHeight <= viewableHeight) {
+          setCanScroll(false);
+        } else if (totalContentHeight > viewableHeight) {
+          setCanScroll(true);
           let newThumbHeight = Math.max(viewableHeight / totalContentHeight * viewableHeight, 30);
           const currentScrollPosition = getCurrentScrollPosition();
           let newThumbTop = currentScrollPosition / totalContentHeight * viewableHeight;
@@ -23724,26 +23730,30 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         window.removeEventListener("mouseup", onMouseUp);
       };
     }, [mouseDown]);
-    const classNames = "scrollable vertical" + (thumbHeight <= 0 ? " no-overflow" : "");
+    const classNames = "scrollable vertical" + (thumbHeight <= 0 || !canScroll ? " no-overflow" : "") + sizeClass + (className ? " " + className : "");
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: classNames, onMouseOver: calculateThumbSizeAndPosition }, /* @__PURE__ */ import_react5.default.createElement("div", { ref: scrollRef, onScroll: calculateThumbSizeAndPosition, className: "content" }, /* @__PURE__ */ import_react5.default.createElement("div", { ref: contentRef }, children)), thumbContent);
   };
   var scrollable_default = Scrollable;
 
   // src/jsx/components/_modal.jsx
   var import_react6 = __toESM(require_react());
-  var Modal = ({ children, style, onClose, title, icon }) => {
+  var Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null }) => {
     const react = window.$_gooee.react;
     const { Button: Button2 } = window.$_gooee.framework;
-    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal", style }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-header" }, icon, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-title" }, title), /* @__PURE__ */ import_react6.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "icon mask-icon icon-close" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-body" }, children))));
+    const sizeClass = size ? `modal modal-${size}` + (hidden ? " hidden" : "") + (className ? " " + className : "") : "modal" + (hidden ? " hidden" : "") + (className ? " " + className : "");
+    const fixedClass = fixed ? ` modal-fixed` : "";
+    const classNames = sizeClass + fixedClass;
+    const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-header" }, icon, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null, "\xA0")), /* @__PURE__ */ import_react6.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "icon mask-icon icon-close" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: bodyClassNames }, children))));
   };
   var modal_default = Modal;
 
   // src/jsx/components/_tab-modal.jsx
   var import_react7 = __toESM(require_react());
-  var TabModal = ({ tabs, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null }) => {
+  var TabModal = ({ tabs, className, style, size = null, selected, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null }) => {
     const react = window.$_gooee.react;
-    const [activeTab, setActiveTab] = react.useState(tabs.length > 0 ? tabs[0].name : "");
-    const { Button: Button2, Scrollable: Scrollable2 } = window.$_gooee.framework;
+    const [activeTab, setActiveTab] = react.useState(selected ? selected : tabs.length > 0 ? tabs[0].name : "");
+    const { Button: Button2 } = window.$_gooee.framework;
     react.useEffect(() => {
       if (activeTab === "")
         setActiveTab(tabs.length > 0 ? tabs[0].name : "");
@@ -23755,7 +23765,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const onTabHover = () => {
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    const sizeClass = size ? `modal modal-${size}` : "modal";
+    const sizeClass = size ? `modal modal-${size}` + (hidden ? " hidden" : "") + (className ? " " + className : "") : "modal" + (hidden ? " hidden" : "") + (className ? " " + className : "");
     const fixedClass = fixed ? ` modal-fixed` : "";
     const classNames = sizeClass + fixedClass;
     const tabsClass = title ? "modal-tabs tabs-center" : "modal-tabs mt-1";
@@ -23769,14 +23779,14 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         onMouseEnter: () => onTabHover()
       },
       tab.label
-    )))), /* @__PURE__ */ import_react7.default.createElement("div", { className: bodyClassNames }, tabs.map((tab) => /* @__PURE__ */ import_react7.default.createElement("div", { key: tab.name, style: activeTab !== tab.name ? { display: "none" } : null }, tab.content))))));
+    )))), tabs.map((tab) => /* @__PURE__ */ import_react7.default.createElement("div", { key: tab.name, className: bodyClassNames, style: activeTab !== tab.name ? { display: "none" } : null }, tab.content)))));
   };
   var tab_modal_default = TabModal;
 
   // src/jsx/components/_dropdown.jsx
   var import_react8 = __toESM(require_react());
   var import_react_dom = __toESM(require_react_dom());
-  var Dropdown = ({ style, onSelectionChanged, selected, options }) => {
+  var Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged, selected, options }) => {
     const react = window.$_gooee.react;
     const [active, setActive] = react.useState(false);
     const [internalValue, setInternalValue] = react.useState(selected);
@@ -23830,7 +23840,8 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const changeSelection = (value) => {
       setInternalValue(value);
       engine.trigger("audio.playSound", "select-item", 1);
-      onSelectionChanged(value);
+      if (onSelectionChanged)
+        onSelectionChanged(value);
       setActive(false);
     };
     const onMouseEnter = (e) => {
@@ -23840,7 +23851,9 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     };
     const selectedIndex = options.findIndex((o) => o.value === internalValue);
     const dropdownContent = active ? /* @__PURE__ */ import_react8.default.createElement("div", { className: "dropdown-menu", ref: menuRef, style: getDropdownPosition() }, options.map((option) => /* @__PURE__ */ import_react8.default.createElement("button", { key: option.value, className: "dropdown-item", onMouseEnter, onClick: () => changeSelection(option.value) }, option.label))) : null;
-    return /* @__PURE__ */ import_react8.default.createElement("div", { className: "dropdown", style: { ...style } }, /* @__PURE__ */ import_react8.default.createElement("button", { ref: dropdownRef, onMouseEnter, className: "dropdown-toggle", onClick: onToggle }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "caption" }, selectedIndex >= 0 ? options[selectedIndex].label : null), /* @__PURE__ */ import_react8.default.createElement("div", { className: "icon mask-icon", style: { maskImage: "url(Media/Glyphs/StrokeArrowDown.svg)" } })), portalContainer && dropdownContent && import_react_dom.default.createPortal(dropdownContent, portalContainer));
+    const classNames = (className ? `dropdown ${className}` : "dropdown") + (size ? ` dropdown-${size}` : "");
+    const toggleClassNames = toggleClassName ? "dropdown-toggle " + toggleClassName : "dropdown-toggle";
+    return /* @__PURE__ */ import_react8.default.createElement("div", { className: classNames, style: { ...style } }, /* @__PURE__ */ import_react8.default.createElement("button", { ref: dropdownRef, onMouseEnter, className: toggleClassNames, onClick: onToggle }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "caption" }, selectedIndex >= 0 ? options[selectedIndex].label : null), /* @__PURE__ */ import_react8.default.createElement("div", { className: "icon mask-icon", style: { maskImage: "url(Media/Glyphs/StrokeArrowDown.svg)" } })), portalContainer && dropdownContent && import_react_dom.default.createPortal(dropdownContent, portalContainer));
   };
   var dropdown_default = Dropdown;
 
@@ -23858,13 +23871,22 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     react.useEffect(() => {
       setIsChecked(checked);
     }, [checked]);
-    const classNames = (isChecked ? "form-check-input checked" : "form-check-input") + (className ? " " + className : "");
+    const classNames = `form-check-input ${isChecked ? "checked" : ""} ${className || ""}`;
     const onMouseEnter = (e) => {
       if (e.target !== e.currentTarget)
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    return /* @__PURE__ */ import_react9.default.createElement("div", { className: classNames, onMouseEnter, style, onClick: handleClick }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "icon mask-icon icon-check" }));
+    return /* @__PURE__ */ import_react9.default.createElement(
+      "div",
+      {
+        className: classNames,
+        onMouseEnter,
+        style,
+        onClick: handleClick
+      },
+      /* @__PURE__ */ import_react9.default.createElement("div", { className: "icon mask-icon icon-check" })
+    );
   };
   var checkbox_default = CheckBox;
 
@@ -23876,24 +23898,25 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const { CheckBox: CheckBox2 } = window.$_gooee.framework;
     react.useEffect(() => {
       if (selected) {
-        const arry = internalValue;
-        arry.push(selected);
-        setInternalValue(arry);
+        setInternalValue(selected);
       }
     }, [selected]);
-    const onCheck = (value) => {
+    const onCheck = (value, isChecked) => {
       const arry = internalValue;
-      arry.push(value);
+      if (isChecked)
+        arry.push(value);
+      else
+        arry.remove(value);
       setInternalValue(arry);
       if (onChecked)
-        onChecked(value);
+        onChecked(value, isChecked);
     };
     const contains = (value) => {
       if (!internalValue)
         return;
       return internalValue.filter((e) => e.value === value).length > 0;
     };
-    return /* @__PURE__ */ import_react10.default.createElement("div", { className: "form-check-group", style }, options.map((option, index) => /* @__PURE__ */ import_react10.default.createElement("div", { key: option.value, className: "form-check" }, /* @__PURE__ */ import_react10.default.createElement(CheckBox2, { checked: contains(index), onToggle: () => onCheck(option.value) }), /* @__PURE__ */ import_react10.default.createElement("label", { className: "form-check-label" }, option.label))));
+    return /* @__PURE__ */ import_react10.default.createElement("div", { className: "form-check-group", style }, options.map((option, index) => /* @__PURE__ */ import_react10.default.createElement("div", { key: option.value, className: "form-check" }, /* @__PURE__ */ import_react10.default.createElement(CheckBox2, { checked: contains(option.value), onToggle: (val) => onCheck(option.value, val) }), /* @__PURE__ */ import_react10.default.createElement("label", { className: "form-check-label" }, option.label))));
   };
   var checkbox_group_default = CheckBoxGroup;
 
@@ -24115,12 +24138,169 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
   // src/jsx/components/_form-checkbox.jsx
   var import_react19 = __toESM(require_react());
   var FormCheckBox = ({ className, label, checkClassName, style, checked, onToggle }) => {
-    const react = window.$_gooee.react;
     const classNames = "form-check" + (className ? " " + className : "");
     const { CheckBox: CheckBox2 } = window.$_gooee.framework;
     return /* @__PURE__ */ import_react19.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react19.default.createElement(CheckBox2, { className: checkClassName, checked, onToggle }), /* @__PURE__ */ import_react19.default.createElement("label", { className: "form-check-label" }, label));
   };
   var form_checkbox_default = FormCheckBox;
+
+  // src/jsx/components/_markdown.jsx
+  var import_react20 = __toESM(require_react());
+  var MarkDown = ({ contents, url = null, className, style }) => {
+    const react = window.$_gooee.react;
+    const [cache, setCache] = react.useState({});
+    const [content, setContent] = react.useState("");
+    react.useEffect(() => {
+      const download = async () => {
+        if (cache && cache[url]) {
+          setContent(cache[url]);
+        }
+        try {
+          var req = new XMLHttpRequest();
+          req.open("GET", url, true);
+          req.responseType = "text/html";
+          req.onload = () => {
+            setContent(req.response);
+            let c = cache;
+            c[url] = req.response;
+            setCache(c);
+          };
+          req.send();
+        } catch (error) {
+          console.error(`Error fetching: ${url} - ${error}`);
+        }
+      };
+      if (url) {
+        download();
+      } else {
+        setContent(contents);
+      }
+    }, [url, contents, cache]);
+    function processMarkdown(markdown) {
+      const lines = markdown.split("\n");
+      let html = "";
+      let listStack = [];
+      const processBoldText = (line) => {
+        let boldFlag = false;
+        let boldText = "";
+        let normalText = "";
+        for (let i = 0; i < line.length; i++) {
+          if (line[i] === "*" && line[i + 1] === "*") {
+            if (!boldFlag) {
+              boldFlag = true;
+              i++;
+            } else {
+              boldFlag = false;
+              i++;
+              normalText += `<b>${boldText}</b>`;
+              boldText = "";
+            }
+            continue;
+          }
+          if (boldFlag) {
+            boldText += line[i];
+          } else {
+            normalText += line[i];
+          }
+        }
+        if (boldFlag) {
+          normalText += `<b>${boldText}</b>`;
+        }
+        return normalText;
+      };
+      lines.forEach((line) => {
+        const trimmedLine = line.trim();
+        const indentation = line.match(/^\s*/)[0].length;
+        const normalText = processBoldText(trimmedLine);
+        if (trimmedLine === "---" || trimmedLine === "___") {
+          html += "<hr />";
+          return;
+        }
+        if (trimmedLine.startsWith("#")) {
+          const headerLevel = trimmedLine.match(/^#+/)[0].length;
+          html += `<h${headerLevel}>${trimmedLine.substring(headerLevel).trim()}</h${headerLevel}>`;
+          return;
+        }
+        if (trimmedLine.startsWith("* ") || trimmedLine.startsWith("- ")) {
+          while (listStack.length > 0 && indentation <= listStack[listStack.length - 1]) {
+            html += "</div>";
+            listStack.pop();
+          }
+          if (listStack.length === 0 || indentation > listStack[listStack.length - 1]) {
+            html += '<div class="list">';
+            listStack.push(indentation);
+          }
+          html += `<div class="list-item"><div class="list-item-prepend list-item-depth-${indentation + 1}">&#8226;</div><p cohinline="cohinline" class="flex-1">${normalText.substring(1).trim()}</p></div>`;
+        } else {
+          while (listStack.length > 0) {
+            html += "</div>";
+            listStack.pop();
+          }
+          if (trimmedLine) {
+            html += `<p>${normalText}</p>`;
+          }
+        }
+      });
+      while (listStack.length > 0) {
+        html += "</div>";
+        listStack.pop();
+      }
+      return html;
+    }
+    const markdownHtml = content && content.length > 0 ? processMarkdown(content) : "";
+    const md = content && content.length > 0 ? markdownHtml : null;
+    const classNames = `markdown${className ? " " + className : ""}`;
+    return /* @__PURE__ */ import_react20.default.createElement("div", { className: classNames, style, dangerouslySetInnerHTML: { __html: md } });
+  };
+  var markdown_default = MarkDown;
+
+  // src/jsx/components/_list.jsx
+  var import_react21 = __toESM(require_react());
+  var List = ({ children, className, ordered = null }) => {
+    const renderItems = () => {
+      return import_react21.default.Children.map(children, (child, index) => {
+        const key = `list-item-${index}`;
+        const innerContent = child.props.children;
+        return /* @__PURE__ */ import_react21.default.createElement("div", { className: "list-item", key, cohinline: "cohinline" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "list-item-prepend" }, ordered ? /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null, `${index + 1}`, ".") : /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null, "\u2022")), /* @__PURE__ */ import_react21.default.createElement("p", { cohinline: "cohinline", class: "flex-1" }, innerContent));
+      });
+    };
+    const classNames = "list" + (className ? " " + className : "") + (ordered ? " list-ordered" : "");
+    return /* @__PURE__ */ import_react21.default.createElement("div", { className: classNames }, renderItems());
+  };
+  var list_default = List;
+
+  // src/jsx/components/_toggle-button-group.jsx
+  var import_react22 = __toESM(require_react());
+  var ToggleButton = ({ children, selectedIndex = 0, onSelectionChanged }) => {
+    const react = window.$_gooee.react;
+    const [internalValue, setInternalValue] = react.useState(selectedIndex);
+    const { Button: Button2 } = window.$_gooee.framework;
+    const changeSelection = (index) => {
+      setInternalValue(index);
+      if (onSelectionChanged)
+        onSelectionChanged(index);
+    };
+    const renderItems = () => {
+      let buttonIndex = -1;
+      return import_react22.default.Children.map(children, (child, index) => {
+        if (child.type !== "button") {
+          return child;
+        }
+        buttonIndex++;
+        const thisIndex = buttonIndex;
+        const key = `toggle-btn-${thisIndex}`;
+        const isSelected = internalValue == thisIndex;
+        const innerContent = child.props.children;
+        const color = isSelected ? "primary" : "light";
+        const shade = isSelected ? "" : "trans-faded";
+        const isLast = thisIndex === import_react22.default.Children.toArray(children).filter((c) => c.type === "button").length - 1;
+        const classNames = (!isSelected ? "text-light" : "text-dark") + (isLast ? "" : " mb-1");
+        return /* @__PURE__ */ import_react22.default.createElement(Button2, { key, className: classNames, isBlock: true, color, style: shade, onClick: () => changeSelection(thisIndex) }, innerContent);
+      });
+    };
+    return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null, renderItems());
+  };
+  var toggle_button_group_default = ToggleButton;
 
   // src/jsx/gooee.jsx
   var GooeeContainer = ({ react, pluginType }) => {
@@ -24172,6 +24352,18 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
                   setModel(newValue);
                   engine.trigger(`${PluginName}.${Controller}.updateProperty`, JSON.stringify({ property: prop, value: val }));
                 }
+                //trigger: (eventName, value) => {
+                //    if (typeof value !== "undefined")
+                //        engine.trigger(`${PluginName}.${Controller}.${eventName}`, value);
+                //    else
+                //        engine.trigger(`${PluginName}.${Controller}.${eventName}`);
+                //},
+                //update: (prop, val) => {
+                //    const newValue = { ...model };
+                //    newValue[prop] = val;
+                //    setModel(newValue);
+                //    engine.trigger(`gooee.binding.${PluginName}.${Controller}.set`, JSON.stringify(newValue));
+                //}
               };
             };
           }
@@ -24187,23 +24379,24 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         case "bottom-left-toolbar":
         case "bottom-center-toolbar":
         case "main-container":
-          return /* @__PURE__ */ import_react20.default.createElement(ComponentInstance, { key: name, react, setupController });
+          return /* @__PURE__ */ import_react23.default.createElement(ComponentInstance, { key: name, react, setupController });
           break;
         case "infomode-menu":
-          return /* @__PURE__ */ import_react20.default.createElement(ComponentInstance, { key: name, react, setupController });
+          return /* @__PURE__ */ import_react23.default.createElement(ComponentInstance, { key: name, react, setupController });
           break;
         default:
         case "default":
-          return /* @__PURE__ */ import_react20.default.createElement("div", { key: name, class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100" }, /* @__PURE__ */ import_react20.default.createElement(ComponentInstance, { react, setupController }));
+          return /* @__PURE__ */ import_react23.default.createElement("div", { key: name, class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100" }, /* @__PURE__ */ import_react23.default.createElement(ComponentInstance, { react, setupController }));
           break;
       }
     });
-    return wrapWithGooee ? /* @__PURE__ */ import_react20.default.createElement("div", { class: "gooee" }, renderPlugins) : renderPlugins;
+    return wrapWithGooee ? /* @__PURE__ */ import_react23.default.createElement("div", { class: "gooee" }, renderPlugins) : renderPlugins;
   };
   window.$_gooee.react = null;
   window.$_gooee.container = GooeeContainer;
   window.$_gooee.framework = {
     Button: button_default,
+    ToggleButtonGroup: toggle_button_group_default,
     Grid: grid_default,
     ToolTip: tooltip_default,
     ToolTipContent: tooltip_content_default,
@@ -24221,7 +24414,9 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     Slider: slider_default,
     GradientSlider: gradient_slider_default,
     FormGroup: form_group_default,
-    FormCheckBox: form_checkbox_default
+    FormCheckBox: form_checkbox_default,
+    MarkDown: markdown_default,
+    List: list_default
   };
 })();
 /*! Bundled license information:

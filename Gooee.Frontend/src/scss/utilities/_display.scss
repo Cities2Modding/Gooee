@@ -13,3 +13,8 @@
 { 
     display: inline;
 }
+
+.fade-on-visible
+{    
+    @include fadeAndVisible;
+}

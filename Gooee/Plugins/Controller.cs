@@ -1,8 +1,11 @@
-﻿using Colossal.OdinSerializer.Utilities;
+﻿using cohtml.Net;
+using Colossal.OdinSerializer.Utilities;
 using Colossal.Reflection;
 using Colossal.UI.Binding;
 using Game.UI;
+using Gooee.Helpers;
 using Gooee.Plugins.Attributes;
+using HarmonyLib;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,10 +18,10 @@ namespace Gooee.Plugins
     public abstract class Controller<TModel> : UISystemBase, IController
         where TModel : class, IModel, IJsonWritable
     {
-        protected IGooeePlugin Plugin
+        public IGooeePlugin Plugin
         {
             get;
-            set;
+            protected set;
         }
 
         protected TModel Model
@@ -56,15 +59,38 @@ namespace Gooee.Plugins
             get;
             private set;
         }
-        
+
+        protected GooeeLogger Log
+        {
+            get;
+            private set;
+        }
+
+        //private BoundEventHandle ModelListener
+        //{
+
+        //    get;
+        //    set;
+        //}
+
+        //static readonly MethodInfo _registerListener = typeof( Model ).GetMethod( "RegisterListener", BindingFlags.Instance | BindingFlags.NonPublic );
+        private readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+
         public virtual void OnLoaded( )
         {
+            if ( Plugin is IGooeeLogger gooeeLogger )
+                Log = gooeeLogger.Log;
+
             PluginID = Plugin.Name.ToLowerInvariant( ).Replace( " ", "_" ).Trim( );
             ControllerID = PluginID + "." + GetType( ).Name.Replace( "Controller", "" ).ToLowerInvariant( ).Trim( );
 
             Model = Configure( );
 
-            UnityEngine.Debug.Log( $"Register binding for mod req: {ControllerID}.model" );
+            //ApplyPatches( Model );
+
+            //ModelListener = ( BoundEventHandle ) _registerListener.Invoke( Model, new object[] { this } );
+
+            _log.Info( $"Register binding for mod req: {ControllerID}.model" );
 
             Binding = new GetterValueBinding<TModel>( ControllerID, "model", ( ) =>
             {
@@ -96,16 +122,41 @@ namespace Gooee.Plugins
                 } );
             }
 
-
             AddBinding( new TriggerBinding<string>( ControllerID, "updateProperty", OnUpdateProperty ) );
 
-            UnityEngine.Debug.Log( $"Controller listening for events at {ControllerID}." );
+            _log.Info( $"Controller listening for events at {ControllerID}." );
         }
+
+        //private void ApplyPatches( IModel model )
+        //{
+        //    var harmony = new Harmony( "Harmony.Gooee." + GetType( ).FullName );
+
+        //    foreach ( var prop in model.GetType( ).GetProperties( BindingFlags.Public | BindingFlags.Instance ) )
+        //    {
+        //        if ( prop.IsDefined( typeof( ObservableAttribute ), true ) )
+        //        {
+        //            var originalSetter = prop.GetSetMethod( );
+
+        //            if ( originalSetter != null )
+        //            {
+        //                var postfix = GetType().GetMethod( nameof( OnServerUpdateModelPostfix ), BindingFlags.Static | BindingFlags.NonPublic );
+        //                harmony.Patch( originalSetter, postfix: new HarmonyMethod( postfix ) );
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private static void OnServerUpdateModelPostfix( IModel __instance )
+        //{
+        //    var method = __instance.GetType( ).GetMethod( "OnServerUpdateModel", BindingFlags.Instance | BindingFlags.NonPublic );
+        //    method.Invoke( __instance, null );
+        //}
 
         public abstract TModel Configure( );
 
         protected void TriggerUpdate( )
         {
+            OnModelUpdated( );
             DirtyField.SetValue( Binding, true );
         }
 
@@ -145,6 +196,13 @@ namespace Gooee.Plugins
             }
 
             TriggerUpdate( );
+        }
+
+        /// <summary>
+        /// Called when the model is updated
+        /// </summary>
+        protected virtual void OnModelUpdated( )
+        {        
         }
 
         /// <summary>

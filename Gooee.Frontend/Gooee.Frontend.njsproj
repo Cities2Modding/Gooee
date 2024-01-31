@@ -32,6 +32,9 @@
     <Content Include="package.json" />
     <Content Include="src\jsx\components\_form-checkbox.jsx" />
     <Content Include="src\jsx\components\_checkbox-group.jsx" />
+    <Content Include="src\jsx\components\_toggle-button-group.jsx" />
+    <Content Include="src\jsx\components\_list.jsx" />
+    <Content Include="src\jsx\components\_markdown.jsx" />
     <Content Include="src\jsx\components\_modal.jsx" />
     <Content Include="src\jsx\components\_radio-group.jsx" />
     <Content Include="src\jsx\components\_icon.jsx" />
@@ -51,6 +54,7 @@
     <Content Include="src\jsx\components\_tooltip.jsx" />
     <Content Include="src\jsx\gooee.jsx" />
     <Content Include="src\js\gooee.core.js" />
+    <Content Include="src\js\t.html" />
     <Content Include="src\scss\components\_alert.scss" />
     <Content Include="src\scss\components\_badge.scss" />
     <Content Include="src\scss\components\_button.scss" />
@@ -64,6 +68,8 @@
     <Content Include="src\scss\components\_grid.scss" />
     <Content Include="src\scss\components\_heading.scss" />
     <Content Include="src\scss\components\_icon.scss" />
+    <Content Include="src\scss\components\_list.scss" />
+    <Content Include="src\scss\components\_markdown.scss" />
     <Content Include="src\scss\components\_scrollable.scss" />
     <Content Include="src\scss\components\_slider.scss" />
     <Content Include="src\scss\utilities\_border.scss" />
