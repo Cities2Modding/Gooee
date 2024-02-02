@@ -30,7 +30,7 @@ const GooeeContainer = ({ react, pluginType }) => {
 
     react.useEffect(() => {
         const interval = setInterval(function () {
-            if (window.$_gooee.components && window.$_gooee.components[pluginType] ) {
+                if (window.$_gooee.components && window.$_gooee.components[pluginType]) {
                 clearInterval(interval);
                 setPlugins(Object.keys(window.$_gooee.components[pluginType]));
             }
