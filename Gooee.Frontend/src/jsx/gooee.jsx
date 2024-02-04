@@ -20,17 +20,19 @@ import FormGroup from "./components/_form-group";
 import FormCheckBox from "./components/_form-checkbox";
 import MarkDown from "./components/_markdown";
 import List from "./components/_list";
+import VirtualList from "./components/_virtual-list";
 import ToggleButtonGroup from "./components/_toggle-button-group";
+//import ChangeLog from "./modules/_changelog";
 
-const GooeeContainer = ({ react, pluginType }) => {
+const GooeeContainer = ({ react, pluginType, photoMode }) => {
     window.$_gooee.react = react;
     const [plugins, setPlugins] = react.useState([]);
 
-    const wrapWithGooee = pluginType === "default" || pluginType === "main-container";    
+    const wrapWithGooee = pluginType === "default" || pluginType === "main-container" || pluginType === "photomode-container";
 
     react.useEffect(() => {
         const interval = setInterval(function () {
-                if (window.$_gooee.components && window.$_gooee.components[pluginType]) {
+            if (window.$_gooee.components && window.$_gooee.components[pluginType] ) {
                 clearInterval(interval);
                 setPlugins(Object.keys(window.$_gooee.components[pluginType]));
             }
@@ -39,7 +41,7 @@ const GooeeContainer = ({ react, pluginType }) => {
         };
     }, [plugins]);
 
-    const renderPlugins = 
+    const renderPlugins =
         plugins.map(name => {
             const { PluginName, ComponentInstance, Controller } = window.$_gooee.components[pluginType][name];
 
@@ -47,7 +49,7 @@ const GooeeContainer = ({ react, pluginType }) => {
                 if (Controller) {
                     if (!window.$_gooee.bindings[Controller]) {
                         window.$_gooee.bindings[Controller] = () => {
-                            const [model, setModel] = react.useState({});
+                            const [model, setModel] = react.useState(window.$_gooee_defaultModel[`${PluginName}.${Controller}`] ?? {});
 
                             //react.useEffect(() => {
                             //    const prefix = `gooee.binding.${PluginName}.${Controller}`;
@@ -56,7 +58,7 @@ const GooeeContainer = ({ react, pluginType }) => {
                             //    var sub = engine.on(updateEvent, (json) => {
                             //        setModel(JSON.parse(json));
                             //    })
-                                
+
                             //    return () => {
                             //        sub.clear();
                             //    };
@@ -67,9 +69,9 @@ const GooeeContainer = ({ react, pluginType }) => {
                                 const updateEvent = eventName + ".update";
                                 const subscribeEvent = eventName + ".subscribe";
                                 const unsubscribeEvent = eventName + ".unsubscribe";
-
+                                
                                 var sub = engine.on(updateEvent, (data) => {
-                                    setModel(data);
+                                    setModel(data ? JSON.parse(data) : {});
                                 })
 
                                 engine.trigger(subscribeEvent);
@@ -108,11 +110,12 @@ const GooeeContainer = ({ react, pluginType }) => {
                             };
                         };
                     }
-
-                    return window.$_gooee.bindings[Controller];
                 }
 
-                return null;
+                if (window.$_gooee.bindings[Controller])
+                    return window.$_gooee.bindings[Controller];
+
+                return () => { return { model: null, update: null, trigger: null } };
             };
 
             const setupController = getController();
@@ -124,6 +127,7 @@ const GooeeContainer = ({ react, pluginType }) => {
                 case "bottom-left-toolbar":
                 case "bottom-center-toolbar":
                 case "main-container":
+                case "photomode-container":
                     return <ComponentInstance key={name} react={react} setupController={setupController} />;
                     break;
 
@@ -136,10 +140,102 @@ const GooeeContainer = ({ react, pluginType }) => {
                     return <div key={name} class="d-flex align-items-center justify-content-center position-fixed w-100 h-100"><ComponentInstance react={react} setupController={setupController} /></div>;
                     break;
             }
-        });
-    return wrapWithGooee ? <div class="gooee">
+        });            
+
+    const topLeftToolbar = () => {
+        const pluginIds = Object.keys(window.$_gooee_toolbar);
+        const [toolbarVisible, setToolbarVisible] = react.useState(false);
+        const panelRef = react.useRef(false);
+        const buttonRef = react.useRef(false);
+
+        const onMouseOverToolbar = () => {
+            engine.trigger("audio.playSound", "hover-item", 1);
+        };
+
+        const onMouseClickToolbar = () => {
+            engine.trigger("audio.playSound", "select-item", 1);
+            const wasVisible = toolbarVisible;
+            setToolbarVisible(!wasVisible);
+
+            if (!wasVisible) {
+                engine.trigger("audio.playSound", "open-panel", 1);
+                window.engine.trigger("game.closePanel", "Game.UI.InGame.InfoviewMenu");
+                window.engine.trigger('hookui.toggle_menu', false)
+            }
+            else
+                engine.trigger("audio.playSound", "close-panel", 1);
+        };
+
+        react.useEffect(() => {
+            const subscription = window.engine.on("game.showPanel", (panel) => {
+                if (panel === "Game.UI.InGame.InfoviewMenu") {
+                    setToolbarVisible(false);
+                    engine.trigger("audio.playSound", "close-panel", 1);
+                }
+            })
+            window.engine.trigger("game.showPanel.subscribe");
+
+            return () => {
+                window.engine.trigger("game.showPanel.unsubscribe");
+                subscription.clear();
+            };
+        }, [toolbarVisible]);
+
+        const handleClickOutside = (event) => {
+            if (!toolbarVisible)
+                return;
+
+            if (panelRef.current && !panelRef.current.contains(event.target) &&
+                buttonRef.current && buttonRef.current !== event.target.parentElement) {
+                setToolbarVisible(false);
+                engine.trigger("audio.playSound", "close-panel", 1);
+            }
+        };
+
+        react.useEffect(() => {
+            // Toggle the click listener based on dropdown state
+            if (toolbarVisible) {
+                document.addEventListener('click', handleClickOutside, true);
+            } else {
+                document.removeEventListener('click', handleClickOutside, true);
+            }
+        }, [toolbarVisible]);
+
+        const onItemClicked = (p) => {
+            setToolbarVisible(false);
+            engine.trigger(`${p.Name.toLowerCase()}.${p.Controller}.${p.Method}`);
+        };
+
+        return <button ref={buttonRef} className="button_ke4 button_ke4 button_H9N" onMouseEnter={onMouseOverToolbar} onClick={onMouseClickToolbar}>
+                <Icon icon="solid-toolbox" className="icon_be5" size="lg" fa />
+            {toolbarVisible ? <div ref={panelRef} className="bg-panel text-light mt-3 rounded-sm" style={{ position: 'absolute', top: '100%', left: '0' }}>
+                {pluginIds.map((p, index) => (
+                    <Button color="light" onClick={() => onItemClicked(window.$_gooee_toolbar[p])} isBlock className="text-light btn-transparent" style="trans-faded" key={index}><Icon className="mr-1" icon={window.$_gooee_toolbar[p].Icon} /> {window.$_gooee_toolbar[p].Name}</Button>
+                    ))}
+                </div> : null}
+            </button>;
+    };
+
+    const render = <>
+        {wrapWithGooee ? <div class="gooee">
         {renderPlugins}
-    </div> : renderPlugins;
+        </div> : <>{pluginType === "top-left-toolbar" ? topLeftToolbar() : null}{renderPlugins}</>}
+    </>;
+
+    if (pluginType === "photomode-container") {
+        return <div className={photoMode.className}>
+            <div className="photomode-wrapper">{photoMode.children}</div>
+            {render}
+            <div className="gooee">
+                <Modal title="Test" className="photomode-wrapper">
+                    <div>
+                        Hello, world!
+                    </div>
+                </Modal>
+            </div>
+        </div>;
+    }
+    return render;
 };
 
 window.$_gooee.react = null;
@@ -166,82 +262,6 @@ window.$_gooee.framework = {
     FormGroup,
     FormCheckBox,
     MarkDown,
-    List
+    List,
+    VirtualList
 };
-
-
-//const ChangeNotesWindow = ({ react, setupController }) => {
-//    const { Button, ToggleButtonGroup, Icon, Slider, List, Grid, FormGroup, FormCheckBox, Scrollable, ToolTip, ToolTipContent, TabModal, Modal, MarkDown } = window.$_gooee.framework;
-//    const [visible, setVisible] = react.useState(false);
-
-//    react.useEffect(() => {
-//        const eventName = `gooee.showChangeLog`;
-//        const updateEvent = eventName + ".update";
-//        const subscribeEvent = eventName + ".subscribe";
-//        const unsubscribeEvent = eventName + ".unsubscribe";
-
-//        var sub = engine.on(updateEvent, (data) => {
-//            setVisible(data);
-//        })
-
-//        engine.trigger(subscribeEvent);
-//        return () => {
-//            engine.trigger(unsubscribeEvent);
-//            sub.clear();
-//        };
-//    }, []);
-
-//    const closeModal = () => {
-//        engine.trigger("gooee.onCloseChangeLog");
-//        engine.trigger("audio.playSound", "close-panel", 1);
-//        setVisible(false);
-//    };
-
-//    const newLogs = [...window.$_gooee_changeLogs];
-//    const oldLogs = [
-//        { "name": "Unemployment Monitor", "version": "1.0.1" },
-//        { "name": "Another Monitor", "version": "0.0.1" },
-//        { "name": "Yet Another Mod", "version": "0.0.1" }
-//    ];
-
-//    const logUrls = [];
-//    logUrls[0] = "coui://gooeeui/Plugins/DucksInARow.md";
-//    logUrls[1] = "https://raw.githubusercontent.com/89pleasure/cities2-extended-tooltip/main/README.md";
-//    logUrls[2] = "https://raw.githubusercontent.com/Cities2Modding/UnemploymentMonitor/main/README.md";
-//    logUrls[3] = "https://raw.githubusercontent.com/Cities2Modding/UnemploymentMonitor/main/README.md";
-//    logUrls[4] = "https://raw.githubusercontent.com/Cities2Modding/UnemploymentMonitor/main/README.md";
-
-//    const combinedLogs = [...newLogs, ...oldLogs];
-    
-//    const [selectedLog, setSelectedLog] = react.useState(logUrls[0]);
-
-//    const onModSelected = (index) => {
-//        setSelectedLog(logUrls[index]);
-//    };
-
-//    return visible ? <Modal title="Mod Changelogs" fixed size="lg" onClose={closeModal}>
-//        <Grid>
-//            <div className="col-3">
-//                <Scrollable className="h-100">
-//                    <ToggleButtonGroup onSelectionChanged={onModSelected}>
-//                        <h2 className="mb-1 text-muted">New</h2>
-//                        {newLogs.map(newLog => {
-//                            return <button key={newLog.name}>{newLog.name}&nbsp;<b>({newLog.version})</b> {newLog.timestamp}</button>
-//                        })}
-//                        <h2 className="mb-1 mt-1 text-muted">Read</h2>
-//                        {oldLogs.map(oldLog => {
-//                            return <button key={oldLog.name}>{oldLog.name}&nbsp;<b>({oldLog.version})</b></button>
-//                        })}
-//                    </ToggleButtonGroup>
-//                </Scrollable>
-//            </div>
-//            <div className="col-9 bg-section-dark rounded-sm">
-//                <Scrollable className="h-100">
-//                    <MarkDown className="p-5" url={selectedLog} />
-//                </Scrollable>
-//            </div>
-//        </Grid>
-//    </Modal> : null;
-//};
-
-//window.$_gooee.register("ducksinarow", "ChangeNotesWindow", ChangeNotesWindow, "main-container");

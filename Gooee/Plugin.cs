@@ -3,6 +3,7 @@ using HarmonyLib;
 using System.Reflection;
 using System.Linq;
 using System;
+using Gooee.Patches;
 
 #if BEPINEX_V6
     using BepInEx.Unity.Mono;
@@ -16,6 +17,8 @@ namespace Gooee
         private void Awake( )
         {
             var harmony = Harmony.CreateAndPatchAll( Assembly.GetExecutingAssembly( ), MyPluginInfo.PLUGIN_GUID + "_Cities2Harmony" );
+
+            UIPatches.InstallGameResourceHook( harmony );
 
             var patchedMethods = harmony.GetPatchedMethods( ).ToArray( );
 

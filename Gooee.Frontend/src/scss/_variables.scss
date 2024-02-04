@@ -129,6 +129,7 @@ $spacers: (
     "6": 30rem,
     "7": 45rem,
     "8": 60rem,
+    "mini": 1rem,
 );
 
 // Default spacing
@@ -330,8 +331,10 @@ $mask-icons: ( "advisor": "Advisor",
 $icon-size: 24rem;
 $icon-size-sm: 20rem;
 $icon-size-lg: 36rem;
+$icon-size-xl: 56rem;
+$icon-size-xxl: 128rem;
 
-$percent-sizes: "5", "10", "20", "25", "30", "33", "50", "70", "80", "90", "100";
+$percent-sizes: "5", "10", "15", "20", "25", "30", "33", "50", "70", "80", "90", "100";
 
 $input-slider-base: 28rem;
 $input-slider-sm: 20rem;

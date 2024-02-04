@@ -58,6 +58,41 @@
     {
         margin-left: 10rem !important;
     }
+
+   /* .button_H9N:nth-child(2)
+    {
+        left: calc(var(--floatingToggleSize));
+    }
+
+    .button_H9N:nth-child(3)
+    {
+        left: calc((var(--floatingToggleSize) * 2) + 20rem);
+    }
+
+    .button_H9N:nth-child(4)
+    {
+        left: calc((var(--floatingToggleSize)) * 3);
+    }
+
+    .button_H9N:nth-child(5)
+    {
+        left: calc((var(--floatingToggleSize)) * 4);
+    }*/
+
+    .button_H9N 
+    {
+        position: relative !important;
+        margin-left: 10rem !important;
+        pointer-events: auto;
+
+        // Hook UI fixes
+
+        > .info-layout_BVk
+        {
+            position: absolute !important;
+            left: 0 !important;
+        }
+    }
 }
 
 .gooee
@@ -181,4 +216,39 @@
             --assetMenuRows: 1;
         }
     }
+}
+
+// Photomode wrapper
+
+.photomode-wrapper
+{
+    position: absolute;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+    position: absolute;
+    bottom: calc(10rem);
+    right: 10.000000rem;
+
+    &.modal
+    {
+        width: calc( var(--rightPanelWidth) * (1 + (var(--fontScale) - 1) / 2));
+
+         .modal-body
+        {
+            height:  var(--rightPanelWidth);
+        }
+    }
+}
+
+.photo-mode-panel-layout_poh {
+    
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    right: initial !important;
+    bottom: initial !important;
 }

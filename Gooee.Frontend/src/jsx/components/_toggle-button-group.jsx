@@ -36,7 +36,7 @@ const ToggleButton = ({ children, selectedIndex = 0, onSelectionChanged }) => {
         });
     };
     
-    return <>{renderItems()}</>;
+    return <>{children ? renderItems() : null}</>;
 };
 
 export default ToggleButton;

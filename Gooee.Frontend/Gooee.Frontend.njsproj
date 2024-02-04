@@ -52,9 +52,10 @@
     <Content Include="src\jsx\components\_tab-modal.jsx" />
     <Content Include="src\jsx\components\_tooltip-content.jsx" />
     <Content Include="src\jsx\components\_tooltip.jsx" />
+    <Content Include="src\jsx\components\_virtual-list.jsx" />
     <Content Include="src\jsx\gooee.jsx" />
+    <Content Include="src\jsx\modules\_changelog.jsx" />
     <Content Include="src\js\gooee.core.js" />
-    <Content Include="src\js\t.html" />
     <Content Include="src\scss\components\_alert.scss" />
     <Content Include="src\scss\components\_badge.scss" />
     <Content Include="src\scss\components\_button.scss" />
@@ -95,6 +96,7 @@
     <Folder Include="src\" />
     <Folder Include="src\jsx\" />
     <Folder Include="src\jsx\components\" />
+    <Folder Include="src\jsx\modules\" />
     <Folder Include="src\js\" />
     <Folder Include="src\scss\components\" />
     <Folder Include="src\scss\" />

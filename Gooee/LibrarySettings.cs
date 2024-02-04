@@ -1,10 +1,4 @@
-﻿using Colossal.PSI.Common;
-using Game.Settings;
-using Game.UI.Menu;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.ComponentModel;
+﻿using Game.Settings;
 using Game.SceneFlow;
 
 namespace Gooee

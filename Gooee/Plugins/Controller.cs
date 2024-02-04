@@ -1,9 +1,11 @@
 ﻿using cohtml.Net;
+using Colossal.IO.AssetDatabase;
 using Colossal.OdinSerializer.Utilities;
 using Colossal.Reflection;
 using Colossal.UI.Binding;
 using Game.UI;
 using Gooee.Helpers;
+using Gooee.Injection;
 using Gooee.Plugins.Attributes;
 using HarmonyLib;
 using Newtonsoft.Json;
@@ -30,7 +32,7 @@ namespace Gooee.Plugins
             private set;
         }
 
-        protected GetterValueBinding<TModel> Binding
+        protected GetterValueBinding<string> Binding
         {
             get;
             set;
@@ -75,6 +77,7 @@ namespace Gooee.Plugins
 
         //static readonly MethodInfo _registerListener = typeof( Model ).GetMethod( "RegisterListener", BindingFlags.Instance | BindingFlags.NonPublic );
         private readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+        
 
         public virtual void OnLoaded( )
         {
@@ -92,10 +95,10 @@ namespace Gooee.Plugins
 
             _log.Info( $"Register binding for mod req: {ControllerID}.model" );
 
-            Binding = new GetterValueBinding<TModel>( ControllerID, "model", ( ) =>
+            Binding = new GetterValueBinding<string>( ControllerID, "model", ( ) =>
             {
-                return Model;
-            }, new ValueWriter<TModel>( ).Nullable( ) );
+                return JsonConvert.SerializeObject( Model, ResourceInjector._jsonSettings );
+            } );
 
             DirtyField = Binding.GetType( ).GetField( "m_ValueDirty", BindingFlags.Instance | BindingFlags.NonPublic );
 
@@ -165,8 +168,15 @@ namespace Gooee.Plugins
             if ( string.IsNullOrEmpty( json ) )
                 return;
 
+            var modelType = Model.GetType( );
+
+            BaseModel.EnsureType( modelType );
+
+            if ( !BaseModel._propertiesCache.ContainsKey( modelType ) )
+                return;
+
             // Assuming that propertiesCache is a Dictionary and already populated
-            var properties = BaseModel._propertiesCache[Model.GetType()];
+            var properties = BaseModel._propertiesCache[modelType];
 
             if ( properties == null )
                 return;
@@ -240,6 +250,11 @@ namespace Gooee.Plugins
                     result = enumValue;
                     return true;
                 }
+            }
+            else if ( propertyType.IsEnum && val is int intVal  )
+            {
+                result = Convert.ChangeType( intVal, propertyType );
+                return true;
             }
             return false;
         }

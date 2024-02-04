@@ -13,7 +13,20 @@
     {
         width: $icon-size-lg !important;
         height: $icon-size-lg !important;
+    }    
+
+    &.icon-xl
+    {
+        width: $icon-size-xl !important;
+        height: $icon-size-xl !important;
     }
+
+    &.icon-xxl
+    {
+        width: $icon-size-xxl !important;
+        height: $icon-size-xxl !important;
+    }
+    
 
     &.icon-spin
     {

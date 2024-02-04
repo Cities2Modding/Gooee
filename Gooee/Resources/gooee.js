@@ -2398,9 +2398,9 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React24 = require_react();
+          var React25 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React24.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React25.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -4005,7 +4005,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React24.Children.forEach(props.children, function(child) {
+                  React25.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12452,7 +12452,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React24.Component().refs;
+          var emptyRefsObject = new React25.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -23493,11 +23493,11 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
   });
 
   // src/jsx/gooee.jsx
-  var import_react23 = __toESM(require_react());
+  var import_react24 = __toESM(require_react());
 
   // src/jsx/components/_button.jsx
   var import_react = __toESM(require_react());
-  var Button = ({ children, onClick, color = null, shade = null, style = null, size = null, className = null, disabled = null, isBlock = null, icon = null, border = null, circular = null }) => {
+  var Button = ({ children, onClick, color = null, shade = null, style = null, size = null, className = null, disabled = null, isBlock = null, icon = null, border = null, circular = null, onMouseEnter = null, onMouseLeave = null }) => {
     const handleClick = () => {
       if (disabled)
         return;
@@ -23505,10 +23505,18 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         onClick();
       engine.trigger("audio.playSound", "select-item", 1);
     };
-    const onMouseEnter = (e) => {
+    const internalOnMouseEnter = (e) => {
       if (disabled)
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
+      if (onMouseEnter)
+        onMouseEnter();
+    };
+    const internalOnMouseLeave = (e) => {
+      if (disabled)
+        return;
+      if (onMouseLeave)
+        onMouseLeave();
     };
     const circularClass = circular ? " btn-circular" : "";
     const shadeClass = shade ? `-${shade}` : "";
@@ -23519,7 +23527,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const sizeClass = size ? ` btn-${size}` : "";
     const iconColorClass = icon ? ` btn-${color}${shadeClass}${border ? " border-icon" : ""}` : "";
     const btnClass = icon ? `btn btn-icon${extraClass}${disabledClass}${sizeClass}${iconColorClass}${circularClass}` : `btn btn${styleClass}-${color}${shadeClass}${extraClass}${disabledClass}${blockClass}${sizeClass}`;
-    return /* @__PURE__ */ import_react.default.createElement("div", { className: btnClass, onMouseEnter, onClick: handleClick }, children);
+    return /* @__PURE__ */ import_react.default.createElement("div", { className: btnClass, onMouseEnter: internalOnMouseEnter, onMouseLeave: internalOnMouseLeave, onClick: handleClick }, children);
   };
   var button_default = Button;
 
@@ -23737,14 +23745,14 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
 
   // src/jsx/components/_modal.jsx
   var import_react6 = __toESM(require_react());
-  var Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null }) => {
+  var Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null, noClose = null }) => {
     const react = window.$_gooee.react;
     const { Button: Button2 } = window.$_gooee.framework;
     const sizeClass = size ? `modal modal-${size}` + (hidden ? " hidden" : "") + (className ? " " + className : "") : "modal" + (hidden ? " hidden" : "") + (className ? " " + className : "");
     const fixedClass = fixed ? ` modal-fixed` : "";
     const classNames = sizeClass + fixedClass;
     const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
-    return /* @__PURE__ */ import_react6.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-header" }, icon, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null, "\xA0")), /* @__PURE__ */ import_react6.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "icon mask-icon icon-close" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: bodyClassNames }, children))));
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-header" }, icon, /* @__PURE__ */ import_react6.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null, "\xA0")), !noClose ? /* @__PURE__ */ import_react6.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "icon mask-icon icon-close" })) : null), /* @__PURE__ */ import_react6.default.createElement("div", { className: bodyClassNames }, children))));
   };
   var modal_default = Modal;
 
@@ -24098,8 +24106,8 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
 
   // src/jsx/components/_icon.jsx
   var import_react16 = __toESM(require_react());
-  var Icon = ({ className, style, icon, mask = null, fa = null }) => {
-    const iconClassName = mask ? `icon mask-icon icon-${icon} ${className}` : fa ? `fa fa-${icon} ${className}` : `icon ${className}`;
+  var Icon = ({ className, style, icon, mask = null, fa = null, size = null }) => {
+    const iconClassName = mask ? `icon mask-icon icon-${icon} ${className}` : fa ? `fa fa-${icon} ${className}` : `icon ${className}` + (size ? ` icon-${size}` : "");
     const iconMarkup = mask || fa ? /* @__PURE__ */ import_react16.default.createElement("div", { className: iconClassName, style }) : /* @__PURE__ */ import_react16.default.createElement("img", { className: iconClassName, style, src: icon });
     return iconMarkup;
   };
@@ -24269,8 +24277,76 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
   };
   var list_default = List;
 
-  // src/jsx/components/_toggle-button-group.jsx
+  // src/jsx/components/_virtual-list.jsx
   var import_react22 = __toESM(require_react());
+  var VirtualList = ({ className, contentClassName, data, onRenderItem, columns = 1, rows = 4, size = null }) => {
+    const react = window.$_gooee.react;
+    const scrollRef = react.useRef(null);
+    const contentRef = react.useRef(null);
+    const [visibleStartIndex, setVisibleStartIndex] = react.useState(0);
+    const [visibleItemCount, setVisibleItemCount] = react.useState(0);
+    const [thumbHeight, setThumbHeight] = react.useState(0);
+    const [thumbTop, setThumbTop] = react.useState(0);
+    const [mouseDown, setMouseDown] = react.useState(false);
+    const [itemWidth, setItemWidth] = react.useState(`${100 / columns}%`);
+    const [itemHeight, setItemHeight] = react.useState(`${100 / rows}%`);
+    const sizeClass = size ? ` scrollable-${size}` : "";
+    react.useEffect(() => {
+      setItemWidth(`${100 / columns}%`);
+      setItemHeight(`${100 / rows}%`);
+      setVisibleItemCount(rows * columns);
+    }, [columns, rows, itemWidth, itemHeight]);
+    const onMouseWheel = (e) => {
+      if (scrollRef.current) {
+        const totalRows = Math.ceil(data.length / rows * columns);
+        var amt = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
+        if (amt != 0) {
+          const startIndex = Math.min(totalRows - 1, Math.max(0, visibleStartIndex + amt * columns));
+          setVisibleStartIndex(startIndex);
+          setVisibleItemCount(rows * columns);
+        }
+      }
+    };
+    const calculateVisibleItems = () => {
+      return;
+    };
+    react.useEffect(() => {
+      calculateVisibleItems();
+      window.addEventListener("wheel", onMouseWheel);
+      return () => {
+        window.removeEventListener("wheel", onMouseWheel);
+      };
+    }, [data, rows, visibleStartIndex]);
+    const onMouseMove = (e) => {
+    };
+    const onMouseUp = (e) => {
+    };
+    const onMouseDown = (e) => {
+    };
+    const onMouseEnter = (e) => {
+    };
+    const onTrackMouseDown = (e) => {
+    };
+    const thumbContent = thumbHeight > 0 ? /* @__PURE__ */ import_react22.default.createElement("div", { className: "track", onMouseDown: onTrackMouseDown }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } })) : /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null);
+    react.useEffect(() => {
+      calculateVisibleItems();
+      window.addEventListener("resize", calculateVisibleItems);
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+      return () => {
+        window.removeEventListener("resize", calculateVisibleItems);
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      };
+    }, [data]);
+    const visibleChildren = data.slice(visibleStartIndex, visibleStartIndex + visibleItemCount);
+    const classNames = "scrollable vertical no-overflow" + (thumbHeight <= 0 + sizeClass + (className ? " " + className : ""));
+    return /* @__PURE__ */ import_react22.default.createElement("div", { className: classNames, onMouseOver: calculateVisibleItems }, /* @__PURE__ */ import_react22.default.createElement("div", { ref: scrollRef, onScroll: calculateVisibleItems, className: "content" }, /* @__PURE__ */ import_react22.default.createElement("div", { ref: contentRef, className: (contentClassName ? contentClassName : "") + " h-x flex-1" }, visibleChildren.map((child, index) => /* @__PURE__ */ import_react22.default.createElement("div", { style: { width: itemWidth, height: itemHeight }, key: index }, onRenderItem(child, index))))), thumbContent);
+  };
+  var virtual_list_default = VirtualList;
+
+  // src/jsx/components/_toggle-button-group.jsx
+  var import_react23 = __toESM(require_react());
   var ToggleButton = ({ children, selectedIndex = 0, onSelectionChanged }) => {
     const react = window.$_gooee.react;
     const [internalValue, setInternalValue] = react.useState(selectedIndex);
@@ -24282,7 +24358,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     };
     const renderItems = () => {
       let buttonIndex = -1;
-      return import_react22.default.Children.map(children, (child, index) => {
+      return import_react23.default.Children.map(children, (child, index) => {
         if (child.type !== "button") {
           return child;
         }
@@ -24293,20 +24369,20 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         const innerContent = child.props.children;
         const color = isSelected ? "primary" : "light";
         const shade = isSelected ? "" : "trans-faded";
-        const isLast = thisIndex === import_react22.default.Children.toArray(children).filter((c) => c.type === "button").length - 1;
+        const isLast = thisIndex === import_react23.default.Children.toArray(children).filter((c) => c.type === "button").length - 1;
         const classNames = (!isSelected ? "text-light" : "text-dark") + (isLast ? "" : " mb-1");
-        return /* @__PURE__ */ import_react22.default.createElement(Button2, { key, className: classNames, isBlock: true, color, style: shade, onClick: () => changeSelection(thisIndex) }, innerContent);
+        return /* @__PURE__ */ import_react23.default.createElement(Button2, { key, className: classNames, isBlock: true, color, style: shade, onClick: () => changeSelection(thisIndex) }, innerContent);
       });
     };
-    return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null, renderItems());
+    return /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null, children ? renderItems() : null);
   };
   var toggle_button_group_default = ToggleButton;
 
   // src/jsx/gooee.jsx
-  var GooeeContainer = ({ react, pluginType }) => {
+  var GooeeContainer = ({ react, pluginType, photoMode }) => {
     window.$_gooee.react = react;
     const [plugins, setPlugins] = react.useState([]);
-    const wrapWithGooee = pluginType === "default" || pluginType === "main-container";
+    const wrapWithGooee = pluginType === "default" || pluginType === "main-container" || pluginType === "photomode-container";
     react.useEffect(() => {
       const interval = setInterval(function() {
         if (window.$_gooee.components && window.$_gooee.components[pluginType]) {
@@ -24323,14 +24399,14 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         if (Controller) {
           if (!window.$_gooee.bindings[Controller]) {
             window.$_gooee.bindings[Controller] = () => {
-              const [model, setModel] = react.useState({});
+              const [model, setModel] = react.useState(window.$_gooee_defaultModel[`${PluginName}.${Controller}`] ?? {});
               react.useEffect(() => {
                 const eventName = `${PluginName}.${Controller}.model`;
                 const updateEvent = eventName + ".update";
                 const subscribeEvent = eventName + ".subscribe";
                 const unsubscribeEvent = eventName + ".unsubscribe";
                 var sub = engine.on(updateEvent, (data) => {
-                  setModel(data);
+                  setModel(data ? JSON.parse(data) : {});
                 });
                 engine.trigger(subscribeEvent);
                 return () => {
@@ -24367,9 +24443,12 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
               };
             };
           }
-          return window.$_gooee.bindings[Controller];
         }
-        return null;
+        if (window.$_gooee.bindings[Controller])
+          return window.$_gooee.bindings[Controller];
+        return () => {
+          return { model: null, update: null, trigger: null };
+        };
       };
       const setupController = getController();
       switch (pluginType) {
@@ -24379,18 +24458,76 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         case "bottom-left-toolbar":
         case "bottom-center-toolbar":
         case "main-container":
-          return /* @__PURE__ */ import_react23.default.createElement(ComponentInstance, { key: name, react, setupController });
+        case "photomode-container":
+          return /* @__PURE__ */ import_react24.default.createElement(ComponentInstance, { key: name, react, setupController });
           break;
         case "infomode-menu":
-          return /* @__PURE__ */ import_react23.default.createElement(ComponentInstance, { key: name, react, setupController });
+          return /* @__PURE__ */ import_react24.default.createElement(ComponentInstance, { key: name, react, setupController });
           break;
         default:
         case "default":
-          return /* @__PURE__ */ import_react23.default.createElement("div", { key: name, class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100" }, /* @__PURE__ */ import_react23.default.createElement(ComponentInstance, { react, setupController }));
+          return /* @__PURE__ */ import_react24.default.createElement("div", { key: name, class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100" }, /* @__PURE__ */ import_react24.default.createElement(ComponentInstance, { react, setupController }));
           break;
       }
     });
-    return wrapWithGooee ? /* @__PURE__ */ import_react23.default.createElement("div", { class: "gooee" }, renderPlugins) : renderPlugins;
+    const topLeftToolbar = () => {
+      const pluginIds = Object.keys(window.$_gooee_toolbar);
+      const [toolbarVisible, setToolbarVisible] = react.useState(false);
+      const panelRef = react.useRef(false);
+      const buttonRef = react.useRef(false);
+      const onMouseOverToolbar = () => {
+        engine.trigger("audio.playSound", "hover-item", 1);
+      };
+      const onMouseClickToolbar = () => {
+        engine.trigger("audio.playSound", "select-item", 1);
+        const wasVisible = toolbarVisible;
+        setToolbarVisible(!wasVisible);
+        if (!wasVisible) {
+          engine.trigger("audio.playSound", "open-panel", 1);
+          window.engine.trigger("game.closePanel", "Game.UI.InGame.InfoviewMenu");
+          window.engine.trigger("hookui.toggle_menu", false);
+        } else
+          engine.trigger("audio.playSound", "close-panel", 1);
+      };
+      react.useEffect(() => {
+        const subscription = window.engine.on("game.showPanel", (panel) => {
+          if (panel === "Game.UI.InGame.InfoviewMenu") {
+            setToolbarVisible(false);
+            engine.trigger("audio.playSound", "close-panel", 1);
+          }
+        });
+        window.engine.trigger("game.showPanel.subscribe");
+        return () => {
+          window.engine.trigger("game.showPanel.unsubscribe");
+          subscription.clear();
+        };
+      }, [toolbarVisible]);
+      const handleClickOutside = (event) => {
+        if (!toolbarVisible)
+          return;
+        if (panelRef.current && !panelRef.current.contains(event.target) && buttonRef.current && buttonRef.current !== event.target.parentElement) {
+          setToolbarVisible(false);
+          engine.trigger("audio.playSound", "close-panel", 1);
+        }
+      };
+      react.useEffect(() => {
+        if (toolbarVisible) {
+          document.addEventListener("click", handleClickOutside, true);
+        } else {
+          document.removeEventListener("click", handleClickOutside, true);
+        }
+      }, [toolbarVisible]);
+      const onItemClicked = (p) => {
+        setToolbarVisible(false);
+        engine.trigger(`${p.Name.toLowerCase()}.${p.Controller}.${p.Method}`);
+      };
+      return /* @__PURE__ */ import_react24.default.createElement("button", { ref: buttonRef, className: "button_ke4 button_ke4 button_H9N", onMouseEnter: onMouseOverToolbar, onClick: onMouseClickToolbar }, /* @__PURE__ */ import_react24.default.createElement(icon_default, { icon: "solid-toolbox", className: "icon_be5", size: "lg", fa: true }), toolbarVisible ? /* @__PURE__ */ import_react24.default.createElement("div", { ref: panelRef, className: "bg-panel text-light mt-3 rounded-sm", style: { position: "absolute", top: "100%", left: "0" } }, pluginIds.map((p, index) => /* @__PURE__ */ import_react24.default.createElement(button_default, { color: "light", onClick: () => onItemClicked(window.$_gooee_toolbar[p]), isBlock: true, className: "text-light btn-transparent", style: "trans-faded", key: index }, /* @__PURE__ */ import_react24.default.createElement(icon_default, { className: "mr-1", icon: window.$_gooee_toolbar[p].Icon }), " ", window.$_gooee_toolbar[p].Name))) : null);
+    };
+    const render = /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react24.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins));
+    if (pluginType === "photomode-container") {
+      return /* @__PURE__ */ import_react24.default.createElement("div", { className: photoMode.className }, /* @__PURE__ */ import_react24.default.createElement("div", { className: "photomode-wrapper" }, photoMode.children), render, /* @__PURE__ */ import_react24.default.createElement("div", { className: "gooee" }, /* @__PURE__ */ import_react24.default.createElement(modal_default, { title: "Test", className: "photomode-wrapper" }, /* @__PURE__ */ import_react24.default.createElement("div", null, "Hello, world!"))));
+    }
+    return render;
   };
   window.$_gooee.react = null;
   window.$_gooee.container = GooeeContainer;
@@ -24416,7 +24553,8 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     FormGroup: form_group_default,
     FormCheckBox: form_checkbox_default,
     MarkDown: markdown_default,
-    List: list_default
+    List: list_default,
+    VirtualList: virtual_list_default
   };
 })();
 /*! Bundled license information:

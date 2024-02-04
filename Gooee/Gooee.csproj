@@ -160,14 +160,6 @@
 			<HintPath>$(Cities2_Location)\Cities2_Data\Managed\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
-		<Reference Include="HookUILib">
-			<HintPath>$(Cities2_Location)\BepInEx\plugins\HookUI\HookUILib.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-		<Reference Include="HookUIMod">
-			<HintPath>$(Cities2_Location)\BepInEx\plugins\HookUI\HookUIMod.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
 		<Reference Include="Cohtml.RenderingBackend">
 			<HintPath>$(Cities2_Location)\Cities2_Data\Managed\Cohtml.RenderingBackend.dll</HintPath>
 			<Private>False</Private>

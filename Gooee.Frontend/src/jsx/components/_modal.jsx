@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null }) => {
+const Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null, noClose = null }) => {
     const react = window.$_gooee.react;
     
     const { Button } = window.$_gooee.framework;   
@@ -15,9 +15,10 @@ const Modal = ({ className, children, style, size = null, onClose, title, icon, 
                 <div className="modal-header">
                     {icon}
                     <div className="modal-title">{title ? title : <>&nbsp;</>}</div>
-                    <Button className="close" size="sm" onClick={onClose} icon circular>
-                        <div className="icon mask-icon icon-close"></div>
-                    </Button>
+                    {!noClose ?
+                        <Button className="close" size="sm" onClick={onClose} icon circular>
+                            <div className="icon mask-icon icon-close"></div>
+                        </Button> : null}
                 </div>
                 <div className={bodyClassNames}>
                     {children}

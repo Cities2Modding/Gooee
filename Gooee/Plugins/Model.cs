@@ -70,16 +70,39 @@ namespace Gooee.Plugins
         //    view.TriggerEvent( key, Serialise( ) );
         //}
 
+        public static void EnsureType( Type type )
+        {
+            try
+            {
+                if ( !_propertiesCache.TryGetValue( type, out var properties ) )
+                {
+                    properties = type.GetProperties( BindingFlags.Public | BindingFlags.Instance );
+                    _propertiesCache[type] = properties;
+                }
+            }
+            catch ( Exception ex )
+            {
+                UnityEngine.Debug.LogException( ex );
+            }
+        }
+
         public void Write( IJsonWriter writer )
         {
-            var type = GetType( );
-            if ( !_propertiesCache.TryGetValue( type, out var properties ) )
-            {
-                properties = type.GetProperties( BindingFlags.Public | BindingFlags.Instance );
-                _propertiesCache[type] = properties;
-            }
+            try
+            {            
+                var type = GetType( );
+                if ( !_propertiesCache.TryGetValue( type, out var properties ) )
+                {
+                    properties = type.GetProperties( BindingFlags.Public | BindingFlags.Instance );
+                    _propertiesCache[type] = properties;
+                }
 
-            ParseType( writer, this, properties );
+                ParseType( writer, this, properties );
+            }
+            catch ( Exception ex )
+            {
+                UnityEngine.Debug.LogException( ex );
+            }
         }
 
         private void ParseType( IJsonWriter writer, object instance, PropertyInfo[] properties )
@@ -88,6 +111,9 @@ namespace Gooee.Plugins
 
             foreach ( var property in properties )
             {
+                if ( typeof( IController ).IsAssignableFrom( property.PropertyType ) )
+                    continue;
+
                 var value = property.GetValue( instance );
                 if ( value == null )
                 {
@@ -156,10 +182,10 @@ namespace Gooee.Plugins
             {
                 HandleList( writer, value, valueType );
             }
-            else if ( value is Array array )
-            {
-                HandleArray( writer, array, valueType );
-            }
+            //else if ( value is Array array )
+            //{
+            //    HandleArray( writer, array, valueType );
+            //}
             else if ( valueType == typeof( Dictionary<string, string> ) )
             {
                 HandleDictionary( writer, value );
