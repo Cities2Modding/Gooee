@@ -154,7 +154,7 @@
         $darker-colour: map-get($colour-map, "darker");
         $colour-trans: map-get($colour-map, "trans");
         $dark-colour-trans: map-get($colour-map, "trans-dark");
-        $darker-colour-trans: map-get($colour-map, "trans-darker");        
+        $darker-colour-trans: map-get($colour-map, "trans-darker");
         $colour-trans-faded: map-get($colour-map, "trans-faded");
         
         .btn-#{$key} 
@@ -171,9 +171,9 @@
                 color: map-get($text-colours, $key);
             }
 
-            .fa
+            > .fa
             {                    
-                background-color: map-get($text-colours, $key) !important;
+                background-color: map-get($text-colours, $key);
                 margin-top: 5rem;
             }
 
@@ -207,16 +207,16 @@
             padding-top: $button-padding-v;
             padding-bottom: $button-padding-v;
                 
-            .fa
+            > .fa
             {                    
-                background-color: $colour !important;
+                background-color: $colour;
             }
 
             &:hover
             {
                 .fa
                 {                    
-                    background-color: $dark-colour !important;
+                    background-color: $dark-colour;
                 }
 
                 color: $dark-colour;
@@ -230,7 +230,7 @@
             {
                 .fa
                 {                    
-                    background-color: $darker-colour !important;
+                    background-color: $darker-colour;
                 }
 
                 color: $darker-colour;
@@ -250,9 +250,9 @@
             border-left-color: $colour-trans;
             border-right-color: $colour-trans;
                 
-            .fa
+            > .fa
             {                    
-                background-color: map-get($text-colours, $key) !important;
+                background-color: map-get($text-colours, $key);
             }
 
             &:hover
@@ -283,9 +283,9 @@
             border-left-color: $colour-trans-faded;
             border-right-color: $colour-trans-faded;
                 
-            .fa
+            > .fa
             {                    
-                background-color: map-get($text-colours, $key) !important;
+                background-color: map-get($text-colours, $key);
             }
 
             &:hover

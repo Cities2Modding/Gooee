@@ -50,20 +50,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                     if (!window.$_gooee.bindings[Controller]) {
                         window.$_gooee.bindings[Controller] = () => {
                             const [model, setModel] = react.useState(window.$_gooee_defaultModel[`${PluginName}.${Controller}`] ?? {});
-
-                            //react.useEffect(() => {
-                            //    const prefix = `gooee.binding.${PluginName}.${Controller}`;
-                            //    const updateEvent = `${prefix}.get`;
-
-                            //    var sub = engine.on(updateEvent, (json) => {
-                            //        setModel(JSON.parse(json));
-                            //    })
-
-                            //    return () => {
-                            //        sub.clear();
-                            //    };
-                            //}, []);
-
+                            
                             react.useEffect(() => {
                                 const eventName = `${PluginName}.${Controller}.model`;
                                 const updateEvent = eventName + ".update";
@@ -92,21 +79,15 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                                 update: (prop, val) => {
                                     const newValue = { ...model };
                                     newValue[prop] = val;
-                                    setModel(newValue);
-                                    engine.trigger(`${PluginName}.${Controller}.updateProperty`, JSON.stringify({ property: prop, value: val }));
+
+                                    //if (JSON.stringify(newValue) != JSON.stringify(model)) {
+                                        setModel(newValue);
+                                        engine.trigger(`${PluginName}.${Controller}.updateProperty`, JSON.stringify({ property: prop, value: val }));
+                                    //}
+                                },
+                                _L: (key) => {
+                                    return engine.translate(key);
                                 }
-                                //trigger: (eventName, value) => {
-                                //    if (typeof value !== "undefined")
-                                //        engine.trigger(`${PluginName}.${Controller}.${eventName}`, value);
-                                //    else
-                                //        engine.trigger(`${PluginName}.${Controller}.${eventName}`);
-                                //},
-                                //update: (prop, val) => {
-                                //    const newValue = { ...model };
-                                //    newValue[prop] = val;
-                                //    setModel(newValue);
-                                //    engine.trigger(`gooee.binding.${PluginName}.${Controller}.set`, JSON.stringify(newValue));
-                                //}
                             };
                         };
                     }
@@ -115,7 +96,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                 if (window.$_gooee.bindings[Controller])
                     return window.$_gooee.bindings[Controller];
 
-                return () => { return { model: null, update: null, trigger: null } };
+                return () => { return { model: null, update: null, trigger: null, _L: ()=>{} } };
             };
 
             const setupController = getController();

@@ -77,7 +77,9 @@ namespace Gooee.Plugins
 
         //static readonly MethodInfo _registerListener = typeof( Model ).GetMethod( "RegisterListener", BindingFlags.Instance | BindingFlags.NonPublic );
         private readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
-        
+
+        private string _lastModelJson = string.Empty;
+        private string _modelJson = string.Empty;
 
         public virtual void OnLoaded( )
         {
@@ -93,11 +95,15 @@ namespace Gooee.Plugins
 
             //ModelListener = ( BoundEventHandle ) _registerListener.Invoke( Model, new object[] { this } );
 
-            _log.Info( $"Register binding for mod req: {ControllerID}.model" );
+            //_log.Info( $"Register binding for mod req: {ControllerID}.model" );
 
             Binding = new GetterValueBinding<string>( ControllerID, "model", ( ) =>
             {
-                return JsonConvert.SerializeObject( Model, ResourceInjector._jsonSettings );
+                if ( !string.IsNullOrEmpty( _modelJson ) )
+                    return _modelJson;
+
+                _modelJson = JsonConvert.SerializeObject( Model, ResourceInjector._jsonSettings );                
+                return _modelJson;
             } );
 
             DirtyField = Binding.GetType( ).GetField( "m_ValueDirty", BindingFlags.Instance | BindingFlags.NonPublic );
@@ -127,40 +133,46 @@ namespace Gooee.Plugins
 
             AddBinding( new TriggerBinding<string>( ControllerID, "updateProperty", OnUpdateProperty ) );
 
-            _log.Info( $"Controller listening for events at {ControllerID}." );
+            _log.Info( $"Controller '{ControllerID}' registered." );
         }
 
         //private void ApplyPatches( IModel model )
         //{
         //    var harmony = new Harmony( "Harmony.Gooee." + GetType( ).FullName );
 
-        //    foreach ( var prop in model.GetType( ).GetProperties( BindingFlags.Public | BindingFlags.Instance ) )
-        //    {
-        //        if ( prop.IsDefined( typeof( ObservableAttribute ), true ) )
-        //        {
-        //            var originalSetter = prop.GetSetMethod( );
+            //    foreach ( var prop in model.GetType( ).GetProperties( BindingFlags.Public | BindingFlags.Instance ) )
+            //    {
+            //        if ( prop.IsDefined( typeof( ObservableAttribute ), true ) )
+            //        {
+            //            var originalSetter = prop.GetSetMethod( );
 
-        //            if ( originalSetter != null )
-        //            {
-        //                var postfix = GetType().GetMethod( nameof( OnServerUpdateModelPostfix ), BindingFlags.Static | BindingFlags.NonPublic );
-        //                harmony.Patch( originalSetter, postfix: new HarmonyMethod( postfix ) );
-        //            }
-        //        }
-        //    }
-        //}
+            //            if ( originalSetter != null )
+            //            {
+            //                var postfix = GetType().GetMethod( nameof( OnServerUpdateModelPostfix ), BindingFlags.Static | BindingFlags.NonPublic );
+            //                harmony.Patch( originalSetter, postfix: new HarmonyMethod( postfix ) );
+            //            }
+            //        }
+            //    }
+            //}
 
-        //private static void OnServerUpdateModelPostfix( IModel __instance )
-        //{
-        //    var method = __instance.GetType( ).GetMethod( "OnServerUpdateModel", BindingFlags.Instance | BindingFlags.NonPublic );
-        //    method.Invoke( __instance, null );
-        //}
+            //private static void OnServerUpdateModelPostfix( IModel __instance )
+            //{
+            //    var method = __instance.GetType( ).GetMethod( "OnServerUpdateModel", BindingFlags.Instance | BindingFlags.NonPublic );
+            //    method.Invoke( __instance, null );
+            //}
 
         public abstract TModel Configure( );
 
         protected void TriggerUpdate( )
         {
-            OnModelUpdated( );
-            DirtyField.SetValue( Binding, true );
+            _modelJson = JsonConvert.SerializeObject( Model, ResourceInjector._jsonSettings );
+
+            //if ( _lastModelJson != _modelJson )
+            //{
+                OnModelUpdated( );
+                DirtyField.SetValue( Binding, true );
+             //   _lastModelJson = _modelJson;
+            //}
         }
 
         private void OnUpdateProperty( string json )

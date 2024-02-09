@@ -2,6 +2,7 @@
 using Game.SceneFlow;
 using Game.UI;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -23,6 +24,7 @@ namespace Gooee.Helpers
         {
             var hasLoadedAny = false;
             var localisationManager = _localizationManager.Value;
+            var results = new List<string>( );
 
             foreach ( var locale in _locales.Value )
             {
@@ -37,15 +39,17 @@ namespace Gooee.Helpers
                 if ( ymlInstance != null && ymlInstance.TryGetValue( "lang", out var language ) )
                 {
                     localisationManager.AddSource( locale, new MemorySource( language ) );
-                    _log.Info( $"Loaded localisaition {locale} for {resourceName}." );
+                    results.Add( locale );
                     hasLoadedAny = true;
                 }
             }
 
             if ( !hasLoadedAny )
             {
-                _log.Warning( $"Could not find localisation for {resourcePath}." );
+                _log.Warning( $"Could not find localisation for '{resourcePath}'." );
             }
+            else
+                _log.Info( $"Loaded localisation for '{targetAssembly.GetName().Name}' [{string.Join( ", ", results )}]." );
         }
     }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 
-const VirtualList = ({ className, contentClassName, data, onRenderItem, columns = 1, rows = 4, size = null }) => {
+const VirtualList = ({ className, contentClassName, border = null, data, onRenderItem, columns = 1, rows = 4, size = null, watch = [] }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
     const contentRef = react.useRef(null);
@@ -11,157 +11,283 @@ const VirtualList = ({ className, contentClassName, data, onRenderItem, columns 
     const [mouseDown, setMouseDown] = react.useState(false);
     const [itemWidth, setItemWidth] = react.useState(`${100 / columns}%`);
     const [itemHeight, setItemHeight] = react.useState(`${100 / rows}%`);
+    const [itemCount, setItemCount] = react.useState(data ? data.length : 0);    
 
+    const [batchCount, setBatchCount] = react.useState(rows * columns);
+    const [batchSize, setBatchSize] = react.useState(batchCount / data.length);
+    const [totalRowCount, setTotalRowCount] = react.useState(data.length / columns);
     const sizeClass = size ? ` scrollable-${size}` : "";
 
     react.useEffect(() => {
         setItemWidth(`${100 / columns}%`);
         setItemHeight(`${100 / rows}%`);
-        setVisibleItemCount((rows * columns));
-    }, [columns, rows, itemWidth, itemHeight]);
 
-    const onMouseWheel = (e) => {
-        if (scrollRef.current) {
-            //const viewableHeight = scrollRef.current.clientHeight;
-            const totalRows = Math.ceil(data.length / rows * columns);
+        const newBatchCount = (rows * columns);
+        setVisibleItemCount(newBatchCount);
+        setBatchCount(newBatchCount);
 
-            var amt = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
+        const newBatchSize = newBatchCount / data.length;
+        setBatchSize(newBatchSize);
+        setTotalRowCount(data.length / columns);
 
-            if (amt != 0) {
-                const startIndex = Math.min(totalRows - 1, Math.max(0, visibleStartIndex + (amt * columns)));
+        clampValues(visibleStartIndex);
+    }, [columns, rows, itemWidth, itemHeight, data, data.length]);
 
-                //if (startIndex >= 0 && startIndex < data.length - 1 )
-                setVisibleStartIndex(startIndex);
-
-                //const itemHeightPx = viewableHeight / (rows * columns);
-
-                //if (startIndex >= 0 && startIndex + ( rows * columns ) < data.length )
-                setVisibleItemCount((rows * columns));
-            }
-            
+    const clampValues = (startIndex) => {
+        if (data.length <= batchCount) {
+            setVisibleStartIndex(0);
+            setVisibleItemCount(batchCount);
+            setThumbHeight(0);
+            setThumbTop(0);
+            return;
         }
-    };
 
-    const calculateVisibleItems = () => {
-        return;
-        //if (scrollRef.current) {
-        //    const viewableHeight = scrollRef.current.clientHeight;
-        //    // Adjust totalItems calculation for multiple columns
-        //    const totalRows = Math.ceil(data.length / columns);
-        //    const totalContentHeight = totalRows * itemHeightPx;
+        let newStartIndex = startIndex;
 
-        //    if (totalContentHeight <= viewableHeight) {
-        //        setThumbHeight(0); // Hide thumb when content fits within viewable area
-        //        setVisibleStartIndex(0);
-        //        setVisibleItemCount(data.length);
-        //    } else {
+        const endIndex = calculateEndIndex();
+        newStartIndex = Math.max(0, Math.min(newStartIndex, endIndex));
+                        
+        setVisibleStartIndex(newStartIndex);        
+        setVisibleItemCount(batchCount);
 
-        //        // Calculate thumb height based on the proportion of viewable area to total content height
-        //        const newThumbHeight = Math.max((viewableHeight / totalContentHeight) * viewableHeight, 30);
-        //        const currentScrollPosition = scrollRef.current.scrollTop;
-        //        let newThumbTop = (currentScrollPosition / totalContentHeight) * viewableHeight;
+        if (scrollRef.current) {
+            const viewHeight = scrollRef.current.clientHeight;
 
-        //        if (newThumbTop + newThumbHeight > viewableHeight) {
-        //            newThumbTop = viewableHeight - newThumbHeight;
-        //        }
+            const newThumbHeight = Math.max(viewHeight * batchSize, 30);
+            setThumbHeight(newThumbHeight);
 
-        //        setThumbHeight(newThumbHeight);
-        //        setThumbTop(newThumbTop);
+            const thumbPos = ((newStartIndex / columns) / totalRowCount) * viewHeight;
 
-        //        const startIndex = Math.floor((currentScrollPosition / itemHeightPx) * columns);
-        //        const endIndex = Math.min(data.length, startIndex + Math.ceil((viewableHeight / itemHeightPx) * columns));
+            const newThumbTop = Math.max(0, Math.min(thumbPos, viewHeight - newThumbHeight));
 
-        //        //setVisibleStartIndex(startIndex);
-        //        //setVisibleItemCount(endIndex - startIndex);
-        //    }
-        //}
+            setThumbTop(newThumbTop);
+        }
     };
 
     react.useEffect(() => {
-        calculateVisibleItems();
-        
-        window.addEventListener("wheel", onMouseWheel);
+        const tryClampValues = () => {
+            if (scrollRef.current && scrollRef.current.clientHeight > 0) {
 
-        return () => {
-            window.removeEventListener("wheel", onMouseWheel);
-        }
+                //console.log(`bc: ${batchCount} data.length: ${data.length}`);
+                if (data.length <= batchCount) {
+                    setVisibleStartIndex(0);
+                    setVisibleItemCount(batchCount);
+                    setThumbHeight(0);
+                    setThumbTop(0);
+                    return;
+                }
+                
+                const viewHeight = scrollRef.current.clientHeight;
+                let newThumbHeight = Math.max(viewHeight * batchSize, 30);
+                setThumbHeight(newThumbHeight);
+                setThumbTop(0);
+            } else {
+                setTimeout(tryClampValues, 10);
+            }
+        };
 
-    }, [data, rows, visibleStartIndex]);
+        tryClampValues();
+    }, [itemCount, data, data.length, batchCount]);
 
-    const onMouseMove = (e) => {
-        //if (!mouseDown)
+    const calculateEndIndex = () => {
+        let endIndex = columns == 1 ? data.length - 1 : parseInt(data.length / columns) * columns;
+
+        const itemsOverhanging = Math.max(0, data.length - endIndex);
+        const rowsOverhanging = itemsOverhanging / columns;
+        const hasBlankRows = rowsOverhanging > 0 && rowsOverhanging < rows;
+        const rowsToInset = hasBlankRows ? Math.floor(rows - rowsOverhanging) : 0;
+
+        if (rowsToInset > 0)
+            endIndex -= (rowsToInset * columns);
+        else if (rowsOverhanging >= 1)
+            endIndex -= batchCount;
+
+        console.log(`itemsOverhanging: ${itemsOverhanging} hasBlankRows: ${hasBlankRows} rowsOverhanging: ${rowsOverhanging} endIndex: ${endIndex} rowsToInset: ${rowsToInset}`);
+        return endIndex;
+    };
+
+    const doScroll = (amt, updateThumb = true) => {
+        //if (amt == 0)
         //    return;
 
-        //if (scrollRef.current && contentRef.current) {
-        //    const viewableHeight = scrollRef.current.clientHeight;
-        //    const totalContentHeight = contentRef.current.scrollHeight;
-        //    scrollRef.current.scrollTop += (e.movementY / viewableHeight) * totalContentHeight;
-        //    //calculateThumbSizeAndPosition();
-        //    calculateVisibleItems();
-        //}
+        const viewHeight = scrollRef.current.clientHeight;
+        const rowIndex = parseInt(visibleStartIndex / columns);
+
+        let startIndex = (rowIndex * columns) + amt;
+        const endIndex = calculateEndIndex();
+
+        startIndex = Math.max(0, Math.min(startIndex, endIndex));
+
+        setVisibleStartIndex(startIndex);
+        setVisibleItemCount(batchCount);
+
+        if (updateThumb) {
+            const newThumbHeight = Math.max(viewHeight * batchSize, 30);
+            const newThumbTop = Math.max(0, Math.min(((viewHeight - newThumbHeight) * (startIndex / endIndex)), viewHeight - newThumbHeight));
+            setThumbTop(newThumbTop);
+            setThumbHeight(newThumbHeight);
+        }
+    };
+
+    const onMouseWheel = (e) => {
+        if (scrollRef.current && scrollRef.current.contains(e.target)) {
+            if (data.length < batchCount) {
+                setVisibleStartIndex(0);
+                setVisibleItemCount(batchCount);
+                setThumbHeight(0);
+                setThumbTop(0);
+                return;
+            }
+
+            var amt = e.deltaY > 0 ? columns : e.deltaY < 0 ? -columns : 0;
+            doScroll(amt);
+        }
+    };    
+
+    const onMouseMove = (e) => {
+        if (!mouseDown)
+            return;        
+
+        if (scrollRef.current && e.movementY != 0) {
+            const viewHeight = scrollRef.current.clientHeight;
+            const itemHeightPx = viewHeight * (parseInt(itemHeight.replaceAll("%", "")) / 100.0);
+
+            if (data.length < batchCount || itemHeightPx <= 0)
+                return;
+
+            const adjustedMovement = e.movementY;
+
+            let newThumbHeight = Math.max(viewHeight * batchSize, 30);
+            setThumbHeight(newThumbHeight);
+
+            let newThumbTop = Math.max(0, Math.min(thumbTop + adjustedMovement, viewHeight - newThumbHeight));
+            setThumbTop(newThumbTop);
+
+            const endIndex = calculateEndIndex();
+
+            let newStartIndex = Math.floor(totalRowCount * (newThumbTop / (viewHeight - newThumbHeight)) * columns);
+
+            newStartIndex = parseInt(newStartIndex / columns) * columns;
+            newStartIndex = Math.max(0, Math.min(newStartIndex, endIndex));
+
+            setVisibleStartIndex(newStartIndex);
+            setVisibleItemCount(batchCount);
+        }
     };
 
     const onMouseUp = (e) => {
-        //if (mouseDown) {
-        //    setMouseDown(false);
-        //}
+        if (mouseDown) {
+            setMouseDown(false);
+        }
     };
 
     const onMouseDown = (e) => {
-        //if (!mouseDown) {
-        //    setMouseDown(true);
-        //    return true;
-        //}
+        if (!mouseDown) {
+            setMouseDown(true);
+            return true;
+        }
     };
 
     const onMouseEnter = (e) => {
-        //if (e.target !== e.currentTarget)
-        //    return;
+        if (e.target !== e.currentTarget)
+            return;
 
-        //engine.trigger("audio.playSound", "hover-item", 1);
+        engine.trigger("audio.playSound", "hover-item", 1);
     };
 
     const onTrackMouseDown = (e) => {
-        //if (e.target != e.currentTarget)
-        //    return;
-        //if (scrollRef.current && contentRef.current) {
-        //    const viewableHeight = scrollRef.current.clientHeight;
-        //    const totalContentHeight = contentRef.current.scrollHeight;
-        //    var rect = scrollRef.current.getBoundingClientRect();
-        //    scrollRef.current.scrollTop = ((e.screenY - Math.round(rect.top)) / viewableHeight) * totalContentHeight;
-        //    //calculateThumbSizeAndPosition();
-        //    calculateVisibleItems();
-        //    setMouseDown(true);
-        //}
+        if (e.target !== e.currentTarget) return;
+
+        if (scrollRef.current) {
+            const viewHeight = scrollRef.current.clientHeight;
+            
+            const rect = scrollRef.current.getBoundingClientRect();
+            const clickPositionRelative = e.clientY - rect.top;            
+            const clickProportion = clickPositionRelative / viewHeight;
+            const rowStartIndex = Math.floor(totalRowCount * clickProportion) * columns;
+
+            let newThumbHeight = Math.max(viewHeight * batchSize, 30);
+            setThumbHeight(newThumbHeight);
+
+            const endIndex = calculateEndIndex();
+
+            let newThumbTop = Math.max(0, Math.min(((viewHeight - newThumbHeight) * (rowStartIndex / endIndex)), viewHeight - newThumbHeight));
+
+            setThumbTop(newThumbTop);
+            setVisibleStartIndex(Math.min(endIndex, rowStartIndex));
+            setVisibleItemCount(batchCount);
+        }
     };
 
-    const thumbContent = thumbHeight > 0 ? <div className="track" onMouseDown={onTrackMouseDown}>
-        <div className="thumb" onMouseEnter={onMouseEnter} onMouseDown={onMouseDown} style={{ height: `${thumbHeight}px`, top: `${thumbTop}px` }}></div>
-    </div> : <></>;
-
     react.useEffect(() => {
-        //calculateThumbSizeAndPosition();
-        calculateVisibleItems();
-        window.addEventListener("resize", calculateVisibleItems);
+        if (data.length != itemCount) {
+            setItemCount(data.length);
+            setVisibleStartIndex(0);
+            setVisibleItemCount((rows * columns));
+            setThumbTop(0);
+        }
+
+        window.addEventListener("wheel", onMouseWheel);
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
 
         return () => {
-            window.removeEventListener("resize", calculateVisibleItems);
+            window.removeEventListener("wheel", onMouseWheel);
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
-        };
-    }, [data]); // Add these dependencies to recalculate when they change
+        }
+
+    }, [data, columns, rows, visibleStartIndex, itemCount, mouseDown, thumbTop]);
+
+    const thumbContent = react.useMemo(() => (
+        thumbHeight > 0 ? (
+            <div className="track" onMouseDown={onTrackMouseDown}>
+                <div className="thumb" onMouseEnter={onMouseEnter} onMouseDown={onMouseDown} style={{ height: `${thumbHeight}px`, top: `${thumbTop}px` }}></div>
+            </div>
+        ) : null
+    ), [thumbHeight, thumbTop, onMouseDown, onMouseEnter, onTrackMouseDown, ...watch]);
+ 
     
-    const visibleChildren = data.slice(visibleStartIndex, visibleStartIndex + visibleItemCount);
+    const visibleChildren = data ? data.slice(visibleStartIndex, visibleStartIndex + visibleItemCount) : [];
 
     const classNames = "scrollable vertical no-overflow" + (thumbHeight <= 0 + sizeClass + (className ? " " + className : ""));
 
+    const getCellClassName = (index) => {
+        if (!border)
+            return "";
+
+        let x = parseInt(index % columns);
+        let y = parseInt(index / columns);
+        let cs = "";
+
+        if (x !== (columns - 1))
+            cs += "border-right";
+
+        if (y !== (rows - 1))
+            cs += " border-bottom";
+
+        return cs;
+    };
+
+    const dummies = react.useMemo(() => {
+        const dummyCount = Math.max(0, (rows * columns) - visibleChildren.length);
+        return Array.from({ length: dummyCount }, (_, index) => (
+            <div key={index} style={{ width: itemWidth, height: itemHeight }}></div>
+        ));
+    }, [visibleChildren.length, rows, columns, itemWidth, itemHeight]);
+
+    const renderChild = react.useCallback((child, index) => {
+        return <div key={index} className={getCellClassName(index)} style={{ width: itemWidth, height: itemHeight }}>
+            {onRenderItem(child, index)}
+        </div>
+    }, [itemWidth, itemHeight, rows, columns, ...watch]);
+
     return (
-        <div className={classNames} onMouseOver={calculateVisibleItems}>
-            <div ref={scrollRef} onScroll={calculateVisibleItems} className="content">
-                <div ref={contentRef} className={(contentClassName ? contentClassName : "") + " h-x flex-1"}>
-                    {visibleChildren.map((child, index) => (<div style={{ width: itemWidth, height: itemHeight }} key={index}>{onRenderItem(child, index)}</div>))}
+        <div className={classNames} style={{ overflowY: 'hidden' }}>
+            <div ref={scrollRef} className="content" style={{ overflowY: 'hidden' }}>
+                <div ref={contentRef} className={(contentClassName ? contentClassName : "") + " h-x flex-1"} style={{ overflowY: 'hidden' }}>
+                    {visibleChildren.map((child, index) => (renderChild(child, index)))}
+                    {dummies}
                 </div>
             </div>
             {thumbContent}

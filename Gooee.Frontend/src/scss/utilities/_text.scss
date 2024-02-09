@@ -13,6 +13,16 @@
     text-align: center;
 }
 
+.fw-normal
+{
+    font-weight: normal;
+}
+
+.fw-bold
+{
+    font-weight: bold;
+}
+
 @mixin fontSizeUtilities 
 {
     @each $size-name, $size-value in $font-sizes 

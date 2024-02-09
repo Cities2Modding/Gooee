@@ -73,6 +73,8 @@ namespace Gooee.Injection
 
         private static readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
 
+        static bool HasInjected = false;
+
         public static JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
         {
             DefaultValueHandling = DefaultValueHandling.Populate,
@@ -103,6 +105,9 @@ namespace Gooee.Injection
         /// </summary>
         public static void Inject( )
         {
+            if ( HasInjected )
+                return;
+
             MakeHookUICompatible = IsHookUILoaded( );
 
             if ( !Directory.Exists( MakeHookUICompatible ? HOOKUI_PATH : GAMEUI_PATH ) )
@@ -120,6 +125,7 @@ namespace Gooee.Injection
 
             SetupFileWatcher( );
             _log.Info( "Installed Gooee!" );
+            HasInjected = true;
         }
 
         private static void InjectJS( )

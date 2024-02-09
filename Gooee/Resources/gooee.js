@@ -23497,27 +23497,41 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
 
   // src/jsx/components/_button.jsx
   var import_react = __toESM(require_react());
-  var Button = ({ children, onClick, color = null, shade = null, style = null, size = null, className = null, disabled = null, isBlock = null, icon = null, border = null, circular = null, onMouseEnter = null, onMouseLeave = null }) => {
-    const handleClick = () => {
-      if (disabled)
-        return;
-      if (onClick)
-        onClick();
-      engine.trigger("audio.playSound", "select-item", 1);
-    };
-    const internalOnMouseEnter = (e) => {
-      if (disabled)
-        return;
-      engine.trigger("audio.playSound", "hover-item", 1);
-      if (onMouseEnter)
-        onMouseEnter();
-    };
-    const internalOnMouseLeave = (e) => {
-      if (disabled)
-        return;
-      if (onMouseLeave)
-        onMouseLeave();
-    };
+  var Button = ({ children, onClick, color = null, shade = null, style = null, elementStyle = null, size = null, className = null, disabled = null, isBlock = null, icon = null, border = null, circular = null, onMouseEnter = null, onMouseLeave = null, watch = [] }) => {
+    const react = window.$_gooee.react;
+    const handleClick = (
+      /*react.useCallback(*/
+      (e) => {
+        if (disabled)
+          return;
+        if (onClick) {
+          if (onClick.length >= 1)
+            onClick(e);
+          else
+            onClick();
+        }
+        engine.trigger("audio.playSound", "select-item", 1);
+      }
+    );
+    const internalOnMouseEnter = (
+      /*react.useCallback(*/
+      (e) => {
+        if (disabled)
+          return;
+        engine.trigger("audio.playSound", "hover-item", 1);
+        if (onMouseEnter)
+          onMouseEnter();
+      }
+    );
+    const internalOnMouseLeave = (
+      /*react.useCallback(*/
+      (e) => {
+        if (disabled)
+          return;
+        if (onMouseLeave)
+          onMouseLeave();
+      }
+    );
     const circularClass = circular ? " btn-circular" : "";
     const shadeClass = shade ? `-${shade}` : "";
     const styleClass = style ? `-${style}` : "";
@@ -23527,7 +23541,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const sizeClass = size ? ` btn-${size}` : "";
     const iconColorClass = icon ? ` btn-${color}${shadeClass}${border ? " border-icon" : ""}` : "";
     const btnClass = icon ? `btn btn-icon${extraClass}${disabledClass}${sizeClass}${iconColorClass}${circularClass}` : `btn btn${styleClass}-${color}${shadeClass}${extraClass}${disabledClass}${blockClass}${sizeClass}`;
-    return /* @__PURE__ */ import_react.default.createElement("div", { className: btnClass, onMouseEnter: internalOnMouseEnter, onMouseLeave: internalOnMouseLeave, onClick: handleClick }, children);
+    return /* @__PURE__ */ import_react.default.createElement("div", { className: btnClass, onMouseEnter: internalOnMouseEnter, onMouseLeave: internalOnMouseLeave, onClick: handleClick, style: elementStyle }, children);
   };
   var button_default = Button;
 
@@ -23738,6 +23752,16 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         window.removeEventListener("mouseup", onMouseUp);
       };
     }, [mouseDown]);
+    react.useEffect(() => {
+      const tryUpdate = () => {
+        if (scrollRef.current && scrollRef.current.clientHeight > 0) {
+          calculateThumbSizeAndPosition();
+        } else {
+          setTimeout(tryUpdate, 10);
+        }
+      };
+      tryUpdate();
+    }, [children]);
     const classNames = "scrollable vertical" + (thumbHeight <= 0 || !canScroll ? " no-overflow" : "") + sizeClass + (className ? " " + className : "");
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: classNames, onMouseOver: calculateThumbSizeAndPosition }, /* @__PURE__ */ import_react5.default.createElement("div", { ref: scrollRef, onScroll: calculateThumbSizeAndPosition, className: "content" }, /* @__PURE__ */ import_react5.default.createElement("div", { ref: contentRef }, children)), thumbContent);
   };
@@ -24279,7 +24303,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
 
   // src/jsx/components/_virtual-list.jsx
   var import_react22 = __toESM(require_react());
-  var VirtualList = ({ className, contentClassName, data, onRenderItem, columns = 1, rows = 4, size = null }) => {
+  var VirtualList = ({ className, contentClassName, border = null, data, onRenderItem, columns = 1, rows = 4, size = null, watch = [] }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
     const contentRef = react.useRef(null);
@@ -24290,58 +24314,199 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const [mouseDown, setMouseDown] = react.useState(false);
     const [itemWidth, setItemWidth] = react.useState(`${100 / columns}%`);
     const [itemHeight, setItemHeight] = react.useState(`${100 / rows}%`);
+    const [itemCount, setItemCount] = react.useState(data ? data.length : 0);
+    const [batchCount, setBatchCount] = react.useState(rows * columns);
+    const [batchSize, setBatchSize] = react.useState(batchCount / data.length);
+    const [totalRowCount, setTotalRowCount] = react.useState(data.length / columns);
     const sizeClass = size ? ` scrollable-${size}` : "";
     react.useEffect(() => {
       setItemWidth(`${100 / columns}%`);
       setItemHeight(`${100 / rows}%`);
-      setVisibleItemCount(rows * columns);
-    }, [columns, rows, itemWidth, itemHeight]);
-    const onMouseWheel = (e) => {
+      const newBatchCount = rows * columns;
+      setVisibleItemCount(newBatchCount);
+      setBatchCount(newBatchCount);
+      const newBatchSize = newBatchCount / data.length;
+      setBatchSize(newBatchSize);
+      setTotalRowCount(data.length / columns);
+      clampValues(visibleStartIndex);
+    }, [columns, rows, itemWidth, itemHeight, data, data.length]);
+    const clampValues = (startIndex) => {
+      if (data.length <= batchCount) {
+        setVisibleStartIndex(0);
+        setVisibleItemCount(batchCount);
+        setThumbHeight(0);
+        setThumbTop(0);
+        return;
+      }
+      let newStartIndex = startIndex;
+      const endIndex = calculateEndIndex();
+      newStartIndex = Math.max(0, Math.min(newStartIndex, endIndex));
+      setVisibleStartIndex(newStartIndex);
+      setVisibleItemCount(batchCount);
       if (scrollRef.current) {
-        const totalRows = Math.ceil(data.length / rows * columns);
-        var amt = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
-        if (amt != 0) {
-          const startIndex = Math.min(totalRows - 1, Math.max(0, visibleStartIndex + amt * columns));
-          setVisibleStartIndex(startIndex);
-          setVisibleItemCount(rows * columns);
-        }
+        const viewHeight = scrollRef.current.clientHeight;
+        const newThumbHeight = Math.max(viewHeight * batchSize, 30);
+        setThumbHeight(newThumbHeight);
+        const thumbPos = newStartIndex / columns / totalRowCount * viewHeight;
+        const newThumbTop = Math.max(0, Math.min(thumbPos, viewHeight - newThumbHeight));
+        setThumbTop(newThumbTop);
       }
     };
-    const calculateVisibleItems = () => {
-      return;
-    };
     react.useEffect(() => {
-      calculateVisibleItems();
-      window.addEventListener("wheel", onMouseWheel);
-      return () => {
-        window.removeEventListener("wheel", onMouseWheel);
+      const tryClampValues = () => {
+        if (scrollRef.current && scrollRef.current.clientHeight > 0) {
+          if (data.length <= batchCount) {
+            setVisibleStartIndex(0);
+            setVisibleItemCount(batchCount);
+            setThumbHeight(0);
+            setThumbTop(0);
+            return;
+          }
+          const viewHeight = scrollRef.current.clientHeight;
+          let newThumbHeight = Math.max(viewHeight * batchSize, 30);
+          setThumbHeight(newThumbHeight);
+          setThumbTop(0);
+        } else {
+          setTimeout(tryClampValues, 10);
+        }
       };
-    }, [data, rows, visibleStartIndex]);
+      tryClampValues();
+    }, [itemCount, data, data.length, batchCount]);
+    const calculateEndIndex = () => {
+      let endIndex = columns == 1 ? data.length - 1 : parseInt(data.length / columns) * columns;
+      const itemsOverhanging = Math.max(0, data.length - endIndex);
+      const rowsOverhanging = itemsOverhanging / columns;
+      const hasBlankRows = rowsOverhanging > 0 && rowsOverhanging < rows;
+      const rowsToInset = hasBlankRows ? Math.floor(rows - rowsOverhanging) : 0;
+      if (rowsToInset > 0)
+        endIndex -= rowsToInset * columns;
+      else if (rowsOverhanging >= 1)
+        endIndex -= batchCount;
+      console.log(`itemsOverhanging: ${itemsOverhanging} hasBlankRows: ${hasBlankRows} rowsOverhanging: ${rowsOverhanging} endIndex: ${endIndex} rowsToInset: ${rowsToInset}`);
+      return endIndex;
+    };
+    const doScroll = (amt, updateThumb = true) => {
+      const viewHeight = scrollRef.current.clientHeight;
+      const rowIndex = parseInt(visibleStartIndex / columns);
+      let startIndex = rowIndex * columns + amt;
+      const endIndex = calculateEndIndex();
+      startIndex = Math.max(0, Math.min(startIndex, endIndex));
+      setVisibleStartIndex(startIndex);
+      setVisibleItemCount(batchCount);
+      if (updateThumb) {
+        const newThumbHeight = Math.max(viewHeight * batchSize, 30);
+        const newThumbTop = Math.max(0, Math.min((viewHeight - newThumbHeight) * (startIndex / endIndex), viewHeight - newThumbHeight));
+        setThumbTop(newThumbTop);
+        setThumbHeight(newThumbHeight);
+      }
+    };
+    const onMouseWheel = (e) => {
+      if (scrollRef.current && scrollRef.current.contains(e.target)) {
+        if (data.length < batchCount) {
+          setVisibleStartIndex(0);
+          setVisibleItemCount(batchCount);
+          setThumbHeight(0);
+          setThumbTop(0);
+          return;
+        }
+        var amt = e.deltaY > 0 ? columns : e.deltaY < 0 ? -columns : 0;
+        doScroll(amt);
+      }
+    };
     const onMouseMove = (e) => {
+      if (!mouseDown)
+        return;
+      if (scrollRef.current && e.movementY != 0) {
+        const viewHeight = scrollRef.current.clientHeight;
+        const itemHeightPx = viewHeight * (parseInt(itemHeight.replaceAll("%", "")) / 100);
+        if (data.length < batchCount || itemHeightPx <= 0)
+          return;
+        const adjustedMovement = e.movementY;
+        let newThumbHeight = Math.max(viewHeight * batchSize, 30);
+        setThumbHeight(newThumbHeight);
+        let newThumbTop = Math.max(0, Math.min(thumbTop + adjustedMovement, viewHeight - newThumbHeight));
+        setThumbTop(newThumbTop);
+        const endIndex = calculateEndIndex();
+        let newStartIndex = Math.floor(totalRowCount * (newThumbTop / (viewHeight - newThumbHeight)) * columns);
+        newStartIndex = parseInt(newStartIndex / columns) * columns;
+        newStartIndex = Math.max(0, Math.min(newStartIndex, endIndex));
+        setVisibleStartIndex(newStartIndex);
+        setVisibleItemCount(batchCount);
+      }
     };
     const onMouseUp = (e) => {
+      if (mouseDown) {
+        setMouseDown(false);
+      }
     };
     const onMouseDown = (e) => {
+      if (!mouseDown) {
+        setMouseDown(true);
+        return true;
+      }
     };
     const onMouseEnter = (e) => {
+      if (e.target !== e.currentTarget)
+        return;
+      engine.trigger("audio.playSound", "hover-item", 1);
     };
     const onTrackMouseDown = (e) => {
+      if (e.target !== e.currentTarget)
+        return;
+      if (scrollRef.current) {
+        const viewHeight = scrollRef.current.clientHeight;
+        const rect = scrollRef.current.getBoundingClientRect();
+        const clickPositionRelative = e.clientY - rect.top;
+        const clickProportion = clickPositionRelative / viewHeight;
+        const rowStartIndex = Math.floor(totalRowCount * clickProportion) * columns;
+        let newThumbHeight = Math.max(viewHeight * batchSize, 30);
+        setThumbHeight(newThumbHeight);
+        const endIndex = calculateEndIndex();
+        let newThumbTop = Math.max(0, Math.min((viewHeight - newThumbHeight) * (rowStartIndex / endIndex), viewHeight - newThumbHeight));
+        setThumbTop(newThumbTop);
+        setVisibleStartIndex(Math.min(endIndex, rowStartIndex));
+        setVisibleItemCount(batchCount);
+      }
     };
-    const thumbContent = thumbHeight > 0 ? /* @__PURE__ */ import_react22.default.createElement("div", { className: "track", onMouseDown: onTrackMouseDown }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } })) : /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null);
     react.useEffect(() => {
-      calculateVisibleItems();
-      window.addEventListener("resize", calculateVisibleItems);
+      if (data.length != itemCount) {
+        setItemCount(data.length);
+        setVisibleStartIndex(0);
+        setVisibleItemCount(rows * columns);
+        setThumbTop(0);
+      }
+      window.addEventListener("wheel", onMouseWheel);
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("mouseup", onMouseUp);
       return () => {
-        window.removeEventListener("resize", calculateVisibleItems);
+        window.removeEventListener("wheel", onMouseWheel);
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("mouseup", onMouseUp);
       };
-    }, [data]);
-    const visibleChildren = data.slice(visibleStartIndex, visibleStartIndex + visibleItemCount);
+    }, [data, columns, rows, visibleStartIndex, itemCount, mouseDown, thumbTop]);
+    const thumbContent = react.useMemo(() => thumbHeight > 0 ? /* @__PURE__ */ import_react22.default.createElement("div", { className: "track", onMouseDown: onTrackMouseDown }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } })) : null, [thumbHeight, thumbTop, onMouseDown, onMouseEnter, onTrackMouseDown, ...watch]);
+    const visibleChildren = data ? data.slice(visibleStartIndex, visibleStartIndex + visibleItemCount) : [];
     const classNames = "scrollable vertical no-overflow" + (thumbHeight <= 0 + sizeClass + (className ? " " + className : ""));
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: classNames, onMouseOver: calculateVisibleItems }, /* @__PURE__ */ import_react22.default.createElement("div", { ref: scrollRef, onScroll: calculateVisibleItems, className: "content" }, /* @__PURE__ */ import_react22.default.createElement("div", { ref: contentRef, className: (contentClassName ? contentClassName : "") + " h-x flex-1" }, visibleChildren.map((child, index) => /* @__PURE__ */ import_react22.default.createElement("div", { style: { width: itemWidth, height: itemHeight }, key: index }, onRenderItem(child, index))))), thumbContent);
+    const getCellClassName = (index) => {
+      if (!border)
+        return "";
+      let x = parseInt(index % columns);
+      let y = parseInt(index / columns);
+      let cs = "";
+      if (x !== columns - 1)
+        cs += "border-right";
+      if (y !== rows - 1)
+        cs += " border-bottom";
+      return cs;
+    };
+    const dummies = react.useMemo(() => {
+      const dummyCount = Math.max(0, rows * columns - visibleChildren.length);
+      return Array.from({ length: dummyCount }, (_, index) => /* @__PURE__ */ import_react22.default.createElement("div", { key: index, style: { width: itemWidth, height: itemHeight } }));
+    }, [visibleChildren.length, rows, columns, itemWidth, itemHeight]);
+    const renderChild = react.useCallback((child, index) => {
+      return /* @__PURE__ */ import_react22.default.createElement("div", { key: index, className: getCellClassName(index), style: { width: itemWidth, height: itemHeight } }, onRenderItem(child, index));
+    }, [itemWidth, itemHeight, rows, columns, ...watch]);
+    return /* @__PURE__ */ import_react22.default.createElement("div", { className: classNames, style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react22.default.createElement("div", { ref: scrollRef, className: "content", style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react22.default.createElement("div", { ref: contentRef, className: (contentClassName ? contentClassName : "") + " h-x flex-1", style: { overflowY: "hidden" } }, visibleChildren.map((child, index) => renderChild(child, index)), dummies)), thumbContent);
   };
   var virtual_list_default = VirtualList;
 
@@ -24427,19 +24592,10 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
                   newValue[prop] = val;
                   setModel(newValue);
                   engine.trigger(`${PluginName}.${Controller}.updateProperty`, JSON.stringify({ property: prop, value: val }));
+                },
+                _L: (key) => {
+                  return engine.translate(key);
                 }
-                //trigger: (eventName, value) => {
-                //    if (typeof value !== "undefined")
-                //        engine.trigger(`${PluginName}.${Controller}.${eventName}`, value);
-                //    else
-                //        engine.trigger(`${PluginName}.${Controller}.${eventName}`);
-                //},
-                //update: (prop, val) => {
-                //    const newValue = { ...model };
-                //    newValue[prop] = val;
-                //    setModel(newValue);
-                //    engine.trigger(`gooee.binding.${PluginName}.${Controller}.set`, JSON.stringify(newValue));
-                //}
               };
             };
           }
@@ -24447,7 +24603,8 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         if (window.$_gooee.bindings[Controller])
           return window.$_gooee.bindings[Controller];
         return () => {
-          return { model: null, update: null, trigger: null };
+          return { model: null, update: null, trigger: null, _L: () => {
+          } };
         };
       };
       const setupController = getController();

@@ -104,6 +104,18 @@ const Scrollable = ({ className, children, size = null }) => {
         };
     }, [mouseDown]);
 
+    react.useEffect(() => {
+        const tryUpdate = () => {
+            if (scrollRef.current && scrollRef.current.clientHeight > 0) {
+                calculateThumbSizeAndPosition();
+            } else {
+                setTimeout(tryUpdate, 10);
+            }
+        };
+
+        tryUpdate();
+    }, [children]);
+
     const classNames = "scrollable vertical" + (thumbHeight <= 0 || !canScroll ? " no-overflow" : "") + sizeClass + (className ? " " + className : "");
     return <div className={classNames} onMouseOver={calculateThumbSizeAndPosition}>
         <div ref={scrollRef} onScroll={calculateThumbSizeAndPosition} className="content">

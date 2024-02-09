@@ -39,6 +39,7 @@ namespace Gooee.Patches
 
                 UnityEngine.Debug.Log( "Using non-HookUI injection!" );
                 EnsureFolder( );
+                ResourceInjector.Inject( );
                 __instance.userInterface.view.url = INDEX_PATH;
                 AccessTools.Field( typeof( GameManager ), "m_UILocation" ).SetValue( __instance, INDEX_PATH );
             }
@@ -53,6 +54,7 @@ namespace Gooee.Patches
                     return;
 
                 EnsureFolder( );
+                ResourceInjector.Inject( );
                 UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
                 AccessTools.Field( typeof( UISystemBootstrapper ), "m_Url" ).SetValue( __instance, INDEX_PATH );
             }
@@ -86,6 +88,8 @@ namespace Gooee.Patches
 
             if ( lowerUrl.StartsWith( "coui://gooeeui/media/" ) )
                 uri = "coui://GameUI/Media/" + uri.Substring( "coui://gooeeui/media/".Length );
+            else if( lowerUrl.StartsWith( "coui://gooeeui/media%5c" ) )
+                uri = "coui://GameUI/Media/" + uri.Substring( "coui://gooeeui/media%5c".Length );
             else if ( lowerUrl.StartsWith( "coui://gooeeui/static/" ) )
                 uri = "coui://GameUI/Static/" + uri.Substring( "coui://gooeeui/static/".Length );
             else if ( lowerUrl.StartsWith( "coui://gooeeui/index.css" ) )

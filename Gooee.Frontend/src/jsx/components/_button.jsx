@@ -1,29 +1,36 @@
 import React from "react";
 
-const Button = ({ children, onClick, color = null, shade = null, style = null, size = null, className = null, disabled = null, isBlock = null, icon = null, border = null, circular = null, onMouseEnter = null, onMouseLeave = null }) => {
-    const handleClick = () => {
+const Button = ({ children, onClick, color = null, shade = null, style = null, elementStyle = null, size = null, className = null, disabled = null, isBlock = null, icon = null, border = null, circular = null, onMouseEnter = null, onMouseLeave = null, watch = [] }) => {
+    const react = window.$_gooee.react;
+
+    const handleClick = /*react.useCallback(*/(e) => {
         if (disabled)
             return;
-        if (onClick)
-            onClick();
+        if (onClick) {
+            if (onClick.length >= 1)
+                onClick(e);
+            else
+                onClick();
+        }
         engine.trigger("audio.playSound", "select-item", 1);
-    }
-    
-    const internalOnMouseEnter = (e) => {
+    }/*, [disabled, ...watch])*/;
+
+    const internalOnMouseEnter = /*react.useCallback(*/(e) => {
         if (disabled)
             return;
+
         engine.trigger("audio.playSound", "hover-item", 1);
 
         if (onMouseEnter)
             onMouseEnter();
-    };
+    }/*, [disabled, ...watch])*/;
 
-    const internalOnMouseLeave = (e) => {
+    const internalOnMouseLeave = /*react.useCallback(*/(e) => {
         if (disabled)
             return;
         if (onMouseLeave)
             onMouseLeave();
-    };
+    }/*, [disabled, ...watch])*/;
 
     const circularClass = circular ? " btn-circular" : "";
     const shadeClass = shade ? `-${shade}` : "";
@@ -34,7 +41,7 @@ const Button = ({ children, onClick, color = null, shade = null, style = null, s
     const sizeClass = size ? ` btn-${size}` : "";
     const iconColorClass = icon ? ` btn-${color}${shadeClass}${border ? " border-icon" : ""}` : "";
     const btnClass = (icon ? `btn btn-icon${extraClass}${disabledClass}${sizeClass}${iconColorClass}${circularClass}` : `btn btn${styleClass}-${color}${shadeClass}${extraClass}${disabledClass}${blockClass}${sizeClass}`);
-    return <div className={btnClass} onMouseEnter={internalOnMouseEnter} onMouseLeave={internalOnMouseLeave} onClick={handleClick}>
+    return <div className={btnClass} onMouseEnter={internalOnMouseEnter} onMouseLeave={internalOnMouseLeave} onClick={handleClick} style={elementStyle}>
         {children}
     </div>;
 };

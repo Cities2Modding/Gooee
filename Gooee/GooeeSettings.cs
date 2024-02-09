@@ -1,9 +1,11 @@
-﻿using Colossal.IO.AssetDatabase;
+﻿using cohtml.Net;
+using Colossal.IO.AssetDatabase;
 using Colossal.PSI.Common;
 using Game.Modding;
 using Game.SceneFlow;
 using Game.Settings;
 using Game.UI.Menu;
+using Game.UI.Widgets;
 using Gooee.Helpers;
 using System;
 using System.Collections.Generic;
@@ -222,6 +224,42 @@ namespace Gooee
                             pageData.AddGroup( settingItemData.simpleGroup );
                             pageData.AddGroupToShowName( settingItemData.simpleGroup );
                         }
+                        else if ( element is GooeeSettingDropdown dropDown )
+                        {
+                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( )
+                            {
+                                setting = this,
+                                property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), dropDown.Selected )
+                                {
+                                    canRead = true,
+                                    canWrite = true,
+                                    attributes = 
+                                    {
+                                        new SettingsUIDropdownAttribute( GetType(), dropDown.Options )
+                                    },
+                                    getter = ( instance ) =>
+                                    {
+                                        var settings = ( GooeeSettings ) instance;
+                                        var property = settings.GetType( ).GetProperty( dropDown.Selected, BindingFlags.Instance | BindingFlags.Public );
+
+                                        return ( string ) property.GetValue( settings );
+                                    },
+                                    setter = ( instance, value ) =>
+                                    {
+                                        var settings = ( GooeeSettings ) instance;
+                                        var property = settings.GetType( ).GetProperty( dropDown.Selected, BindingFlags.Instance | BindingFlags.Public );
+
+                                        property.SetValue( settings, value );
+                                    },
+                                },
+                                simpleGroup = group.Title,
+                                advancedGroup = group.Title,
+                                widgetType = AutomaticSettings.WidgetType.StringDropdown
+                            };
+                            pageData[tab].AddItem( settingItemData );
+                            pageData.AddGroup( settingItemData.simpleGroup );
+                            pageData.AddGroupToShowName( settingItemData.simpleGroup );
+                        }
                     }
                 }
 
@@ -253,7 +291,8 @@ namespace Gooee
 
         [XmlElement( "button", Type = typeof( GooeeSettingButton ) )]
         [XmlElement( "checkbox", Type = typeof( GooeeSettingCheckBox ) )]
-        [XmlElement( "slider", Type = typeof( GooeeSettingSlider ) )]
+        [XmlElement( "select", Type = typeof( GooeeSettingDropdown ) )]
+        [XmlElement( "slider", Type = typeof( GooeeSettingSlider ) )] 
         public List<GooeeSettingElement> Elements
         {
             get;
@@ -308,6 +347,23 @@ namespace Gooee
     {
         [XmlAttribute( "isChecked" )]
         public string IsChecked
+        {
+            get;
+            set;
+        }
+    }
+
+    public class GooeeSettingDropdown : GooeeSettingElement
+    {
+        [XmlAttribute( "options" )]
+        public string Options
+        {
+            get;
+            set;
+        }
+
+        [XmlAttribute( "selected" )]
+        public string Selected
         {
             get;
             set;

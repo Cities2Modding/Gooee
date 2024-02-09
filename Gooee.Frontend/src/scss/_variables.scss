@@ -13,6 +13,7 @@
     #{$key}TransLight: fade-out(color.scale($colour, $lightness: 20%, $saturation: -25%), 0.25);
     #{$key}TransDark: fade-out(color.scale($colour, $lightness: -25%, $saturation: -25%), 0.25);
     #{$key}TransDarker: fade-out(color.scale($colour, $lightness: -35%, $saturation: -35%), 0.25);
+    #{$key}TransMid: fade-out($colour, 0.55);
     #{$key}TransLessFaded: fade-out($colour, 0.75);
     #{$key}TransFaded: fade-out($colour, 0.9);
 }
@@ -67,6 +68,7 @@ body.style--bright-blue
         "trans-darker": var(--g#{$key}TransDarker),
         "trans-less-faded": var(--g#{$key}TransLessFaded),
         "trans-faded": var(--g#{$key}TransFaded),
+        "trans-mid": var(--g#{$key}TransMid),
     );
 
     @return $map-colours;
@@ -109,7 +111,7 @@ $colours: (
 }
 
 // Borders
-$border-colour: #dee2e6;
+$border-colour: getColour("light", "trans-faded");
 $border-thickness: var(--stroke2);
 $border-thickness-sm: var(--stroke1);
 $border-radius: 7.5rem;
@@ -227,7 +229,7 @@ $icon-button-lg: 39rem;
 $badge-padding-h: 0.25em;
 $badge-padding-top: 0.55rem;
 $badge-padding-bottom: 0;
-$badge-height: 25rem;
+$badge-height: auto;
 $badge-pill-border-radius: 50rem;
 $badge-border-radius: $border-radius;
 $badge-border-thickness: var(--stroke2);
@@ -329,10 +331,12 @@ $mask-icons: ( "advisor": "Advisor",
     "workplace": "Workplace" );
 
 $icon-size: 24rem;
+$icon-size-xs: 16rem;
 $icon-size-sm: 20rem;
 $icon-size-lg: 36rem;
 $icon-size-xl: 56rem;
-$icon-size-xxl: 128rem;
+$icon-size-xxl: 68rem;
+$icon-size-xxxl: 96rem;
 
 $percent-sizes: "5", "10", "15", "20", "25", "30", "33", "50", "70", "80", "90", "100";
 

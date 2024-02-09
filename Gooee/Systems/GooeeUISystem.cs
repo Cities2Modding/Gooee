@@ -65,16 +65,32 @@ namespace Gooee.Systems
 
                 controllerTypes.ForEach( t =>
                 {
+                    var dependencies = t.GetCustomAttributes<ControllerDependsAttribute>( );
                     var pluginProperty = t.GetProperty( "Plugin", BindingFlags.Public | BindingFlags.Instance );
                     var controller = ( IController ) World.GetOrCreateSystemManaged( t );
                     pluginProperty.SetValue( controller, plugin );
                     controllers.Add( controller );
+
+                    updateAt.MakeGenericMethod( controller.GetType( ) ).Invoke( World.GetExistingSystemManaged<UpdateSystem>( ), SystemUpdatePhase.UIUpdate );
+
+                    if ( dependencies?.Any( ) == true )
+                    {
+                        dependencies.ForEach( dependency =>
+                        {
+                            // Not really needed as update at will instantiate it BUT
+                            // this guarantees instant Instantiation before controller.
+                            World.GetOrCreateSystemManaged( dependency.Type );
+
+                            if ( dependency.UpdatePhase != SystemUpdatePhase.Invalid )
+                                updateAt.MakeGenericMethod( dependency.Type ).Invoke( World.GetExistingSystemManaged<UpdateSystem>( ), dependency.UpdatePhase );
+                        } );
+                    }
+
                     controller.OnLoaded( );
 
                     _log.Debug( $"Gooee instantiated controller {controller.GetType( ).FullName} for plugin {pluginType.FullName}" );
 
-                    updateAt.MakeGenericMethod( controller.GetType( ) ).Invoke( World.GetExistingSystemManaged<UpdateSystem>( ), SystemUpdatePhase.UIUpdate );
-                } );
+                    } );
 
                 pluginWithControllers.Controllers = controllers.ToArray( );
             }

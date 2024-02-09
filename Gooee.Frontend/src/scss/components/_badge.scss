@@ -29,6 +29,15 @@
     margin-right: map-get($spacers, "1");
 }
 
+.badge-xs
+{
+    font-size: $font-size-xs;
+    border-bottom-left-radius: $badge-border-radius;
+    border-bottom-right-radius: $badge-border-radius;
+    border-top-left-radius: $badge-border-radius;
+    border-top-right-radius: $badge-border-radius;
+}
+
 .badge-sm
 {
     font-size: $font-size-sm;

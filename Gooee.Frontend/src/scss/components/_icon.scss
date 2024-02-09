@@ -2,6 +2,12 @@
 {
     width: $icon-size !important;
     height: $icon-size !important;
+    
+    &.icon-xs
+    {
+        width: $icon-size-xs !important;
+        height: $icon-size-xs !important;
+    }
 
     &.icon-sm
     {
@@ -26,7 +32,12 @@
         width: $icon-size-xxl !important;
         height: $icon-size-xxl !important;
     }
-    
+
+    &.icon-xxxl
+    {
+        width: $icon-size-xxxl !important;
+        height: $icon-size-xxxl !important;
+    }    
 
     &.icon-spin
     {
