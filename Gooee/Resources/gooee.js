@@ -24682,7 +24682,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     };
     const render = /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react24.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins));
     if (pluginType === "photomode-container") {
-      return /* @__PURE__ */ import_react24.default.createElement("div", { className: photoMode.className }, /* @__PURE__ */ import_react24.default.createElement("div", { className: "photomode-wrapper" }, photoMode.children), render, /* @__PURE__ */ import_react24.default.createElement("div", { className: "gooee" }, /* @__PURE__ */ import_react24.default.createElement(modal_default, { title: "Test", className: "photomode-wrapper" }, /* @__PURE__ */ import_react24.default.createElement("div", null, "Hello, world!"))));
+      return /* @__PURE__ */ import_react24.default.createElement("div", { className: photoMode.className }, /* @__PURE__ */ import_react24.default.createElement("div", { className: "photomode-wrapper" }, photoMode.children), render);
     }
     return render;
   };

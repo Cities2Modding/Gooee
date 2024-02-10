@@ -20,8 +20,8 @@
 	</PropertyGroup>
 	
 	<PropertyGroup>
-		<Cities2_Location>G:\SteamLibrary\steamapps\common\Cities Skylines II</Cities2_Location>
-		<UnstrippedUnity_Location>G:\SteamLibrary\steamapps\common\Cities Skylines II\unstripped</UnstrippedUnity_Location>
+		<Cities2_Location>E:\Games\Cities Skylines II</Cities2_Location>
+		<UnstrippedUnity_Location>E:\Games\Cities Skylines II\unstripped</UnstrippedUnity_Location>
 		<BepInExVersion>5</BepInExVersion>
 	</PropertyGroup>
 	

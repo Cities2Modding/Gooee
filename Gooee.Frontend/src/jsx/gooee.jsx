@@ -207,15 +207,16 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
         return <div className={photoMode.className}>
             <div className="photomode-wrapper">{photoMode.children}</div>
             {render}
-            <div className="gooee">
+            {/*<div className="gooee">
                 <Modal title="Test" className="photomode-wrapper">
                     <div>
                         Hello, world!
                     </div>
                 </Modal>
-            </div>
+            </div>*/}
         </div>;
     }
+
     return render;
 };
 
