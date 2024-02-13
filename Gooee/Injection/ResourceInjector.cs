@@ -75,6 +75,12 @@ namespace Gooee.Injection
 
         static bool HasInjected = false;
 
+        public static bool InvalidVersion
+        {
+            get;
+            private set;
+        }
+
         public static JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
         {
             DefaultValueHandling = DefaultValueHandling.Populate,
@@ -84,6 +90,11 @@ namespace Gooee.Injection
                 new Newtonsoft.Json.Converters.StringEnumConverter( )
             }
         };
+
+        static ResourceInjector( )
+        {
+            InvalidVersion = !ValidateVersion( );
+        }
 
         public static bool IsHookUILoaded( )
         {
@@ -105,7 +116,7 @@ namespace Gooee.Injection
         /// </summary>
         public static void Inject( )
         {
-            if ( HasInjected )
+            if ( HasInjected || InvalidVersion )
                 return;
 
             MakeHookUICompatible = IsHookUILoaded( );
@@ -145,6 +156,13 @@ namespace Gooee.Injection
             }
 
             File.WriteAllText( MakeHookUICompatible ? HOOKUI_INDEX_JS : NON_HOOKUI_INDEX_JS, js );
+        }
+
+        private static bool ValidateVersion( )
+        {
+            var js = File.ReadAllText( GAMEUI_INDEX_JS );
+
+            return js.Contains( NON_HOOKUI_INJECTION_POINT.Search );
         }
 
         private static void InjectHTML( )

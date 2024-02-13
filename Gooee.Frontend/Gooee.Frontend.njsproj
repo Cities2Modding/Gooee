@@ -30,6 +30,9 @@
   <ItemGroup>
     <Content Include="gulpfile.js" />
     <Content Include="package.json" />
+    <Content Include="src\jsx\components\_auto-tooltip.jsx" />
+    <Content Include="src\jsx\components\_pie-chart.jsx" />
+    <Content Include="src\jsx\components\_progress-bar.jsx" />
     <Content Include="src\jsx\components\_form-checkbox.jsx" />
     <Content Include="src\jsx\components\_checkbox-group.jsx" />
     <Content Include="src\jsx\components\_toggle-button-group.jsx" />
@@ -71,6 +74,7 @@
     <Content Include="src\scss\components\_icon.scss" />
     <Content Include="src\scss\components\_list.scss" />
     <Content Include="src\scss\components\_markdown.scss" />
+    <Content Include="src\scss\components\_progress-bar.scss" />
     <Content Include="src\scss\components\_scrollable.scss" />
     <Content Include="src\scss\components\_slider.scss" />
     <Content Include="src\scss\utilities\_border.scss" />

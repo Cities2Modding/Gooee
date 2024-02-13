@@ -2,6 +2,7 @@ import React from "react";
 import Button from "./components/_button";
 import Grid from "./components/_grid";
 import ToolTip from "./components/_tooltip";
+import AutoToolTip from "./components/_auto-tooltip";
 import ToolTipContent from "./components/_tooltip-content";
 import Scrollable from "./components/_scrollable";
 import Modal from "./components/_modal";
@@ -22,6 +23,8 @@ import MarkDown from "./components/_markdown";
 import List from "./components/_list";
 import VirtualList from "./components/_virtual-list";
 import ToggleButtonGroup from "./components/_toggle-button-group";
+import ProgressBar from "./components/_progress-bar";
+import PieChart from "./components/_pie-chart";
 //import ChangeLog from "./modules/_changelog";
 
 const GooeeContainer = ({ react, pluginType, photoMode }) => {
@@ -29,6 +32,44 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
     const [plugins, setPlugins] = react.useState([]);
 
     const wrapWithGooee = pluginType === "default" || pluginType === "main-container" || pluginType === "photomode-container";
+
+    const getColours = react.useCallback(() => {
+        const rootStyle = getComputedStyle(document.documentElement);
+        return {
+            base: {
+                primary: rootStyle.getPropertyValue('--gPrimary').trim(),
+                secondary: rootStyle.getPropertyValue('--gSecondary').trim(),
+                info: rootStyle.getPropertyValue('--gInfo').trim(),
+                success: rootStyle.getPropertyValue('--gSuccess').trim(),
+                warning: rootStyle.getPropertyValue('--gWarning').trim(),
+                danger: rootStyle.getPropertyValue('--gDanger').trim(),
+                light: rootStyle.getPropertyValue('--gLight').trim(),
+                dark: rootStyle.getPropertyValue('--gDark').trim(),
+                text: rootStyle.getPropertyValue('--gText').trim(),
+                textInverted: rootStyle.getPropertyValue('--gTextInverted').trim(),
+                muted: rootStyle.getPropertyValue('--gMuted').trim(),
+                white: rootStyle.getPropertyValue('--gWhite').trim(),
+                black: rootStyle.getPropertyValue('--gBlack').trim(),
+                grey: rootStyle.getPropertyValue('--gGrey').trim()
+            },
+            trans: {
+                primary: rootStyle.getPropertyValue('--gPrimaryTrans').trim(),
+                secondary: rootStyle.getPropertyValue('--gSecondaryTrans').trim(),
+                info: rootStyle.getPropertyValue('--gInfoTrans').trim(),
+                success: rootStyle.getPropertyValue('--gSuccessTrans').trim(),
+                warning: rootStyle.getPropertyValue('--gWarningTrans').trim(),
+                danger: rootStyle.getPropertyValue('--gDangerTrans').trim(),
+                light: rootStyle.getPropertyValue('--gLightTrans').trim(),
+                dark: rootStyle.getPropertyValue('--gDarkTrans').trim(),
+                text: rootStyle.getPropertyValue('--gTextTrans').trim(),
+                textInverted: rootStyle.getPropertyValue('--gTextInvertedTrans').trim(),
+                muted: rootStyle.getPropertyValue('--gMutedTrans').trim(),
+                white: rootStyle.getPropertyValue('--gWhiteTrans').trim(),
+                black: rootStyle.getPropertyValue('--gBlackTrans').trim(),
+                grey: rootStyle.getPropertyValue('--gGreyTrans').trim()
+            }
+        };
+    }, []);
 
     react.useEffect(() => {
         const interval = setInterval(function () {
@@ -40,6 +81,8 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
         return () => {
         };
     }, [plugins]);
+
+    const gooeeColours = getColours();
 
     const renderPlugins =
         plugins.map(name => {
@@ -70,6 +113,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
 
                             return {
                                 model: model,
+                                colors: gooeeColours,
                                 trigger: (eventName, value) => {
                                     if (typeof value !== "undefined")
                                         engine.trigger(`${PluginName}.${Controller}.${eventName}`, value);
@@ -96,7 +140,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                 if (window.$_gooee.bindings[Controller])
                     return window.$_gooee.bindings[Controller];
 
-                return () => { return { model: null, update: null, trigger: null, _L: ()=>{} } };
+                return () => { return { model: null, update: null, trigger: null, _L: () => { }, colors: gooeeColours } };
             };
 
             const setupController = getController();
@@ -227,6 +271,7 @@ window.$_gooee.framework = {
     ToggleButtonGroup,
     Grid,
     ToolTip,
+    AutoToolTip,
     ToolTipContent,
     Scrollable,
     Modal,
@@ -245,5 +290,7 @@ window.$_gooee.framework = {
     FormCheckBox,
     MarkDown,
     List,
-    VirtualList
+    VirtualList,
+    ProgressBar,
+    PieChart
 };

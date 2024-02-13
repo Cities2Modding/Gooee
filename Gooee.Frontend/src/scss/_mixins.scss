@@ -20,6 +20,14 @@
     padding-bottom: $padding-v;
 }
 
+@mixin marginAll($margin)
+{
+    padding-left: $margin;
+    padding-right: $margin;
+    padding-top: $margin;
+    padding-bottom: $margin;
+}
+
 @mixin borderNone($important: false)
 {
     @if ( $important == true)
@@ -354,4 +362,16 @@
         opacity: 0;
         pointer-events: none !important;
     }
+}
+
+@mixin absoluteFill()
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

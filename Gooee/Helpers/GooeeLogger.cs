@@ -50,25 +50,25 @@ namespace Gooee.Helpers
         public void Warning( string message )
         {
             _gameLog.Warn( message );
-            _bepInEx.LogWarning( message );
+            // Will already propagate to console
         }
 
         public void Warning( Exception exception )
         {
             _gameLog.Warn( exception );
-            _bepInEx.LogWarning( exception );
+            // Will already propagate to console
         }
 
         public void Error( string message )
         {
             _gameLog.Error( message );
-            _bepInEx.LogError( message );
+            // Will already propagate to console
         }
 
         public void Error( Exception exception )
         {
             _gameLog.Error( exception );
-            _bepInEx.LogError( exception );
+            // Will already propagate to console
         }
     }
 }

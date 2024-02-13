@@ -33,10 +33,16 @@ namespace Gooee.Systems
 
             //_librarySettings.Register( );
 
-            ResourceInjector.Inject( );
+            if ( ResourceInjector.InvalidVersion )
+            {
+                _log.Error( "Critical error, mods using Gooee cannot be loaded because the game version has changed. Please ensure you are using the latest version of Gooee and if no new version is out yet please be aware it takes a bit of time to adjust to patch updates. Thank you." );
 
-            PluginLoader.Plugins.Values.OrderBy( v => v.Name ).ForEach( ProcessPlugin );
-
+            }
+            else
+            {
+                ResourceInjector.Inject( );
+                PluginLoader.Plugins.Values.OrderBy( v => v.Name ).ForEach( ProcessPlugin );
+            }
             //AddBinding( new TriggerBinding( "gooee", "onCloseChangeLog", ResourceInjector.WriteChangeLogRead ) );
             //AddBinding( new TriggerBinding( "gooee", "resetChangeLog", ResourceInjector.ResetChangeLog ) );            
 
@@ -102,7 +108,6 @@ namespace Gooee.Systems
 
         private void ProcessPluginLanguagesAndSettings( IGooeePlugin plugin, Type pluginType, IEnumerable<Attribute> customAttributes )
         {
-
             if ( plugin is IGooeeLanguages langPlugin && plugin is IGooeeSettings settingsPlugin )
             {
                 var settingsAttribute = ( GooeeSettingsMenuAttribute ) customAttributes.FirstOrDefault( a => a.GetType( ) == typeof( GooeeSettingsMenuAttribute ) );

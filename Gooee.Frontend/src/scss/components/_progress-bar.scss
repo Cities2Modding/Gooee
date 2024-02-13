@@ -1,0 +1,156 @@
+.gooee
+{
+    .progress-bar
+    {
+        > .progress-container
+        {
+            flex: 1;
+            display: flex;
+            position: relative;
+            box-shadow: $box-shadow;
+            align-items: center;
+            background-color: $progress-bar-bg-color;
+            @include borderRadius($progress-bar-border-radius);
+            @include borderAll($progress-bar-border-color, $border-thickness);
+            transition: border 0.5s ease-out, background-color 0.5s ease-out; 
+
+            > .progress
+            {
+                background-color: $progress-bar-color;
+                @include borderRadius($progress-bar-border-radius);
+            }
+
+            > .progress-label
+            {
+                @include absoluteFill;
+                opacity: 1;
+                font-weight: bold;
+                font-size: $progress-bar-font-size;
+                text-shadow: $text-shadow;
+                transition: opacity 0.5s ease-out;
+
+                > span
+                {
+                    color: $light;
+                }
+
+                &.hidden
+                {
+                    opacity: 0;
+                }
+            }
+        }
+
+        &.horizontal
+        {
+            > .progress-container
+            {
+                height: $progress-bar-thickness;
+                width: 100%;
+                overflow-x: hidden;
+                flex-direction: row;
+                flex-wrap: wrap;
+
+                > .progress
+                {                
+                    height: 100%;
+                    width: initial;
+                    transition: width 0.5s ease-out, background-color 0.5s ease-out;
+                }
+
+                > .progress-label
+                {
+                    height: 100%;
+                    overflow-x: hidden;
+
+                    > span
+                    {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+
+        &.vertical 
+        {
+            > .progress-container
+            {
+                width: $progress-bar-thickness;
+                height: 100%;
+                flex-direction: column-reverse;
+
+                > .progress
+                {                
+                    width: 100%;
+                    height: initial;
+                    transition: height 0.5s ease-out, background-color 0.5s ease-out;
+                }
+
+                > .progress-label
+                {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+        }
+
+        @each $key in $button-colours 
+        {
+            $foreground: getColour($key, "trans");
+            $background: getColour($key, "trans-less-faded");
+            $textForeground: map-get($text-colours, $key);
+
+            &.progress-bar-#{$key}
+            {
+                > .progress-container
+                {                
+                    background-color: $background;
+                    @include borderAll($foreground, $border-thickness);
+
+                    > .progress
+                    {
+                        background-color: $foreground;
+                    }
+
+                    
+                    > .progress-label
+                    {
+                        > span
+                        {
+                            color: $light;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .progress-bar-group
+    {
+        display: flex;
+        align-items: flex-start;
+
+        &.horizontal
+        {
+            flex-direction: column;
+
+            > .progress-bar
+            {
+                margin-bottom: map-get($spacers,"1");
+            }
+        }
+
+        &.vertical
+        {
+            flex-direction: row;
+
+            > .progress-bar
+            {
+                width: initial;
+                margin-right: map-get($spacers,"1");
+            }
+        }
+    }
+}
