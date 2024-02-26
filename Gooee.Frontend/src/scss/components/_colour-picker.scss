@@ -1,0 +1,239 @@
+:root 
+{
+    --gColorPickerColor: #ff0000; // Example core color (red)
+}
+
+.color-picker-toggle 
+{
+    @include borderRadiusLeft($input-border-radius);
+
+    > div
+    {
+        @include borderAll(rgba(45, 47, 55, 1), var(--stroke2));
+        @include borderRadius($border-radius-sm);
+        width: calc($icon-button * 1.45) !important;
+        height: $icon-button !important;        
+        transition:
+            background-color .15s ease-in-out,
+            border-color .15s ease-in-out;
+
+        &:hover
+        {
+            @include borderAll($input-border-colour-hover, var(--stroke2));
+        }
+    }
+}
+
+.color-picker-container
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto !important;
+    background-color: getColour("black", "trans");
+    @include panelBlur;
+    padding: map-get($spacers, "4");
+    position: absolute;
+    @include borderRadius($border-radius-sm);
+    opacity: 0;
+    pointer-events: none !important;
+    transition: opacity linear 0.2s;
+
+    &.visible
+    {
+        opacity: 1;
+        pointer-events: auto !important;
+    }
+
+    > .color-picker
+    {
+        display: flex;
+        width: auto !important;
+        margin-right: map-get($spacers, "5");
+    }
+
+    > .color-picker-settings
+    {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: auto;
+        margin-right: map-get($spacers, "5");
+
+        > .color-picker-preview
+        {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: auto !important;
+
+            > .color-picker-block-container
+            {
+                @include borderAll($border-colour, $input-border-thickness);
+                @include borderRadius($input-border-radius);
+                margin-top: map-get($spacers, "1");
+                margin-bottom: map-get($spacers, "1");
+
+                > div:first-child
+                {
+                    @include borderRadiusTop($input-border-radius);
+                }
+
+                > div:last-child
+                {
+                    @include borderRadiusBottom($input-border-radius);
+                }
+            }
+
+            > label
+            {
+                font-size: $font-size-xs;
+                color: getColour("muted", "base");
+                text-transform: uppercase;
+            }
+        }
+    }
+    
+    &.color-picker-xs
+    {
+        .color-picker-area-container
+        {
+            width: $color-picker-size-xs !important;
+            height: $color-picker-size-xs !important;
+        }
+
+        .color-picker-hue-container
+        {
+            width: $input-slider-xs !important;
+            height: $color-picker-size-xs !important;
+        }
+
+        .color-picker-buttons
+        {
+            width: $color-picker-size-xs;
+        }
+    }
+
+    &.color-picker-sm
+    {
+        .color-picker-area-container
+        {
+            width: $color-picker-size-sm !important;
+            height: $color-picker-size-sm !important;
+        }
+
+        .color-picker-hue-container
+        {
+            width: $input-slider-sm !important;
+            height: $color-picker-size-sm !important;
+        }
+
+        .color-picker-buttons
+        {
+            width: $color-picker-size-sm;
+        }
+    }
+
+    &.color-picker-lg
+    {
+        .color-picker-area-container
+        {
+            width: $color-picker-size-lg !important;
+            height: $color-picker-size-lg !important;
+        }
+
+        .color-picker-hue-container
+        {
+            width: $input-slider-lg !important;
+            height: $color-picker-size-lg !important;
+        }
+
+        .color-picker-buttons
+        {
+            width: $color-picker-size-lg;
+        }
+    }
+
+    .color-picker-buttons
+    {
+        display: flex;
+        flex-direction: column;
+        width: auto;        
+        margin-bottom: map-get($spacers, "4");
+        flex: 1;
+
+        .btn
+        {
+            text-align: center;
+        }
+    }
+
+    .color-picker-extras
+    {
+        display: flex;
+        flex-direction: column;
+        margin-right: auto !important;
+        width: auto !important;
+    }
+}
+
+.color-picker-area-container
+{
+    width: $color-picker-size !important;
+    height: $color-picker-size !important;
+    @include borderRadius($input-border-radius);
+    @include borderAll($border-colour, $input-border-thickness);
+
+    > .color-picker-area-content
+    {        
+        width: 100%;
+        height: 100%;
+        background-color: #FFFFFF;
+        @include borderRadius($input-border-radius);
+
+        > .color-picker-area
+        {
+            @include borderRadius($input-border-radius);
+
+            background-image: linear-gradient(to bottom, transparent, black),
+                        linear-gradient(to right, rgba(255, 255, 255, 0), var(--gColorPickerColor));
+    
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.color-picker-hue-container
+{
+    width: $input-slider-base !important;
+    height: $color-picker-size !important;
+    @include borderAll($border-colour, $input-border-thickness);
+    @include borderRadius($input-border-radius);
+    margin-left: map-get($spacers, "4");
+
+    > .color-picker-hue
+    {
+        @include borderRadius($input-border-radius);
+
+        background-image: linear-gradient(
+            to top,
+            #ff0000, // Red
+            #ffff00, // Yellow
+            #00ff00, // Lime
+            #00ffff, // Aqua
+            #0000ff, // Blue
+            #ff00ff, // Fuchsia
+            #ff0000  // Red (again to complete the cycle)
+        );
+        
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.color-picker-form-label
+{
+    width: 24rem;
+}

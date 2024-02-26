@@ -1,5 +1,6 @@
 .icon, .fa
 {
+    pointer-events: none !important;
     width: $icon-size !important;
     height: $icon-size !important;
     

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Scrollable = ({ className, children, size = null }) => {
+const Scrollable = ({ className, children, size = null, style }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
     const contentRef = react.useRef(null);
@@ -117,7 +117,7 @@ const Scrollable = ({ className, children, size = null }) => {
     }, [children]);
 
     const classNames = "scrollable vertical" + (thumbHeight <= 0 || !canScroll ? " no-overflow" : "") + sizeClass + (className ? " " + className : "");
-    return <div className={classNames} onMouseOver={calculateThumbSizeAndPosition}>
+    return <div className={classNames} onMouseOver={calculateThumbSizeAndPosition} style={style}>
         <div ref={scrollRef} onScroll={calculateThumbSizeAndPosition} className="content">
             <div ref={contentRef}>
                 {children}

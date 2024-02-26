@@ -36,4 +36,65 @@
     {
         height: #{$percent} !important;
     }
+
+    .min-w-#{$key}
+    {
+        min-width: #{$percent} !important;
+    }
+
+    .min-h-#{$key}
+    {
+        min-height: #{$percent} !important;
+    }
+
+    .max-w-#{$key}
+    {
+        max-width: #{$percent} !important;
+    }
+
+    .max-h-#{$key}
+    {
+        max-height: #{$percent} !important;
+    }
+}
+
+
+@each $key in $percent-sizes
+{    
+    $percent: $key;
+
+    @if ($key == "33")
+    {
+        $percent: "33.33333333"
+    }
+
+    .vw-#{$key}
+    {
+        width: #{$percent}vw !important;
+    }
+
+    .vh-#{$key}
+    {
+        height: #{$percent}vh !important;
+    }
+
+    .min-vw-#{$key}
+    {
+        min-width: #{$percent}vw !important;
+    }
+
+    .min-vh-#{$key}
+    {
+        min-height: #{$percent}vh !important;
+    }
+
+    .max-vw-#{$key}
+    {
+        max-width: #{$percent}vw !important;
+    }
+
+    .max-vh-#{$key}
+    {
+        max-height: #{$percent}vh !important;
+    }
 }

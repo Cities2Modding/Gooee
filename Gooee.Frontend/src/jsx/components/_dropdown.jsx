@@ -82,15 +82,17 @@ const Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged,
         engine.trigger("audio.playSound", "hover-item", 1);
     };
 
-    const selectedIndex = options.findIndex(o => o.value === internalValue);
+    const selectedIndex = !options ? -1 : options.findIndex(o => o.value === internalValue);
+
+    const dropdownMenuClass = "dropdown-menu" + (size ? ` dropdown-menu-${size}` : "");
 
     // Define the dropdown content
     const dropdownContent = active ? (
-        <div className="dropdown-menu" ref={menuRef} style={getDropdownPosition()}>                
-            {
+        <div className={dropdownMenuClass} ref={menuRef} style={getDropdownPosition()}>                
+            {options ?
                 options.map((option) => (
                     <button key={option.value} className="dropdown-item" onMouseEnter={onMouseEnter} onClick={() => changeSelection(option.value)}>{option.label}</button>
-                ))
+                )) : null
             }
         </div>
     ) : null;

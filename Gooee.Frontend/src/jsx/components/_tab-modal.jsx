@@ -30,7 +30,7 @@ const TabModal = ({ tabs, className, style, size = null, selected, onClose, titl
         <div className="modal-dialog">
             <div className="modal-content">
                 <div className="modal-header">
-                    {title ? icon : null}
+                    {icon ? icon : null}
                     {title ? <div className="modal-title">{title}</div> : null}
                     <Button className="close" size="sm" onClick={onClose} icon circular>
                         <div className="icon mask-icon icon-close"></div>

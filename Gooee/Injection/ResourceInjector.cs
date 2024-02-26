@@ -57,18 +57,42 @@ namespace Gooee.Injection
 
         static readonly (string Search, string Replacement)[] INJECTION_POINTS = new[]
         {
+            // Use this as a guide to find when patch changes the names!!
+            // Look for 'Continue Tutorial'
+            // (0,e.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,e.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,e.jsx)("div",{className:zTe,children:(0,e.jsxs)(Fn,{focusKey:tIe,children:[(0,e.jsx)(Ok,{}),(0,e.jsx)(qG,{}),(0,e.jsx)(jOe,{}),(0,e.jsx)(VOe,{}),(0,e.jsx)(UOe,{}),(0,e.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}})
             ("(0,e.jsx)(ITe,{})]", "(0,e.jsx)(ITe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-right-toolbar'})]"),
+            
+            // This one tends to be quite reliable due to pauseMenuLayout
+            // but the xxx. will vary between patches
+            // className:Bge.pauseMenuLayout,children:[R&&(0,e.jsx)
             ("className:Bge.pauseMenuLayout,children:[R&&(0,e.jsx)", "className:Bge.pauseMenuLayout,children:[(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-right-toolbar'}),R&&(0,e.jsx)"),
+            
+            // This one is a bit of a pain in the arse so you still have
+            // to use 'Continue Tutorial' and this structure to find it
+            // (0,e.jsx)(JOe,{})]}),(0,e.jsx)(ATe,{focusKey:nIe}),(0,e.jsxs)("div",{className:qTe,children:[aIe,(0,e.jsx)(jTe,{}),oIe,(0,e.jsx)(ETe,{}),oIe,(0,e.jsx)(OTe,{}),oIe,(0,e.jsx)(DTe,{}),aIe,(0,e.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,e.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,e.jsx)("div",{className:zTe,children:(0,e.jsxs)(Fn,{focusKey:tIe,children:[(0,e.jsx)(Ok,{}),(0,e.jsx)(qG,{}),(0,e.jsx)(jOe,{}),(0,e.jsx)(VOe,{}),(0,e.jsx)(UOe,{}),(0,e.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}}),[]),c=(0,i.useMemo)((function(){return{"Previous Tutorial Phase":iS}})
             ("(0,e.jsx)(JOe,{})]", "(0,e.jsx)(JOe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-left-toolbar'})]"),
 
+            // This one is quite easy to find as .toolbar is a constant
+            // but xxx. and the (xxx, will vary between patches
+            // (0,e.jsx)(rIe,{focusKey:MSe.toolbar})
             ("(0,e.jsx)(rIe,{focusKey:MSe.toolbar})", "(0,e.jsx)(rIe,{focusKey:MSe.toolbar}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'default'})"),
+            
+            // This is similar to the above, so follow the same procedure
+            // ]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})
             ("]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})", ",(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'main-container'})]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})"),
 
-            // Photo mode panel
+            // This is again fairly easy due to the photoModeLayout
+            // but xxx. will vary etc between patches
+            // var n=t.children;return(0,e.jsx)(\"div\",{className:Oe()(Bge.photoModePanelLayout),children:n})
             ("var n=t.children;return(0,e.jsx)(\"div\",{className:Oe()(Bge.photoModePanelLayout),children:n})", "var n=t.children;return(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'photomode-container',photoMode:{className:Oe()(Bge.photoModePanelLayout),children:n}})"),
+        
         };
 
+        // This one is quite static as it relies simply on HookUI
         static readonly (string Search, string Replacement) HOOKUI_INJECTION_POINT = ("(0,e.jsx)(window._$hookui_menu,{react:i})]", "(0,e.jsx)(window._$hookui_menu,{react:i}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-left-toolbar'})]");
+
+        // This one is quite easy, you can look for .lock or the class names like so:
+        // qge.lock})})})})]})};const Qge={field:"field_eZ6",header:"header_oa2"
         static readonly (string Search, string Replacement) NON_HOOKUI_INJECTION_POINT = ("qge.lock})})})})]", "qge.lock})})})}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-left-toolbar'})]");
 
         private static readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
@@ -228,9 +252,27 @@ namespace Gooee.Injection
 
                     var toolbarAttribute = plugin.GetType( ).GetCustomAttribute<PluginToolbarAttribute>( );
 
-                    if ( toolbarAttribute != null )
+                    if ( toolbarAttribute?.Item != null )
                     {
-                        var js = $"   window.$_gooee_toolbar[\"{plugin.Name.ToLower( )}\"] = {{Name:\"{plugin.Name}\", Label:{( toolbarAttribute.Label != null ? $"\"{toolbarAttribute.Label}\"" : "null" )}, Icon:{( toolbarAttribute.Icon != null ? $"\"{toolbarAttribute.Icon}\"" : "null" )}, Controller:\"{toolbarAttribute.ControllerType.Name.ToLower( ).Replace( "controller", "" )}\", Method:\"{toolbarAttribute.OnClickMethod.Name}\"}};";
+                        var toolbarItem = toolbarAttribute.Item;
+                        var sb = new StringBuilder( );
+                        if ( toolbarItem.Children?.Length > 0 )
+                        {
+                            sb.Append( "[" );
+
+                            foreach ( var toolbarChildItem in toolbarItem.Children )
+                            {
+                                if ( sb.Length > 1 )
+                                    sb.Append( "," + Environment.NewLine );
+
+                                sb.Append( $"{{Label:{( toolbarChildItem.Label != null ? $"\"{toolbarChildItem.Label}\"" : "null" )}, Icon:{( toolbarChildItem.Icon != null ? $"\"{toolbarChildItem.Icon}\"" : "null" )}, IconClassName:{( toolbarChildItem.IconClassName != null ? $"\"{toolbarChildItem.IconClassName}\"" : "null" )}, IsFAIcon: {toolbarChildItem.IsFAIcon.ToString( ).ToLower( )}, Method:\"{toolbarChildItem.OnClickMethod.Name}\", MethodKey:{( toolbarChildItem.OnClickKey != null ? $"\"{toolbarChildItem.OnClickKey}\"" : "null" )}}}" );
+                            }
+                            sb.Append( "]" );
+                        }
+                        else
+                            sb.Append( "null" );
+
+                        var js = $"   window.$_gooee_toolbar[\"{plugin.Name.ToLower( )}\"] = {{Name:\"{plugin.Name}\", Label:{( toolbarItem.Label != null ? $"\"{toolbarItem.Label}\"" : "null" )}, Icon:{( toolbarItem.Icon != null ? $"\"{toolbarItem.Icon}\"" : "null" )}, IconClassName:{( toolbarItem.IconClassName != null ? $"\"{toolbarItem.IconClassName}\"" : "null" )}, IsFAIcon: {toolbarItem.IsFAIcon.ToString().ToLower()}, Controller:\"{toolbarAttribute.ControllerType.Name.ToLower( ).Replace( "controller", "" )}\", Method:\"{toolbarItem.OnClickMethod.Name}\", MethodKey:{( toolbarItem.OnClickKey != null ? $"\"{toolbarItem.OnClickKey}\"" : "null" )}, Children:{sb}}};";
                         scriptBuilder.AppendLine( js );
                     }
                 }

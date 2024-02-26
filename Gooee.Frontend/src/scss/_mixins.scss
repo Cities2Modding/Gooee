@@ -12,6 +12,16 @@
     pointer-events: auto;
 }
 
+@mixin panelBlur()
+{    
+    backdrop-filter: var(--panelBlur);
+}
+
+@mixin panelBlurNone()
+{    
+    backdrop-filter: none;
+}
+
 @mixin paddingAll($padding-h, $padding-v)
 {
     padding-left: $padding-h;
@@ -273,7 +283,7 @@
     color: $input-colour;
     background-color: $bg-color;
     @include borderAll($input-border-colour, $input-border-thickness);
-    @include borderRadius($input-border-radius);     
+    @include borderRadius($input-border-radius);
     @include paddingAll($input-padding-h, $input-padding-v);
     font-size: $font-size-lg;
     font-family: $font-family-sans-serif;

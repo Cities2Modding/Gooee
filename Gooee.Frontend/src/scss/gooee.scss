@@ -10,6 +10,7 @@
 @import "utilities/_padding.scss";
 @import "utilities/_text.scss";
 @import "utilities/_size.scss";
+@import "utilities/_transitions.scss";
 
 @import "components/_grid.scss";
 @import "components/_button.scss";
@@ -28,6 +29,7 @@
 @import "components/_markdown.scss";
 @import "components/_list.scss";
 @import "components/_progress-bar.scss";
+@import "components/_colour-picker.scss";
 
 @import "_font-awesome.scss";
 
@@ -86,6 +88,11 @@
         margin-left: 10rem !important;
         pointer-events: auto;
 
+        &:first-child
+        {
+            margin-left: 0 !important;
+        }
+
         // Hook UI fixes
 
         > .info-layout_BVk
@@ -135,7 +142,7 @@
     .asset-menu
     {
         height: calc( var(--assetMenuRows) * ( var(--assetMenuItemSize) + var(--assetMenuItemGap) ) - var(--assetMenuItemGap) + 18rem);
-        
+        --assetMenuRows: 2;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 16rem !important;
@@ -213,7 +220,7 @@
         }
 
         &.asset-menu-sm
-        {            
+        {
             --assetMenuRows: 1;
         }
     }

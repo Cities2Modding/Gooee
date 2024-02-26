@@ -1,3 +1,11 @@
+:root
+{    
+    --gProgressBarForeground: #{$progress-bar-color};
+    --gProgressBarBackground: #{$progress-bar-bg-color};
+    --gProgressBarTextForeground: #{$light};
+    --gProgressBarBorderColor: #{$progress-bar-border-color};
+}
+
 .gooee
 {
     .progress-bar
@@ -9,14 +17,16 @@
             position: relative;
             box-shadow: $box-shadow;
             align-items: center;
-            background-color: $progress-bar-bg-color;
+            background-color: var(--gProgressBarBackground);
             @include borderRadius($progress-bar-border-radius);
-            @include borderAll($progress-bar-border-color, $border-thickness);
-            transition: border 0.5s ease-out, background-color 0.5s ease-out; 
+            @include borderAll(var(--gProgressBarBorderColor), $border-thickness);
+            transition: border 0.5s ease-out, background-color 0.5s ease-out;
+            @include panelBlur;
 
             > .progress
             {
-                background-color: $progress-bar-color;
+                background-color: var(--gProgressBarForeground);
+                transition: background-color 0.5s ease-out; 
                 @include borderRadius($progress-bar-border-radius);
             }
 
@@ -31,7 +41,7 @@
 
                 > span
                 {
-                    color: $light;
+                    color: var(--gProgressBarTextForeground);
                 }
 
                 &.hidden
@@ -104,25 +114,38 @@
 
             &.progress-bar-#{$key}
             {
-                > .progress-container
-                {                
-                    background-color: $background;
-                    @include borderAll($foreground, $border-thickness);
+                --gProgressBarForeground: #{$foreground};
+                --gProgressBarBackground: #{$background};
+                --gProgressBarBorderColor: #{$foreground};
+            }
+        }
 
-                    > .progress
-                    {
-                        background-color: $foreground;
-                    }
+        &.progress-bar-alert
+        {
+            --gProgressBarForeground: #{$progress-bar-alert-color};
+            --gProgressBarBackground: #{$progress-bar-alert-bg-color};
+            --gProgressBarBorderColor: #{$progress-bar-alert-border-color};
 
-                    
-                    > .progress-label
-                    {
-                        > span
-                        {
-                            color: $light;
-                        }
-                    }
+            > .progress-container
+            {
+                animation: ProgessBarAlertContainer 4s linear infinite;            
+                transition: none !important;
+                /*background-color: $progress-bar-alert-bg-color;
+                border-left-color: $progress-bar-alert-border-color;
+                border-right-color: $progress-bar-alert-border-color;
+                border-top-color: $progress-bar-alert-border-color;
+                border-bottom-color: $progress-bar-alert-border-color;
+
+                > .progress
+                {
+                    background-color: $progress-bar-alert-color;
                 }
+
+                > .progress-label > span
+                {
+                    color: $progress-bar-alert-text-color;
+                    text-shadow: $text-shadow-solid;
+                }*/
             }
         }
     }
@@ -139,18 +162,48 @@
             > .progress-bar
             {
                 margin-bottom: map-get($spacers,"1");
+
+                &:last-child
+                {
+                    margin-bottom: 0 !important;
+                }
             }
         }
 
         &.vertical
         {
             flex-direction: row;
+            width: auto !important;
 
             > .progress-bar
             {
                 width: initial;
                 margin-right: map-get($spacers,"1");
+
+                &:last-child
+                {
+                    margin-right: 0 !important;
+                }
             }
         }
+    }
+}
+
+@keyframes ProgessBarAlertContainer
+{
+    0%
+    {
+    }
+
+    50% 
+    {
+        border-left-color: $progress-bar-alert-border;
+        border-right-color: $progress-bar-alert-border;
+        border-top-color: $progress-bar-alert-border;
+        border-bottom-color: $progress-bar-alert-border;
+    }
+
+    100%
+    {
     }
 }

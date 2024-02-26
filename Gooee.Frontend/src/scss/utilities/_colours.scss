@@ -74,3 +74,31 @@
 {
     background-color: transparent;
 }
+
+@each $key, $value in $opacities
+{
+    .opacity-#{$key}
+    {
+        opacity: $value;
+    }
+}
+
+.pointer-events-auto
+{
+    pointer-events: auto;
+}
+
+.pointer-events-none
+{
+    pointer-events: none !important;
+    
+    *
+    {        
+        pointer-events: none !important;
+    }
+}
+
+.visibility-hidden
+{
+    visibility: hidden !important;
+}

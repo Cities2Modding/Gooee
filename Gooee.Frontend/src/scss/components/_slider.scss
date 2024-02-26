@@ -32,6 +32,97 @@
     }
 }
 
+.form-grid-slider
+{
+    position: relative;            
+    width: 100%;
+    height: 100%;
+    padding: 0 !important;
+    @include borderRadius($input-border-radius);
+
+    > .form-grid-slider-thumb
+    {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        width: $input-slider-base;
+        height: $input-slider-base;
+        transform-origin: 50% 50%;
+        transform: translateX(-50%) translateY(-50%);
+
+        > .icon, > .fa
+        {
+            box-shadow: $box-shadow;
+        }
+    }
+}
+
+.form-slider-basic
+{
+    position: relative;            
+    height: $input-slider-base;
+    padding: 0 !important;
+    @include borderRadius($input-border-radius);
+               
+    > .form-slider-grip
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+
+        > .form-slider-grip-handle
+        {
+            height: calc($input-slider-base + 10rem);
+            width: $input-border-thickness;
+            transform-origin: 50% 50%;
+            transform: translateY(-50%) translateX(calc($input-slider-base + 10rem));
+        }
+    }
+
+    &.form-slider-vertical
+    {         
+        width: $input-slider-base !important;
+        height: 100%;
+
+        > .form-slider-grip
+        {
+            width: $input-slider-base;
+
+            > .form-slider-grip-handle
+            {
+                position: relative;
+                height: $input-border-thickness;
+                width: $input-slider-base;
+                transform: translateY(-50%);
+
+                > .icon, > .fa
+                {
+                    width: 15rem !important;
+                    height: 15rem !important;
+                }
+
+                > .icon:first-child, > .fa:first-child
+                {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    transform: translateX(-85%) translateY(-50%);
+                }
+
+                > .icon:last-child, > .fa:last-child
+                {
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    transform: translateX(85%) translateY(-50%);
+                }
+            }
+        }
+    }
+}
+
 .form-gradient-slider
 {
     display: flex;

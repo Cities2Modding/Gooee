@@ -26,6 +26,7 @@ namespace Gooee
             get;
         }
 
+        [XmlIgnore]
         [SettingsUIHidden]
         protected abstract string UIResource
         {
@@ -48,7 +49,6 @@ namespace Gooee
                 return false;
 
             optionsUISystem.RegisterSetting( instance, name, addPrefix );
-
             return true;
         }
 
@@ -72,6 +72,7 @@ namespace Gooee
         }
 
         internal void Register( string name, bool addPrefix = false ) => Register( this, name, addPrefix );
+
         public void Register( ) => Register( ID, true );
 
         public string GetSettingsLocaleID( ) => "Options.SECTION[" + ID + "]";
@@ -87,8 +88,6 @@ namespace Gooee
         public string GetOptionGroupLocaleID( string groupName ) => "Options.GROUP[" + ID + "." + groupName + "]";
 
         public string GetEnumValueLocaleID<T>( T value ) where T : Enum => string.Format( "Options.{0}.[{1}]", ID, value );
-
-
 
         public override AutomaticSettings.SettingPageData GetPageData( string id, bool addPrefix )
         {

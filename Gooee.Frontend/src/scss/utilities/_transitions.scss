@@ -1,0 +1,24 @@
+.transition-opacity
+{
+    transition: opacity linear 0.1s;
+}
+
+.transition-opacity-slow
+{
+    transition: opacity linear 0.2s;
+}
+
+.transition-opacity-slower
+{
+    transition: opacity linear 0.4s;
+}
+
+.transition-delayed
+{
+    transition-delay: 0.2s;
+}
+
+.transition-delay-none
+{
+    transition-delay: 0s;
+}

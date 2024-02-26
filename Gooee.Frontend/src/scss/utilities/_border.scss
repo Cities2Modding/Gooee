@@ -42,12 +42,31 @@
 .border-bottom
 {
     @include borderBottom($border-colour, $border-thickness);
-
 }
 
-.border-left
+.border-left-transparent
 {
-    @include borderLeft($border-colour, $border-thickness);
+    @include borderLeft(transparent, $border-thickness);
+}
+
+.border-top-transparent
+{
+    @include borderTop(transparent, $border-thickness);
+
+}
+.border-right-transparent
+{
+    @include borderRight(transparent, $border-thickness);
+
+}
+.border-bottom-transparent
+{
+    @include borderBottom(transparent, $border-thickness);
+}
+
+.border-left-transparent
+{
+    @include borderLeft(transparent, $border-thickness);
 }
 
 .border-0
@@ -136,6 +155,30 @@
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
+}
+
+.flat-top
+{
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.flat-bottom
+{
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.flat-left
+{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.flat-right
+{
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
 
 @each $key, $colour-map in $colours

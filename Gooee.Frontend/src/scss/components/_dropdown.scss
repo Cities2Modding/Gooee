@@ -2,6 +2,31 @@
 {
     position: relative;    
     
+    &.dropdown-xs
+    {
+        > .dropdown-toggle
+        {
+            > .caption
+            {
+                font-size: $font-size-xs;
+            }
+                
+            .icon
+            {
+                width: $icon-size-xs !important;
+                height: $icon-size-xs !important;
+            }
+        }
+
+        .dropdown-menu
+        {
+            > .dropdown-item
+            {
+                font-size: $font-size-xs;
+            }
+        }
+    }
+
     &.dropdown-sm
     {
         > .dropdown-toggle
@@ -101,6 +126,30 @@
         &:hover
         {            
             background-color: getColour("grey", "base");
+        }
+    }
+
+    &.dropdown-menu-xs
+    {
+        > .dropdown-item
+        {
+            font-size: $font-size-xs;
+        }
+    }
+
+    &.dropdown-menu-sm
+    {
+        > .dropdown-item
+        {
+            font-size: $font-size-sm;
+        }
+    }
+
+    &.dropdown-menu-lg
+    {
+        > .dropdown-item
+        {
+            font-size: $font-size-lg;
         }
     }
 }

@@ -118,11 +118,14 @@ $border-radius: 7.5rem;
 $border-radius-lg: 7.5rem;
 $border-radius-md: 6.5rem;
 $border-radius-sm: 5rem;
+$border-radius-xs: 2.5rem;
 $border-radius-min: 2.5rem;
 
 // Shadows
 $box-shadow: rgba(0, 0, 0, 0.16) 0px 5rem 10rem;
 $text-shadow: 1rem 1rem 5rem rgba(0, 0, 0, 1);
+$text-shadow-solid: 0rem 0rem 1rem rgba(0, 0, 0, 1);
+$text-shadow-solid-inverted: 0rem 0rem 1rem rgba(255, 255, 255, 1);
 
 // Spacing (Margins, Padding)
 $spacers: (
@@ -218,6 +221,9 @@ $button-colours:
 $button-padding-h: 12.5rem;
 $button-padding-v: calc($button-padding-h / 1.5);
 
+$button-xs-padding-h: 5rem;
+$button-xs-padding-v: calc($button-xs-padding-h / 1.5);
+
 $button-sm-padding-h: 7.5rem;
 $button-sm-padding-v: calc($button-sm-padding-h / 1.5);
 
@@ -226,6 +232,7 @@ $button-lg-padding-v: calc($button-lg-padding-h / 2);
 
 $icon-button: 30rem;
 $icon-button-sm: 24rem;
+$icon-button-xs: 16rem;
 $icon-button-lg: 39rem;
 
 // Badges
@@ -242,8 +249,9 @@ $badge-border-thickness: var(--stroke2);
 $modal-border-radius: var(--panelRadius);
 $modal-width: calc(var(--leftPanelWidth) * 2);
 $modal-height: calc(var(--leftPanelWidth) * 1.5);
-$modal-sm-width: var(--leftPanelWidth);
+$modal-sm-width: calc(var(--leftPanelWidth) * 1.5);
 $modal-sm-height: auto;
+$modal-sm-fixed-height: calc(var(--leftPanelWidth) * 1.125);
 $modal-lg-width: calc(var(--centerPanelWidth)*0.8);
 $modal-lg-height: calc(var(--centerPanelHeight)*0.8);
 $modal-xl-width: var(--centerPanelWidth);
@@ -342,16 +350,42 @@ $icon-size-xl: 56rem;
 $icon-size-xxl: 68rem;
 $icon-size-xxxl: 96rem;
 
-$percent-sizes: "5", "10", "15", "20", "25", "30", "33", "50", "70", "80", "90", "100";
+$percent-sizes: "5", "10", "15", "20", "25", "30", "33", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100";
 
 $input-slider-base: 28rem;
+$input-slider-xs: 16rem;
 $input-slider-sm: 20rem;
 $input-slider-lg: 34rem;
 
 // Progress Bar
 $progress-bar-border-radius: 20rem;
 $progress-bar-thickness: 20rem;
-$progress-bar-font-size: 11rem;
+$progress-bar-font-size: 14rem;
 $progress-bar-border-color: getColour("primary", "trans-mid");
 $progress-bar-color: getColour("primary", "trans-mid");
 $progress-bar-bg-color: getColour("primary", "trans-less-faded");
+
+
+$progress-bar-alert-border-color: getColour("light", "trans");
+$progress-bar-alert-color: getColour("light", "trans");
+$progress-bar-alert-bg-color: getColour("light", "trans-less-faded");
+$progress-bar-alert-text-color: getColour("dark", "base");
+
+// Needed in RGBA becaus animations don't support CSS variables
+$progress-bar-alert-border: rgba(233, 95, 74, 1);
+$progress-bar-alert-border-2: rgba(255, 255, 255, 1);
+
+// Opacity helpers
+$opacities: (
+    "0": 0,
+    "25": .25,
+    "50": .5,
+    "75": .75,
+    "100": 1 );
+
+// Color picker
+$color-picker-size: 250rem;
+$color-picker-size-xs: 150rem;
+$color-picker-size-sm: 200rem;
+$color-picker-size-lg: 300rem;
+$color-picker-size-xl: 350rem;

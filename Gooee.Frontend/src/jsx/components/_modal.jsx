@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null, noClose = null }) => {
+const Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, contentClassName = null, headerClassName = null, hidden = null, noClose = null, onMouseEnter, onMouseLeave }) => {
     const react = window.$_gooee.react;
     
     const { Button } = window.$_gooee.framework;   
@@ -9,10 +9,10 @@ const Modal = ({ className, children, style, size = null, onClose, title, icon, 
     const classNames = sizeClass + fixedClass;
     const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
 
-    return <div className={classNames} style={style}>
+    return <div className={classNames} style={style} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <div className="modal-dialog">
-            <div className="modal-content">
-                <div className="modal-header">
+            <div className={"modal-content" + (contentClassName ? ` ${contentClassName}` : "")}>
+                <div className={"modal-header" + (headerClassName ? ` ${headerClassName}` : "")}>
                     {icon}
                     <div className="modal-title">{title ? title : <>&nbsp;</>}</div>
                     {!noClose ?

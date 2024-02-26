@@ -1,18 +1,19 @@
-﻿using cohtml.Net;
-using Colossal.IO.AssetDatabase;
-using Colossal.OdinSerializer.Utilities;
+﻿using Colossal.OdinSerializer.Utilities;
 using Colossal.Reflection;
 using Colossal.UI.Binding;
+using Game.SceneFlow;
 using Game.UI;
 using Gooee.Helpers;
 using Gooee.Injection;
 using Gooee.Plugins.Attributes;
-using HarmonyLib;
+using Gooee.Systems;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using BaseModel = Gooee.Plugins.Model;
 
 namespace Gooee.Plugins
@@ -30,6 +31,17 @@ namespace Gooee.Plugins
         {
             get;
             private set;
+        }
+
+        protected GooeeSettings Settings
+        {
+            get
+            {
+                if ( Plugin is not IGooeeSettings gooeeSettingsPlugin )
+                    return null;
+
+                return gooeeSettingsPlugin.Settings;
+            }
         }
 
         protected GetterValueBinding<string> Binding
@@ -81,13 +93,30 @@ namespace Gooee.Plugins
         private string _lastModelJson = string.Empty;
         private string _modelJson = string.Empty;
 
+        private static long _settingsUpdates = 0;
+        private static ConcurrentDictionary<string, string> _closeRequests = [];
+        private GooeeUISystem _gooeeUISystem;
+
+        /// <summary>
+        /// Occurs when Gooee has fully loaded in a controller and its dependencies.
+        /// </summary>
         public virtual void OnLoaded( )
         {
+            _gooeeUISystem = World.GetExistingSystemManaged<GooeeUISystem>( );
+
             if ( Plugin is IGooeeLogger gooeeLogger )
                 Log = gooeeLogger.Log;
 
             PluginID = Plugin.Name.ToLowerInvariant( ).Replace( " ", "_" ).Trim( );
             ControllerID = PluginID + "." + GetType( ).Name.Replace( "Controller", "" ).ToLowerInvariant( ).Trim( );
+
+            if ( Settings != null )
+            {
+                Settings.onSettingsApplied += ( setting ) =>
+                {
+                    Interlocked.Increment( ref _settingsUpdates );
+                };
+            }
 
             Model = Configure( );
 
@@ -136,32 +165,100 @@ namespace Gooee.Plugins
             _log.Info( $"Controller '{ControllerID}' registered." );
         }
 
+        /// <summary>
+        /// Try request a Gooee plugin controller to close. (Used to prevent conflicts between plugins)
+        /// </summary>
+        /// <remarks>
+        /// (It is down to individual mods to handle visibility updating etc. They can choose
+        /// to not close as to prevent plugins closing that should not be.)
+        /// </remarks>
+        /// <param name="pluginName">The lowercase plugin name</param>
+        /// <param name="controllerName">The lowercase controller name (Without 'controller' at the end)</param>
+        protected void TryRequestClose( string pluginName, string controllerName )
+        {
+            var key = pluginName.ToLowerInvariant() + "." + controllerName.ToLowerInvariant().Replace( "controller", "" ).Trim( );
+
+            if ( _closeRequests.ContainsKey( pluginName ) )
+                return;
+
+            _closeRequests.TryAdd( key, ControllerID );
+        }
+
+        protected override void OnUpdate( )
+        {
+            base.OnUpdate( );
+
+            var settingsUpdates = Interlocked.Read( ref _settingsUpdates );
+
+            if ( settingsUpdates > 0 )
+            {
+                Interlocked.Exchange( ref _settingsUpdates, 0 );
+                OnSettingsUpdated( );
+            }
+
+            // Process a close request if there is one
+            if ( _closeRequests.ContainsKey( ControllerID ) )
+            {
+                OnCloseRequested( _closeRequests[ControllerID] );
+                _closeRequests.TryRemove( ControllerID, out _ );
+            }
+        }
+
+        /// <summary>
+        /// Other Gooee plugins may request that your plugin closes,
+        /// it is up to you to choose whether to update your own model to comply.
+        /// </summary>
+        /// <param name="requesterControllerID">The controller ID of the close requester</param>
+        protected virtual void OnCloseRequested( string requesterControllerID )
+        {        
+        }
+
         //private void ApplyPatches( IModel model )
         //{
         //    var harmony = new Harmony( "Harmony.Gooee." + GetType( ).FullName );
 
-            //    foreach ( var prop in model.GetType( ).GetProperties( BindingFlags.Public | BindingFlags.Instance ) )
-            //    {
-            //        if ( prop.IsDefined( typeof( ObservableAttribute ), true ) )
-            //        {
-            //            var originalSetter = prop.GetSetMethod( );
+        //    foreach ( var prop in model.GetType( ).GetProperties( BindingFlags.Public | BindingFlags.Instance ) )
+        //    {
+        //        if ( prop.IsDefined( typeof( ObservableAttribute ), true ) )
+        //        {
+        //            var originalSetter = prop.GetSetMethod( );
 
-            //            if ( originalSetter != null )
-            //            {
-            //                var postfix = GetType().GetMethod( nameof( OnServerUpdateModelPostfix ), BindingFlags.Static | BindingFlags.NonPublic );
-            //                harmony.Patch( originalSetter, postfix: new HarmonyMethod( postfix ) );
-            //            }
-            //        }
-            //    }
-            //}
+        //            if ( originalSetter != null )
+        //            {
+        //                var postfix = GetType().GetMethod( nameof( OnServerUpdateModelPostfix ), BindingFlags.Static | BindingFlags.NonPublic );
+        //                harmony.Patch( originalSetter, postfix: new HarmonyMethod( postfix ) );
+        //            }
+        //        }
+        //    }
+        //}
 
-            //private static void OnServerUpdateModelPostfix( IModel __instance )
-            //{
-            //    var method = __instance.GetType( ).GetMethod( "OnServerUpdateModel", BindingFlags.Instance | BindingFlags.NonPublic );
-            //    method.Invoke( __instance, null );
-            //}
+        //private static void OnServerUpdateModelPostfix( IModel __instance )
+        //{
+        //    var method = __instance.GetType( ).GetMethod( "OnServerUpdateModel", BindingFlags.Instance | BindingFlags.NonPublic );
+        //    method.Invoke( __instance, null );
+        //}
 
+        /// <summary>
+        /// Configure the model and inject any dependencies via the world system.
+        /// </summary>
+        /// <returns></returns>
         public abstract TModel Configure( );
+
+        /// <summary>
+        /// Mount a UI resource path so images etc can be loaded
+        /// from local file system to GameFace.
+        /// </summary>
+        /// <param name="route">The URL lowercase route prefix (e.g. example would be coui://example/{path})</param>
+        /// <param name="path">The local file system path to mount</param>
+        protected void MountResources( string route, string path )
+        {
+            var resourceHandler = ( GameUIResourceHandler ) GameManager.instance.userInterface.view.uiSystem.resourceHandler;
+
+            if ( resourceHandler == null || resourceHandler.HostLocationsMap.ContainsKey( route ) )
+                return;
+
+            resourceHandler.HostLocationsMap.Add( route, new List<string> { path } );
+        }
 
         protected void TriggerUpdate( )
         {
@@ -228,6 +325,13 @@ namespace Gooee.Plugins
         }
 
         /// <summary>
+        /// Called when the your GooeeSettings instance is updated
+        /// </summary>
+        protected virtual void OnSettingsUpdated( )
+        {
+        }
+
+        /// <summary>
         /// Try to convert a property value
         /// </summary>
         /// <param name="propertyType"></param>
@@ -269,6 +373,11 @@ namespace Gooee.Plugins
                 return true;
             }
             return false;
+        }
+
+        protected void TriggerToolbarUpdate( )
+        {
+            _gooeeUISystem?.BuildToolbarChildCache( );
         }
     }
 }

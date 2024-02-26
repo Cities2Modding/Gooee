@@ -48,6 +48,20 @@
     color: $text;
     margin-bottom: $spacing;
 
+    &.form-group-inline
+    {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        width: auto !important;
+
+        > label
+        {            
+            margin-right: calc($spacing / 1.5);
+            margin-bottom: 0 !important;
+        }
+    }
+
     &:last-child
     {
         margin-bottom: 0 !important;

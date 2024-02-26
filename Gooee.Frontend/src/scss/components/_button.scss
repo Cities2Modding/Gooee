@@ -23,10 +23,35 @@
     text-transform: none;
     display: inline;
 
+    > *
+    {
+        pointer-events: none !important;
+    }
+
     &.btn-disabled
     {
         opacity: 0.35 !important;
         pointer-events: none !important;
+    }
+}
+
+.btn-xs
+{
+    font-size: $font-size-xs;
+    padding-left: calc($button-xs-padding-h + $border-thickness);
+    padding-right: calc($button-xs-padding-h + $border-thickness);
+    padding-top: calc($button-xs-padding-v + $border-thickness);
+    padding-bottom: calc($button-xs-padding-v + $border-thickness);
+    border-bottom-left-radius: $border-radius-xs;
+    border-bottom-right-radius: $border-radius-xs;
+    border-top-left-radius: $border-radius-xs;
+    border-top-right-radius: $border-radius-xs;        
+    
+    > .fa, > .icon
+    {
+        width: $icon-size-xs !important;
+        height: $icon-size-xs !important;
+        margin-top: 1.25rem !important;
     }
 }
 

@@ -26,10 +26,6 @@
 		<Title>Gooee</Title>
 		<Company>Cities2Modding</Company>
 		<Copyright>Cities2Modding</Copyright>
-		<PackageProjectUrl>https://github.com/Cities2Modding/Gooee</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/Cities2Modding/Gooee</RepositoryUrl>
-		<AssemblyVersion>0.0.7.0</AssemblyVersion>
-		<Version>0.0.7.0</Version>
 	</PropertyGroup>
 	
 	<ItemGroup>

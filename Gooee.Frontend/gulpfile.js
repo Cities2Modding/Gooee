@@ -50,7 +50,6 @@ gulp.task("build-scss", function (done) {
         .pipe(rename("gooee.css")) // Rename the output file
         .pipe(gulp.dest("../Gooee/Resources")) // Output directory
         .on("end", () => {
-            // After building the CSS file, copy it to the desired location
             const localLowPath = path.join(process.env.USERPROFILE, "AppData", "LocalLow");
             const localLowDestPath = path.join(localLowPath, "Colossal Order", "Cities Skylines II", "Mods", "Gooee");
             

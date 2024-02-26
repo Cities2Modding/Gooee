@@ -8,9 +8,10 @@ using Gooee.Plugins.Attributes;
 using System.Collections.Generic;
 using Game;
 using Colossal.Reflection;
-using Colossal.UI.Binding;
 using Gooee.Helpers;
 using System;
+using Colossal.UI.Binding;
+using Newtonsoft.Json;
 
 namespace Gooee.Systems
 {
@@ -21,9 +22,14 @@ namespace Gooee.Systems
     {
         //private readonly LibrarySettings _librarySettings = GooeeSettings.Load<LibrarySettings>( );
 
+        private readonly Dictionary<string, (IController Controller, MethodInfo Method)> _toolbarChildSubscribers = [];
+        private readonly Dictionary<string, List<PluginToolbarChildItem>> _toolbarChildCache = [];
+        private string _toolbarChildJsonCache;
+
         static MethodInfo updateAt = typeof( UpdateSystem ).GetMethod( "UpdateAt", BindingFlags.Public | BindingFlags.Instance );
         
         private readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+        private GetterValueBinding<string> _toolbarItemsBinding;
 
         protected override void OnCreate( )
         {
@@ -43,6 +49,16 @@ namespace Gooee.Systems
                 ResourceInjector.Inject( );
                 PluginLoader.Plugins.Values.OrderBy( v => v.Name ).ForEach( ProcessPlugin );
             }
+
+            if ( _toolbarChildSubscribers?.Count > 0 )
+            {
+                BuildToolbarChildCache( );
+
+                AddUpdateBinding( _toolbarItemsBinding = new GetterValueBinding<string>( "gooee", "toolbarChildren", ( ) =>
+                {
+                    return _toolbarChildJsonCache;
+                } ) );
+            }
             //AddBinding( new TriggerBinding( "gooee", "onCloseChangeLog", ResourceInjector.WriteChangeLogRead ) );
             //AddBinding( new TriggerBinding( "gooee", "resetChangeLog", ResourceInjector.ResetChangeLog ) );            
 
@@ -50,6 +66,32 @@ namespace Gooee.Systems
             //{
             //    return ResourceInjector.HasChangeLogUpdated( );
             //} ) );
+        }
+
+        public void BuildToolbarChildCache( bool forceUpdate = false )
+        {
+            foreach ( var kvp in _toolbarChildSubscribers )
+            {
+                var sub = kvp.Value;
+
+                if ( sub.Method == null || sub.Controller == null )
+                    continue;
+
+                var items = ( List<PluginToolbarChildItem> ) sub.Method.Invoke( sub.Controller, null );
+
+                if ( items == null )
+                    continue;
+
+                if ( _toolbarChildCache.ContainsKey( kvp.Key ) )
+                    _toolbarChildCache[kvp.Key ] = items;
+                else
+                    _toolbarChildCache.Add( kvp.Key, items );
+            }
+
+            _toolbarChildJsonCache = JsonConvert.SerializeObject( _toolbarChildCache );
+
+            if ( forceUpdate )
+                _toolbarItemsBinding?.TriggerUpdate( );
         }
 
         private void ProcessPlugin( IGooeePlugin plugin )
@@ -62,9 +104,13 @@ namespace Gooee.Systems
 
             var controllerTypeAttribute = customAttributes
                 .FirstOrDefault( a => typeof( ControllerTypeAttribute<> ).IsAssignableFrom( a.GetType( ) ) );
-            
+
+            ProcessPluginLanguagesAndSettings( plugin, pluginType, customAttributes );
+
             if ( controllerTypes?.Count > 0 )
             {
+                var toolbarAttribute = plugin.GetType( ).GetCustomAttribute<PluginToolbarAttribute>( );
+
                 IGooeePluginWithControllers pluginWithControllers = ( IGooeePluginWithControllers ) plugin;
 
                 var controllers = new List<IController>( );
@@ -92,6 +138,16 @@ namespace Gooee.Systems
                         } );
                     }
 
+                    if ( toolbarAttribute?.ControllerType == t )
+                    {
+                        var toolbarItem = toolbarAttribute.Item;
+
+                        if ( toolbarItem.OnGetChildren != null )
+                        {
+                            _toolbarChildSubscribers.TryAdd( plugin.Name.ToLowerInvariant(), (controller, toolbarItem.OnGetChildren) );
+                        }
+                    }
+
                     controller.OnLoaded( );
 
                     _log.Debug( $"Gooee instantiated controller {controller.GetType( ).FullName} for plugin {pluginType.FullName}" );
@@ -103,7 +159,6 @@ namespace Gooee.Systems
             else
                 _log.Error( $"Gooee failed to find any controller types for {pluginType.FullName}" );
 
-            ProcessPluginLanguagesAndSettings( plugin, pluginType, customAttributes );
         }
 
         private void ProcessPluginLanguagesAndSettings( IGooeePlugin plugin, Type pluginType, IEnumerable<Attribute> customAttributes )

@@ -14,6 +14,161 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     };
     console.log(`Registering plugin component for Gooee: ${name} of type ${actualType} ${JSON.stringify(window.$_gooee.components[actualType][name])}`);
 };
+
+function _gHexToRGBA(hex, alpha) {
+    // Ensure the hex value includes the '#' character
+    if (hex[0] !== '#') {
+        hex = '#' + hex;
+    }
+
+    // Expand shorthand hex code to full form if needed
+    if (hex.length === 4) {
+        hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+    }
+
+    // Extract the red, green, and blue values
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+
+    // Return the RGBA string
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function _gRGBToHex(r, g, b, excludeHash = false) {
+    // Convert each color component to a hexadecimal string
+    let hexR = r.toString(16).padStart(2, '0').toUpperCase();
+    let hexG = g.toString(16).padStart(2, '0').toUpperCase();
+    let hexB = b.toString(16).padStart(2, '0').toUpperCase();
+
+    // Concatenate the hex strings and prefix with '#'
+    return `${excludeHash ? "" : "#"}${hexR}${hexG}${hexB}`;
+}
+
+function _gHexToRGB(hex) {
+    // Remove the '#' character if present
+    if (hex.startsWith('#')) {
+        hex = hex.slice(1);
+    }
+
+    // Parse the hex string into RGB components
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+
+    // Return an object with the RGB components
+    return { r, g, b };
+}
+
+
+function _gRGBToHSV(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let chroma = max - min;
+    let hue = 0;
+    let saturation = 0;
+    let brightness = max;
+
+    if (chroma !== 0) {
+        if (max === r) {
+            hue = (g - b) / chroma;
+        } else if (max === g) {
+            hue = 2 + (b - r) / chroma;
+        } else if (max === b) {
+            hue = 4 + (r - g) / chroma;
+        }
+
+        hue = Math.min(hue * 60, 360);
+        if (hue < 0) hue += 360;
+    }
+
+    if (max !== 0) {
+        saturation = chroma / max;
+    }
+
+    // Convert saturation and brightness to percentages
+    saturation *= 100;
+    brightness *= 100;
+
+    return { h: hue, s: saturation, v: brightness };
+}
+
+function _gHSVToRGB(h, s, v) {
+    s /= 100;
+    v /= 100;
+
+    let k = (n) => (n + h / 60) % 6;
+    let f = (n) => v - v * s * Math.max(Math.min(k(n), 4 - k(n), 1), 0);
+
+    let r = Math.round(f(5) * 255);
+    let g = Math.round(f(3) * 255);
+    let b = Math.round(f(1) * 255);
+
+    return { r, g, b };
+}
+
+function _gHexToHSL(hex) {
+    // Convert hex to RGB first
+    let r = 0, g = 0, b = 0;
+    if (hex.length == 4) {
+        r = parseInt(hex[1] + hex[1], 16);
+        g = parseInt(hex[2] + hex[2], 16);
+        b = parseInt(hex[3] + hex[3], 16);
+    } else if (hex.length == 7) {
+        r = parseInt(hex.slice(1, 3), 16);
+        g = parseInt(hex.slice(3, 5), 16);
+        b = parseInt(hex.slice(5, 7), 16);
+    }
+
+    // Then to HSL
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max == min) {
+        h = s = 0; // achromatic
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return { h: h * 360, s: s * 100, l: l * 100 };
+}
+
+function _gDarkenHex(hex, amount) {
+    let { h, s, l } = _gHexToHSL(hex);
+
+    l = Math.max(0, l - amount); // Clamp the lightness to not go below 0
+
+    // Convert HSL back to hex
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0'); // Convert to Hex and force 2 digits
+    };
+
+    return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function _gBroadcastVisibilityChange(typeKey, guid) {
+    const event = new CustomEvent('floatingElementVisibilityChange', {
+        detail: { typeKey, guid }
+    });
+    document.dispatchEvent(event);
+}
 (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
@@ -2398,9 +2553,9 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React28 = require_react();
+          var React34 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React28.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React34.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -4005,7 +4160,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React28.Children.forEach(props.children, function(child) {
+                  React34.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12452,7 +12607,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React28.Component().refs;
+          var emptyRefsObject = new React34.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -23493,7 +23648,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
   });
 
   // src/jsx/gooee.jsx
-  var import_react27 = __toESM(require_react());
+  var import_react33 = __toESM(require_react());
 
   // src/jsx/components/_button.jsx
   var import_react = __toESM(require_react());
@@ -23517,17 +23672,27 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     title = null,
     description = null,
     toolTipFloat = "up",
-    toolTipAlign = "center"
+    toolTipAlign = "center",
+    stopClickPropagation = true,
+    ignoreBubblingClick = false,
+    dropdownMenu = null,
+    dropdownFloat = "down",
+    dropdownAlign = "left",
+    dropdownCloseOnClick = false
   }) => {
     const react = window.$_gooee.react;
     const buttonRef = react.useRef(null);
-    const { AutoToolTip: AutoToolTip2, ToolTipContent: ToolTipContent2 } = window.$_gooee.framework;
+    const dropdownRef = react.useRef(null);
+    const [dropdownVisible, setDropdownVisible] = react.useState(false);
+    const { AutoToolTip: AutoToolTip2, ToolTipContent: ToolTipContent2, FloatingElement: FloatingElement2 } = window.$_gooee.framework;
     const hasToolTip = title && description;
     const handleClick = (
       /*react.useCallback(*/
       (e) => {
-        if (disabled)
+        if (disabled || ignoreBubblingClick && e.target !== e.currentTarget)
           return;
+        if (stopClickPropagation)
+          e.stopPropagation();
         if (onClick) {
           if (onClick.length >= 1)
             onClick(e);
@@ -23537,25 +23702,35 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         engine.trigger("audio.playSound", "select-item", 1);
       }
     );
-    const internalOnMouseEnter = (
-      /*react.useCallback(*/
-      (e) => {
-        if (disabled)
-          return;
-        engine.trigger("audio.playSound", "hover-item", 1);
-        if (onMouseEnter)
-          onMouseEnter();
+    const internalOnMouseEnter = (e) => {
+      if (disabled)
+        return;
+      if (leaveTimeout.current)
+        clearTimeout(leaveTimeout.current);
+      engine.trigger("audio.playSound", "hover-item", 1);
+      if (onMouseEnter)
+        onMouseEnter();
+      if (dropdownMenu)
+        setDropdownVisible(true);
+    };
+    const leaveTimeout = react.useRef(null);
+    react.useEffect(() => {
+      return () => clearTimeout(leaveTimeout.current);
+    }, []);
+    const internalOnMouseLeave = (e) => {
+      if (disabled)
+        return;
+      if (onMouseLeave)
+        onMouseLeave();
+      if (dropdownMenu) {
+        const isHTMLElement = e.relatedTarget instanceof HTMLElement;
+        leaveTimeout.current = setTimeout(() => {
+          if (dropdownRef.current && (!isHTMLElement || isHTMLElement && !dropdownRef.current.contains(e.relatedTarget))) {
+            setDropdownVisible(false);
+          }
+        }, 250);
       }
-    );
-    const internalOnMouseLeave = (
-      /*react.useCallback(*/
-      (e) => {
-        if (disabled)
-          return;
-        if (onMouseLeave)
-          onMouseLeave();
-      }
-    );
+    };
     const circularClass = circular ? " btn-circular" : "";
     const shadeClass = shade ? `-${shade}` : "";
     const styleClass = style ? `-${style}` : "";
@@ -23565,7 +23740,27 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const sizeClass = size ? ` btn-${size}` : "";
     const iconColorClass = icon ? ` btn-${color}${shadeClass}${border ? " border-icon" : ""}` : "";
     const btnClass = icon ? `btn btn-icon${extraClass}${disabledClass}${sizeClass}${iconColorClass}${circularClass}` : `btn btn${styleClass}-${color}${shadeClass}${extraClass}${disabledClass}${blockClass}${sizeClass}`;
-    return /* @__PURE__ */ import_react.default.createElement("div", { ref: buttonRef, className: btnClass + (hasToolTip ? " p-relative" : ""), onMouseEnter: internalOnMouseEnter, onMouseLeave: internalOnMouseLeave, onClick: handleClick, style: elementStyle }, children, hasToolTip ? /* @__PURE__ */ import_react.default.createElement(AutoToolTip2, { targetRef: buttonRef, float: toolTipFloat, align: toolTipAlign }, /* @__PURE__ */ import_react.default.createElement(ToolTipContent2, { title, description })) : null);
+    const onDropdownClosed = () => {
+      setDropdownVisible(false);
+    };
+    const getDropdownRef = (ref) => {
+      dropdownRef.current = ref.current;
+    };
+    return /* @__PURE__ */ import_react.default.createElement("div", { ref: buttonRef, className: btnClass + (hasToolTip ? " p-relative" : ""), onMouseEnter: internalOnMouseEnter, onMouseLeave: internalOnMouseLeave, onClick: handleClick, style: elementStyle }, children, hasToolTip ? /* @__PURE__ */ import_react.default.createElement(AutoToolTip2, { targetRef: buttonRef, float: toolTipFloat, align: toolTipAlign }, /* @__PURE__ */ import_react.default.createElement(ToolTipContent2, { title, description })) : null, dropdownMenu ? /* @__PURE__ */ import_react.default.createElement(
+      FloatingElement2,
+      {
+        getRef: getDropdownRef,
+        typeKey: "ButtonDropdownMenu",
+        visible: dropdownVisible,
+        float: dropdownFloat,
+        align: dropdownAlign,
+        onHidden: onDropdownClosed,
+        targetRef: buttonRef,
+        closeOnClickOutside: true,
+        closeOnClickInside: dropdownCloseOnClick
+      },
+      dropdownMenu
+    ) : null);
   };
   var button_default = Button;
 
@@ -23690,10 +23885,19 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
   var AutoToolTip = ({ targetRef, children, target, float = "up", align = "center", ...props }) => {
     const react = window.$_gooee.react;
     const [visible, setVisible] = react.useState(false);
+    const [shiftedX, setShiftedX] = react.useState(0);
+    const [shiftedY, setShiftedY] = react.useState(0);
+    const [targetPosition, setTargetPosition] = react.useState({ x: 0, y: 0 });
     const { ToolTip: ToolTip2 } = window.$_gooee.framework;
     const [portalContainer, setPortalContainer] = react.useState(null);
     const tooltipRef = react.useRef(null);
     const portalName = "gooee-tooltip-portal";
+    react.useEffect(() => {
+      if (visible && targetRef.current) {
+        const rect = targetRef.current.getBoundingClientRect();
+        setTargetPosition({ x: rect.left, y: rect.y });
+      }
+    }, [visible, targetRef.current]);
     react.useEffect(() => {
       if (!document.getElementById(portalName)) {
         const container = document.createElement("div");
@@ -23705,74 +23909,135 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
       }
     }, []);
     const getToolTipPosition = () => {
+      let p = {};
       if (targetRef.current && tooltipRef.current) {
         const rect = targetRef.current.getBoundingClientRect();
         const toolTipRect = tooltipRef.current.getBoundingClientRect();
         if (float === "up" && align === "center") {
-          return {
+          p = {
             top: rect.top + window.scrollY - toolTipRect.height - toolTipRect.height * 0.1,
             left: rect.left + window.scrollX + rect.width / 2 - toolTipRect.width / 2,
             bottom: null,
             right: null
           };
         } else if (float === "up" && align === "left") {
-          return {
+          p = {
             top: rect.top + window.scrollY - toolTipRect.height - toolTipRect.height * 0.1,
             left: rect.left + window.scrollX,
             bottom: null,
             right: null
           };
         } else if (float === "up" && align === "right") {
-          return {
+          p = {
             top: rect.top + window.scrollY - toolTipRect.height - toolTipRect.height * 0.1,
             left: rect.left + rect.width / 2 + window.scrollX - toolTipRect.width,
             bottom: null,
             right: null
           };
         } else if (float === "down" && align === "center") {
-          return {
-            top: rect.top + window.scrollY + rect.height - toolTipRect.height * 0.1,
+          p = {
+            top: rect.top + window.scrollY + rect.height,
             left: rect.left + window.scrollX + rect.width / 2 - toolTipRect.width / 2,
             bottom: null,
             right: null
           };
         } else if (float === "down" && align === "left") {
-          return {
-            top: rect.top + window.scrollY + rect.height - toolTipRect.height * 0.1,
+          p = {
+            top: rect.top + window.scrollY + rect.height,
             left: rect.left + window.scrollX,
             bottom: null,
             right: null
           };
         } else if (float === "down" && align === "right") {
-          return {
-            top: rect.top + window.scrollY + rect.height - toolTipRect.height * 0.1,
+          p = {
+            top: rect.top + window.scrollY + rect.height,
             left: rect.left + rect.width / 2 + window.scrollX - toolTipRect.width,
             bottom: null,
             right: null
           };
         } else if (float === "left" && align === "left") {
-          return {
+          p = {
+            top: rect.top + window.scrollY + rect.height / 2 - toolTipRect.height / 2,
+            left: rect.left + window.scrollX - toolTipRect.width - toolTipRect.height * 0.1,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "left" && align === "center") {
+          p = {
             top: rect.top + window.scrollY + rect.height / 2 - toolTipRect.height / 2,
             left: rect.left + window.scrollX - toolTipRect.width - toolTipRect.height * 0.1,
             bottom: null,
             right: null
           };
         } else if (float === "left" && align === "right") {
-          return {
+          p = {
             top: rect.top + window.scrollY + rect.height - toolTipRect.height * 0.1,
             left: rect.left + rect.width + window.scrollX,
             bottom: null,
             right: null
           };
+        } else if (float === "right" && align === "left") {
+          p = {
+            top: rect.top + window.scrollY + rect.height / 2 - toolTipRect.height / 2,
+            left: rect.left + window.scrollX - toolTipRect.width + toolTipRect.height * 0.1,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "right" && align === "center") {
+          p = {
+            top: rect.top + window.scrollY + rect.height / 2 - toolTipRect.height / 2,
+            left: rect.left + window.scrollX - toolTipRect.width + toolTipRect.height * 0.1,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "right" && align === "right") {
+          p = {
+            top: rect.top + window.scrollY + rect.height - toolTipRect.height * 0.1,
+            left: rect.left + rect.width + window.scrollX,
+            bottom: null,
+            right: null
+          };
+        } else {
+          p = {
+            top: rect.bottom + window.scrollY,
+            left: rect.left + window.scrollX,
+            bottom: null,
+            right: null
+          };
         }
-        return {
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX,
-          bottom: null,
-          right: null
-        };
+        const constrainedPos = constrainPosition({ x: p.left, y: p.top });
+        p.left = constrainedPos.x;
+        p.top = constrainedPos.y;
       }
-      return {};
+      return p;
+    };
+    const constrainPosition = (p) => {
+      if (!tooltipRef.current || !targetRef.current) {
+        setShiftedX(0);
+        setShiftedY(0);
+        return p;
+      }
+      const rect = tooltipRef.current.getBoundingClientRect();
+      const targetRect = targetRef.current.getBoundingClientRect();
+      if (p.x + rect.width >= window.innerWidth) {
+        p.x = targetRect.left + targetRect.width / 2 + window.scrollX - rect.width;
+        setShiftedX(-1);
+      } else if (p.x < 0) {
+        p.x = targetRect.left + window.scrollX + (float === "left" ? targetRect.width : targetRect.width / 2);
+        setShiftedX(1);
+      } else {
+        setShiftedX(0);
+      }
+      if (p.y + rect.height >= window.innerHeight) {
+        p.y = window.innerHeight - rect.height;
+        setShiftedY(-1);
+      } else if (p.y < 0) {
+        p.y = 0;
+        setShiftedY(1);
+      } else {
+        setShiftedY(0);
+      }
+      return p;
     };
     react.useEffect(() => {
       if (!targetRef.current)
@@ -23789,7 +24054,10 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         };
       }
     }, [targetRef]);
-    const toolTipContents = /* @__PURE__ */ import_react4.default.createElement(ToolTip2, { ref: tooltipRef, className: "p-fixed", visible, float, align, ...props, style: getToolTipPosition() }, children);
+    const curTooltipPosition = react.useMemo(() => {
+      return getToolTipPosition();
+    }, [tooltipRef.current, targetRef.current, targetPosition]);
+    const toolTipContents = /* @__PURE__ */ import_react4.default.createElement(ToolTip2, { ref: tooltipRef, className: "p-fixed", visible, float: float === "left" && shiftedX == 1 ? "right" : float == "right" && shiftedX == -1 ? "left" : float, align: float === "left" || float == "right" ? align : shiftedX === -1 ? "right" : shiftedX === 1 ? "left" : align, ...props, style: curTooltipPosition }, children);
     return /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, portalContainer && toolTipContents && import_react_dom.default.createPortal(toolTipContents, portalContainer));
   };
   var auto_tooltip_default = AutoToolTip;
@@ -23804,7 +24072,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
 
   // src/jsx/components/_scrollable.jsx
   var import_react6 = __toESM(require_react());
-  var Scrollable = ({ className, children, size = null }) => {
+  var Scrollable = ({ className, children, size = null, style }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
     const contentRef = react.useRef(null);
@@ -23897,20 +24165,20 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
       tryUpdate();
     }, [children]);
     const classNames = "scrollable vertical" + (thumbHeight <= 0 || !canScroll ? " no-overflow" : "") + sizeClass + (className ? " " + className : "");
-    return /* @__PURE__ */ import_react6.default.createElement("div", { className: classNames, onMouseOver: calculateThumbSizeAndPosition }, /* @__PURE__ */ import_react6.default.createElement("div", { ref: scrollRef, onScroll: calculateThumbSizeAndPosition, className: "content" }, /* @__PURE__ */ import_react6.default.createElement("div", { ref: contentRef }, children)), thumbContent);
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: classNames, onMouseOver: calculateThumbSizeAndPosition, style }, /* @__PURE__ */ import_react6.default.createElement("div", { ref: scrollRef, onScroll: calculateThumbSizeAndPosition, className: "content" }, /* @__PURE__ */ import_react6.default.createElement("div", { ref: contentRef }, children)), thumbContent);
   };
   var scrollable_default = Scrollable;
 
   // src/jsx/components/_modal.jsx
   var import_react7 = __toESM(require_react());
-  var Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null, noClose = null }) => {
+  var Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, contentClassName = null, headerClassName = null, hidden = null, noClose = null, onMouseEnter, onMouseLeave }) => {
     const react = window.$_gooee.react;
     const { Button: Button2 } = window.$_gooee.framework;
     const sizeClass = size ? `modal modal-${size}` + (hidden ? " hidden" : "") + (className ? " " + className : "") : "modal" + (hidden ? " hidden" : "") + (className ? " " + className : "");
     const fixedClass = fixed ? ` modal-fixed` : "";
     const classNames = sizeClass + fixedClass;
     const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
-    return /* @__PURE__ */ import_react7.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-header" }, icon, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, "\xA0")), !noClose ? /* @__PURE__ */ import_react7.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "icon mask-icon icon-close" })) : null), /* @__PURE__ */ import_react7.default.createElement("div", { className: bodyClassNames }, children))));
+    return /* @__PURE__ */ import_react7.default.createElement("div", { className: classNames, style, onMouseEnter, onMouseLeave }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-content" + (contentClassName ? ` ${contentClassName}` : "") }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-header" + (headerClassName ? ` ${headerClassName}` : "") }, icon, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, "\xA0")), !noClose ? /* @__PURE__ */ import_react7.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "icon mask-icon icon-close" })) : null), /* @__PURE__ */ import_react7.default.createElement("div", { className: bodyClassNames }, children))));
   };
   var modal_default = Modal;
 
@@ -23936,7 +24204,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const classNames = sizeClass + fixedClass;
     const tabsClass = title ? "modal-tabs tabs-center" : "modal-tabs mt-1";
     const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
-    return /* @__PURE__ */ import_react8.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-header" }, title ? icon : null, title ? /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-title" }, title) : null, /* @__PURE__ */ import_react8.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "icon mask-icon icon-close" })), /* @__PURE__ */ import_react8.default.createElement("div", { className: tabsClass }, tabs.map((tab) => /* @__PURE__ */ import_react8.default.createElement(
+    return /* @__PURE__ */ import_react8.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-header" }, icon ? icon : null, title ? /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-title" }, title) : null, /* @__PURE__ */ import_react8.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "icon mask-icon icon-close" })), /* @__PURE__ */ import_react8.default.createElement("div", { className: tabsClass }, tabs.map((tab) => /* @__PURE__ */ import_react8.default.createElement(
       "div",
       {
         key: tab.name,
@@ -23949,8 +24217,115 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
   };
   var tab_modal_default = TabModal;
 
-  // src/jsx/components/_dropdown.jsx
+  // src/jsx/components/_moveable-modal.jsx
   var import_react9 = __toESM(require_react());
+  var MoveableModal = ({
+    className,
+    children,
+    style,
+    pos,
+    size = null,
+    onClose,
+    title,
+    icon,
+    bodyClassName = null,
+    contentClassName = null,
+    headerClassName = null,
+    disableDrag = false,
+    hidden = null,
+    noClose = null,
+    onMouseEnter,
+    onMouseLeave,
+    onStartDrag,
+    onUpdateDrag,
+    onEndDrag,
+    watch = []
+  }) => {
+    const react = window.$_gooee.react;
+    const [isDragging, setIsDragging] = react.useState(false);
+    const [cursorOffset, setCursorOffset] = react.useState({ x: 0, y: 0 });
+    const [position, setPosition] = react.useState(pos ? pos : { x: 0, y: 0 });
+    const headerRef = react.useRef(null);
+    react.useEffect(() => {
+      setPosition(pos);
+    }, [pos]);
+    const { Button: Button2 } = window.$_gooee.framework;
+    const sizeClass = size ? `modal modal-${size}` + (hidden ? " hidden" : "") + (className ? " " + className : "") : "modal" + (hidden ? " hidden" : "") + (className ? " " + className : "");
+    const classNames = "p-fixed w-x " + sizeClass;
+    const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
+    react.useEffect(() => {
+      setTimeout(() => {
+        const p = pos;
+        if (watch && watch[0] && headerRef && headerRef.current) {
+          const rect = headerRef.current.getBoundingClientRect();
+          if (p.x + rect.width >= window.innerWidth)
+            p.x = window.innerWidth - rect.width;
+          else if (p.x < 0)
+            p.x = 0;
+          if (p.y + rect.height >= window.innerHeight)
+            p.y = window.innerHeight - rect.height;
+          else if (p.y < 0)
+            p.y = 0;
+          setPosition(p);
+        }
+      }, 50);
+    }, [...watch]);
+    const onHeaderMouseDown = (e) => {
+      if (e.button !== 0 || (!headerRef || !headerRef.current) || disableDrag)
+        return;
+      const rect = headerRef.current.getBoundingClientRect();
+      setCursorOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+      setIsDragging(true);
+      if (onStartDrag)
+        onStartDrag();
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    const onMouseMove = (e) => {
+      if (!isDragging)
+        return;
+      const rect = headerRef.current.getBoundingClientRect();
+      const pos2 = { x: e.clientX - cursorOffset.x, y: e.clientY - cursorOffset.y };
+      if (pos2.x + rect.width >= window.innerWidth)
+        pos2.x = window.innerWidth - rect.width;
+      else if (pos2.x < 0)
+        pos2.x = 0;
+      if (pos2.y + rect.height >= window.innerHeight)
+        pos2.y = window.innerHeight - rect.height;
+      else if (pos2.y < 0)
+        pos2.y = 0;
+      setPosition(pos2);
+      if (onUpdateDrag)
+        onUpdateDrag(pos2);
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    const onMouseUp = () => {
+      setIsDragging(false);
+      if (onEndDrag)
+        onEndDrag();
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+    react.useEffect(() => {
+      if (isDragging) {
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+      }
+      return () => {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      };
+    }, [isDragging]);
+    return /* @__PURE__ */ import_react9.default.createElement("div", { className: classNames, style: { ...style, left: `${position.x}px`, top: `${position.y}px` }, onMouseEnter, onMouseLeave }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "modal-dialog w-x" }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "modal-content w-x" + (contentClassName ? ` ${contentClassName}` : "") }, /* @__PURE__ */ import_react9.default.createElement("div", { ref: headerRef, onMouseDown: onHeaderMouseDown, className: "modal-header" + (headerClassName ? ` ${headerClassName}` : "") }, icon, /* @__PURE__ */ import_react9.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null, "\xA0")), !noClose ? /* @__PURE__ */ import_react9.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "icon mask-icon icon-close" })) : null), /* @__PURE__ */ import_react9.default.createElement("div", { className: bodyClassNames }, children))));
+  };
+  var moveable_modal_default = MoveableModal;
+
+  // src/jsx/components/_dropdown.jsx
+  var import_react10 = __toESM(require_react());
   var import_react_dom2 = __toESM(require_react_dom());
   var Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged, selected, options }) => {
     const react = window.$_gooee.react;
@@ -24015,16 +24390,82 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    const selectedIndex = options.findIndex((o) => o.value === internalValue);
-    const dropdownContent = active ? /* @__PURE__ */ import_react9.default.createElement("div", { className: "dropdown-menu", ref: menuRef, style: getDropdownPosition() }, options.map((option) => /* @__PURE__ */ import_react9.default.createElement("button", { key: option.value, className: "dropdown-item", onMouseEnter, onClick: () => changeSelection(option.value) }, option.label))) : null;
+    const selectedIndex = !options ? -1 : options.findIndex((o) => o.value === internalValue);
+    const dropdownMenuClass = "dropdown-menu" + (size ? ` dropdown-menu-${size}` : "");
+    const dropdownContent = active ? /* @__PURE__ */ import_react10.default.createElement("div", { className: dropdownMenuClass, ref: menuRef, style: getDropdownPosition() }, options ? options.map((option) => /* @__PURE__ */ import_react10.default.createElement("button", { key: option.value, className: "dropdown-item", onMouseEnter, onClick: () => changeSelection(option.value) }, option.label)) : null) : null;
     const classNames = (className ? `dropdown ${className}` : "dropdown") + (size ? ` dropdown-${size}` : "");
     const toggleClassNames = toggleClassName ? "dropdown-toggle " + toggleClassName : "dropdown-toggle";
-    return /* @__PURE__ */ import_react9.default.createElement("div", { className: classNames, style: { ...style } }, /* @__PURE__ */ import_react9.default.createElement("button", { ref: dropdownRef, onMouseEnter, className: toggleClassNames, onClick: onToggle }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "caption" }, selectedIndex >= 0 ? options[selectedIndex].label : null), /* @__PURE__ */ import_react9.default.createElement("div", { className: "icon mask-icon", style: { maskImage: "url(Media/Glyphs/StrokeArrowDown.svg)" } })), portalContainer && dropdownContent && import_react_dom2.default.createPortal(dropdownContent, portalContainer));
+    return /* @__PURE__ */ import_react10.default.createElement("div", { className: classNames, style: { ...style } }, /* @__PURE__ */ import_react10.default.createElement("button", { ref: dropdownRef, onMouseEnter, className: toggleClassNames, onClick: onToggle }, /* @__PURE__ */ import_react10.default.createElement("div", { className: "caption" }, selectedIndex >= 0 ? options[selectedIndex].label : null), /* @__PURE__ */ import_react10.default.createElement("div", { className: "icon mask-icon", style: { maskImage: "url(Media/Glyphs/StrokeArrowDown.svg)" } })), portalContainer && dropdownContent && import_react_dom2.default.createPortal(dropdownContent, portalContainer));
   };
   var dropdown_default = Dropdown;
 
+  // src/jsx/components/_dropdown-menu.jsx
+  var import_react11 = __toESM(require_react());
+  var DropdownMenu = ({
+    className,
+    buttonRef,
+    visible,
+    style,
+    onHidden,
+    onItemClick,
+    onChildItemClick,
+    items
+  }) => {
+    const react = window.$_gooee.react;
+    const { FloatingElement: FloatingElement2, Button: Button2, Icon: Icon2 } = window.$_gooee.framework;
+    const onInternalHidden = () => {
+      if (!visible)
+        return;
+      if (onHidden)
+        onHidden();
+      engine.trigger("audio.playSound", "close-panel", 1);
+    };
+    return /* @__PURE__ */ import_react11.default.createElement(
+      FloatingElement2,
+      {
+        typeKey: "DropdownMenu",
+        visible,
+        onHidden: onInternalHidden,
+        targetRef: buttonRef,
+        closeOnClickOutside: "true"
+      },
+      /* @__PURE__ */ import_react11.default.createElement("div", { style, className: "bg-panel text-light rounded d-flex flex-column align-items-stretch" + (className ? " " + className : "") }, items.map((item, index) => /* @__PURE__ */ import_react11.default.createElement(
+        Button2,
+        {
+          color: "light",
+          onClick: () => onItemClick(item.key),
+          className: "text-light btn-transparent flex-1 text-left",
+          style: "trans-faded",
+          key: index,
+          dropdownFloat: "right",
+          dropdownAlign: "left",
+          dropdownCloseOnClick: "true",
+          ignoreBubblingClick: "true",
+          dropdownMenu: item.children ? /* @__PURE__ */ import_react11.default.createElement("div", { className: "bg-panel-dark rounded d-flex flex-column align-items-stretch" }, item.children.map((childItem, childIndex) => /* @__PURE__ */ import_react11.default.createElement(
+            Button2,
+            {
+              ignoreBubblingClick: "true",
+              key: childIndex,
+              stopClickPropagation: false,
+              onClick: () => onChildItemClick(item.key, childItem),
+              color: "light",
+              style: "trans-faded",
+              className: "btn-transparent flex-1 text-left"
+            },
+            /* @__PURE__ */ import_react11.default.createElement(Icon2, { className: "mr-2" + (childItem.iconClassName ? " " + childItem.iconClassName : item.fa ? " bg-light" : ""), icon: childItem.icon, fa: childItem.fa ? true : null }),
+            /* @__PURE__ */ import_react11.default.createElement("span", { className: "text-light" }, engine.translate(childItem.label))
+          ))) : null
+        },
+        /* @__PURE__ */ import_react11.default.createElement("span", null, /* @__PURE__ */ import_react11.default.createElement(Icon2, { className: "mr-2" + (item.iconClassName ? " " + item.iconClassName : item.fa ? " bg-light" : ""), icon: item.icon, fa: item.fa ? true : null })),
+        /* @__PURE__ */ import_react11.default.createElement("span", { className: "text-light" }, engine.translate(item.label)),
+        item.children ? /* @__PURE__ */ import_react11.default.createElement(import_react11.default.Fragment, null, /* @__PURE__ */ import_react11.default.createElement("div", { className: "ml-2 flex-1" }), /* @__PURE__ */ import_react11.default.createElement(Icon2, { className: "ml-x", style: { marginTop: "2.5rem" }, icon: "solid-caret-right", size: "xs", fa: true })) : null
+      )))
+    );
+  };
+  var dropdown_menu_default = DropdownMenu;
+
   // src/jsx/components/_checkbox.jsx
-  var import_react10 = __toESM(require_react());
+  var import_react12 = __toESM(require_react());
   var CheckBox = ({ className, style, checked, onToggle }) => {
     const react = window.$_gooee.react;
     const [isChecked, setIsChecked] = react.useState(checked);
@@ -24043,7 +24484,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    return /* @__PURE__ */ import_react10.default.createElement(
+    return /* @__PURE__ */ import_react12.default.createElement(
       "div",
       {
         className: classNames,
@@ -24051,13 +24492,13 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         style,
         onClick: handleClick
       },
-      /* @__PURE__ */ import_react10.default.createElement("div", { className: "icon mask-icon icon-check" })
+      /* @__PURE__ */ import_react12.default.createElement("div", { className: "icon mask-icon icon-check" })
     );
   };
   var checkbox_default = CheckBox;
 
   // src/jsx/components/_checkbox-group.jsx
-  var import_react11 = __toESM(require_react());
+  var import_react13 = __toESM(require_react());
   var CheckBoxGroup = ({ style, onChecked, selected, options }) => {
     const react = window.$_gooee.react;
     const [internalValue, setInternalValue] = react.useState([]);
@@ -24082,15 +24523,16 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         return;
       return internalValue.filter((e) => e.value === value).length > 0;
     };
-    return /* @__PURE__ */ import_react11.default.createElement("div", { className: "form-check-group", style }, options.map((option, index) => /* @__PURE__ */ import_react11.default.createElement("div", { key: option.value, className: "form-check" }, /* @__PURE__ */ import_react11.default.createElement(CheckBox2, { checked: contains(option.value), onToggle: (val) => onCheck(option.value, val) }), /* @__PURE__ */ import_react11.default.createElement("label", { className: "form-check-label" }, option.label))));
+    return /* @__PURE__ */ import_react13.default.createElement("div", { className: "form-check-group", style }, options.map((option, index) => /* @__PURE__ */ import_react13.default.createElement("div", { key: option.value, className: "form-check" }, /* @__PURE__ */ import_react13.default.createElement(CheckBox2, { checked: contains(option.value), onToggle: (val) => onCheck(option.value, val) }), /* @__PURE__ */ import_react13.default.createElement("label", { className: "form-check-label" }, option.label))));
   };
   var checkbox_group_default = CheckBoxGroup;
 
   // src/jsx/components/_textbox.jsx
-  var import_react12 = __toESM(require_react());
-  var TextBox = ({ className, style, text, onChange, type = "text", size = null, disabled = null, rows = 1 }) => {
+  var import_react14 = __toESM(require_react());
+  var TextBox = ({ className, style, text, onChange, type = "text", size = null, disabled = null, rows = 1, maxLength = null, selectOnFocus = null, minValue = null, maxValue = null, onSanitize = null }) => {
     const react = window.$_gooee.react;
     const [value, setValue] = react.useState(text);
+    const elementRef = react.useRef(null);
     react.useEffect(() => {
       setValue(text);
     }, [text]);
@@ -24101,17 +24543,50 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    const onValueChange = (val) => {
-      setValue(val);
-      if (onChange)
-        onChange(val);
+    const stripNumbers = (val) => {
+      return val.replace(/\D/g, "");
     };
-    return rows === 1 ? /* @__PURE__ */ import_react12.default.createElement("input", { type, className: classNames, onMouseEnter, onChange: (e) => onValueChange(e.target.value), style, value }) : /* @__PURE__ */ import_react12.default.createElement("textarea", { rows, className: classNames, onMouseEnter, onChange: (e) => onValueChange(e.target.value), style }, value);
+    const checkMaxLength = (val) => {
+      if (maxLength && val && val.length > maxLength)
+        return val.substring(0, maxLength);
+      return val;
+    };
+    const numberValidation = (input) => {
+      let number = parseInt(input, 10);
+      if (minValue != null && number < minValue) {
+        number = minValue;
+      } else if (maxValue != null && number > maxValue) {
+        number = maxValue;
+      }
+      return number.toString();
+    };
+    const onValueChange = (val) => {
+      let newVal = type === "number" ? stripNumbers(val) : val;
+      newVal = checkMaxLength(newVal);
+      if (type === "number") {
+        if (!newVal || newVal.length === 0)
+          newVal = "0";
+        else
+          newVal = numberValidation(newVal);
+      }
+      if (onSanitize)
+        newVal = onSanitize(newVal);
+      setValue(newVal);
+      if (onChange)
+        onChange(newVal);
+    };
+    const onClick = () => {
+      if (selectOnFocus && elementRef && elementRef.current) {
+        elementRef.current.focus();
+        elementRef.current.setSelectionRange(0, elementRef.current.value.length);
+      }
+    };
+    return rows === 1 ? /* @__PURE__ */ import_react14.default.createElement("input", { ref: elementRef, type, className: classNames, onClick, onMouseEnter, onChange: (e) => onValueChange(e.target.value), style, value }) : /* @__PURE__ */ import_react14.default.createElement("textarea", { ref: elementRef, rows, className: classNames, onClick, onMouseEnter, onChange: (e) => onValueChange(e.target.value), style }, value);
   };
   var textbox_default = TextBox;
 
   // src/jsx/components/_radio-item.jsx
-  var import_react13 = __toESM(require_react());
+  var import_react15 = __toESM(require_react());
   var RadioItem = ({ className, style, checked, onToggle }) => {
     const react = window.$_gooee.react;
     const [isChecked, setIsChecked] = react.useState(checked);
@@ -24130,12 +24605,12 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    return /* @__PURE__ */ import_react13.default.createElement("div", { className: classNames, onMouseEnter, style, onClick: handleClick }, /* @__PURE__ */ import_react13.default.createElement("div", { class: "dot-container" }, /* @__PURE__ */ import_react13.default.createElement("div", { className: "dot" })));
+    return /* @__PURE__ */ import_react15.default.createElement("div", { className: classNames, onMouseEnter, style, onClick: handleClick }, /* @__PURE__ */ import_react15.default.createElement("div", { class: "dot-container" }, /* @__PURE__ */ import_react15.default.createElement("div", { className: "dot" })));
   };
   var radio_item_default = RadioItem;
 
   // src/jsx/components/_radio-group.jsx
-  var import_react14 = __toESM(require_react());
+  var import_react16 = __toESM(require_react());
   var RadioGroup = ({ style, onSelectionChanged, selected, options }) => {
     const react = window.$_gooee.react;
     const [internalValue, setInternalValue] = react.useState(selected);
@@ -24148,27 +24623,114 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
       if (onSelectionChanged)
         onSelectionChanged(value);
     };
-    return /* @__PURE__ */ import_react14.default.createElement("div", { className: "form-radio-group", style }, options.map((option, index) => /* @__PURE__ */ import_react14.default.createElement("div", { key: option.value, className: "form-radio" }, /* @__PURE__ */ import_react14.default.createElement(RadioItem2, { checked: internalValue === option.value, onToggle: () => changeSelection(option.value) }), /* @__PURE__ */ import_react14.default.createElement("label", { className: "form-radio-label" }, option.label))));
+    return /* @__PURE__ */ import_react16.default.createElement("div", { className: "form-radio-group", style }, options.map((option, index) => /* @__PURE__ */ import_react16.default.createElement("div", { key: option.value, className: "form-radio" }, /* @__PURE__ */ import_react16.default.createElement(RadioItem2, { checked: internalValue === option.value, onToggle: () => changeSelection(option.value) }), /* @__PURE__ */ import_react16.default.createElement("label", { className: "form-radio-label" }, option.label))));
   };
   var radio_group_default = RadioGroup;
 
   // src/jsx/components/_slider.jsx
-  var import_react15 = __toESM(require_react());
-  var Slider = ({ className, value, onValueChanged, style }) => {
+  var import_react17 = __toESM(require_react());
+
+  // node_modules/reactjs-id/src/React-Id.js
+  function ReactId() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 3 | 8;
+      return v.toString(16);
+    });
+  }
+
+  // src/jsx/components/_slider.jsx
+  var Slider = ({ className, value, onValueChanged, style, orientation = "horizontal", basic = null }) => {
     const react = window.$_gooee.react;
+    const { Icon: Icon2 } = window.$_gooee.framework;
+    const [guid] = react.useState(ReactId());
     const sliderRef = react.useRef(null);
     const [mouseDown, setMouseDown] = react.useState(false);
     const [internalValue, setInternalValue] = react.useState(value ? value : 0);
+    react.useEffect(() => {
+      if (!mouseDown) {
+        setInternalValue(Math.min(Math.max(0, value)));
+      }
+    }, [value, mouseDown]);
     const updateValue = (e) => {
       const slider = sliderRef.current;
       if (!slider)
         return;
       const rect = slider.getBoundingClientRect();
-      const position = e.clientX - rect.left;
-      let newValue = position / rect.width * 100;
+      const position = orientation === "horizontal" ? e.clientX - rect.left : e.clientY - rect.top;
+      let newValue = position / (orientation === "horizontal" ? rect.width : rect.height) * 100;
       newValue = Math.max(0, Math.min(100, Math.round(newValue)));
       if (onValueChanged)
         onValueChanged(newValue);
+      setInternalValue(newValue);
+      engine.trigger("audio.playSound", "drag-slider", 1);
+    };
+    const onMouseDown = (e) => {
+      e.stopPropagation();
+      setMouseDown(true);
+      updateValue(e);
+      engine.trigger("audio.playSound", "grabSlider", 1);
+    };
+    const onMouseMove = (e) => {
+      if (window.$_gooee.activeSlider !== guid)
+        return;
+      if (mouseDown) {
+        updateValue(e);
+      }
+    };
+    const onMouseUp = () => {
+      if (window.$_gooee.activeSlider !== guid)
+        return;
+      setMouseDown(false);
+    };
+    react.useEffect(() => {
+      if (!sliderRef || !sliderRef.current)
+        return;
+      if (mouseDown) {
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+        window.$_gooee.activeSlider = guid;
+      } else {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      }
+      return () => {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      };
+    }, [mouseDown, sliderRef.current]);
+    const classNames = (basic ? "form-slider-basic" : "form-slider") + (orientation === "vertical" ? " form-slider-vertical" : "") + (className ? " " + className : "");
+    const valuePercent = 100 - internalValue + "%";
+    return /* @__PURE__ */ import_react17.default.createElement(
+      "div",
+      {
+        className: classNames,
+        ref: sliderRef,
+        onMouseDown
+      },
+      /* @__PURE__ */ import_react17.default.createElement("div", { className: "form-slider-grip", style: orientation === "horizontal" ? { width: valuePercent } : { position: "absolute", top: `${internalValue}%`, height: valuePercent } }, basic ? /* @__PURE__ */ import_react17.default.createElement("div", { className: "form-slider-grip-handle" }, /* @__PURE__ */ import_react17.default.createElement(Icon2, { icon: "solid-caret-right", fa: true }), /* @__PURE__ */ import_react17.default.createElement(Icon2, { icon: "solid-caret-left", fa: true })) : null)
+    );
+  };
+  var slider_default = Slider;
+
+  // src/jsx/components/_grid-slider.jsx
+  var import_react18 = __toESM(require_react());
+  var GridSlider = ({ className, value, onValueChanged, style }) => {
+    const react = window.$_gooee.react;
+    const { Icon: Icon2 } = window.$_gooee.framework;
+    const sliderRef = react.useRef(null);
+    const [mouseDown, setMouseDown] = react.useState(false);
+    const [internalValue, setInternalValue] = react.useState(value ? value : { x: 0, y: 0 });
+    const updateValue = (e) => {
+      const slider = sliderRef.current;
+      if (!slider)
+        return;
+      const rect = slider.getBoundingClientRect();
+      const position = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      let newValue = { x: position.x / rect.width * 100, y: position.y / rect.height * 100 };
+      newValue.x = Math.max(0, Math.min(100, Math.round(newValue.x)));
+      newValue.y = Math.max(0, Math.min(100, Math.round(newValue.y)));
+      if (onValueChanged)
+        onValueChanged(newValue.x, newValue.y);
       setInternalValue(newValue);
       engine.trigger("audio.playSound", "drag-slider", 1);
     };
@@ -24193,22 +24755,28 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         window.removeEventListener("mouseup", onMouseUp);
       };
     }, [mouseDown]);
-    const classNames = "form-slider" + (className ? " " + className : "");
-    const valuePercent = internalValue + "%";
-    return /* @__PURE__ */ import_react15.default.createElement(
+    react.useEffect(() => {
+      if (!value)
+        return;
+      setInternalValue(value);
+    }, [value]);
+    const classNames = "form-grid-slider" + (className ? " " + className : "");
+    const valuePercentX = internalValue.x + "%";
+    const valuePercentY = internalValue.y + "%";
+    return /* @__PURE__ */ import_react18.default.createElement(
       "div",
       {
         className: classNames,
         ref: sliderRef,
         onMouseDown
       },
-      /* @__PURE__ */ import_react15.default.createElement("div", { className: "form-slider-grip", style: { width: valuePercent } })
+      /* @__PURE__ */ import_react18.default.createElement("div", { className: "form-grid-slider-thumb", style: { left: valuePercentX, top: valuePercentY } }, /* @__PURE__ */ import_react18.default.createElement(Icon2, { icon: "circle", size: "sm", fa: true }))
     );
   };
-  var slider_default = Slider;
+  var grid_slider_default = GridSlider;
 
   // src/jsx/components/_gradient-slider.jsx
-  var import_react16 = __toESM(require_react());
+  var import_react19 = __toESM(require_react());
   var GradientSlider = ({ className, value, onValueChanged, style, from, to, spectrum = null }) => {
     const react = window.$_gooee.react;
     const sliderRef = react.useRef(null);
@@ -24251,28 +24819,28 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const spectrumClass = spectrum ? " bg-spectrum" : "";
     const classNames = "form-gradient-slider" + (className ? " " + className : "") + spectrumClass;
     const valuePercent = internalValue + "%";
-    return /* @__PURE__ */ import_react16.default.createElement(
+    return /* @__PURE__ */ import_react19.default.createElement(
       "div",
       {
         className: classNames,
         onMouseDown
       },
-      /* @__PURE__ */ import_react16.default.createElement("div", { ref: sliderRef, className: "form-gradient-slider-container" }, /* @__PURE__ */ import_react16.default.createElement("div", { className: "form-slider-grip", style: { left: valuePercent } }, /* @__PURE__ */ import_react16.default.createElement("div", { className: "form-slider-thumb" })))
+      /* @__PURE__ */ import_react19.default.createElement("div", { ref: sliderRef, className: "form-gradient-slider-container" }, /* @__PURE__ */ import_react19.default.createElement("div", { className: "form-slider-grip", style: { left: valuePercent } }, /* @__PURE__ */ import_react19.default.createElement("div", { className: "form-slider-thumb" })))
     );
   };
   var gradient_slider_default = GradientSlider;
 
   // src/jsx/components/_icon.jsx
-  var import_react17 = __toESM(require_react());
+  var import_react20 = __toESM(require_react());
   var Icon = ({ className, style, icon, mask = null, fa = null, size = null }) => {
-    const iconClassName = mask ? `icon mask-icon icon-${icon} ${className}` : fa ? `fa fa-${icon} ${className}` : `icon ${className}` + (size ? ` icon-${size}` : "");
-    const iconMarkup = mask || fa ? /* @__PURE__ */ import_react17.default.createElement("div", { className: iconClassName, style }) : /* @__PURE__ */ import_react17.default.createElement("img", { className: iconClassName, style, src: icon });
+    const iconClassName = (mask ? `icon mask-icon icon-${icon} ${className}` : fa ? `fa fa-${icon} ${className}` : `icon ${className}`) + (size ? ` icon-${size}` : "");
+    const iconMarkup = mask || fa ? /* @__PURE__ */ import_react20.default.createElement("div", { className: iconClassName, style }) : /* @__PURE__ */ import_react20.default.createElement("img", { className: iconClassName, style, src: icon });
     return iconMarkup;
   };
   var icon_default = Icon;
 
   // src/jsx/components/_code.jsx
-  var import_react18 = __toESM(require_react());
+  var import_react21 = __toESM(require_react());
   var Code = ({ htmlString }) => {
     const encodeHtml = (str) => {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/ /g, "&nbsp;").replace(/"/g, "&quot;").replace(/=/g, "&equals;");
@@ -24288,30 +24856,37 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
       const coloredHtml = addSyntaxColoring(encodedHtml);
       return { __html: coloredHtml };
     };
-    return /* @__PURE__ */ import_react18.default.createElement("code", { className: "d-flex flex-wrap flex-row", dangerouslySetInnerHTML: renderHtml() });
+    return /* @__PURE__ */ import_react21.default.createElement("code", { className: "d-flex flex-wrap flex-row", dangerouslySetInnerHTML: renderHtml() });
   };
   var code_default = Code;
 
   // src/jsx/components/_form-group.jsx
-  var import_react19 = __toESM(require_react());
-  var FormGroup = ({ children, className, style, label = null }) => {
+  var import_react22 = __toESM(require_react());
+  var FormGroup = ({ children, className, style, label = null, labelClassName = null, description = null }) => {
     const classNames = "form-group" + (className ? " " + className : "");
-    const labelMarkup = label ? /* @__PURE__ */ import_react19.default.createElement("label", null, label) : null;
-    return /* @__PURE__ */ import_react19.default.createElement("div", { className: classNames, style }, labelMarkup, children);
+    const labelClassNames = (description ? "mb-0" : "") + (labelClassName ? " " + labelClassName : "");
+    const labelMarkup = label ? /* @__PURE__ */ import_react22.default.createElement("label", { className: labelClassNames }, label) : null;
+    const descriptionMarkup = description ? /* @__PURE__ */ import_react22.default.createElement("p", { className: "text-muted mb-2", cohinline: "cohinline" }, description) : null;
+    return /* @__PURE__ */ import_react22.default.createElement("div", { className: classNames, style }, labelMarkup, descriptionMarkup, children);
   };
   var form_group_default = FormGroup;
 
   // src/jsx/components/_form-checkbox.jsx
-  var import_react20 = __toESM(require_react());
+  var import_react23 = __toESM(require_react());
   var FormCheckBox = ({ className, label, checkClassName, style, checked, onToggle }) => {
     const classNames = "form-check" + (className ? " " + className : "");
     const { CheckBox: CheckBox2 } = window.$_gooee.framework;
-    return /* @__PURE__ */ import_react20.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react20.default.createElement(CheckBox2, { className: checkClassName, checked, onToggle }), /* @__PURE__ */ import_react20.default.createElement("label", { className: "form-check-label" }, label));
+    const handleLabelClick = () => {
+      if (onToggle)
+        onToggle(!checked);
+      engine.trigger("audio.playSound", "select-toggle", 1);
+    };
+    return /* @__PURE__ */ import_react23.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react23.default.createElement(CheckBox2, { className: checkClassName, checked, onToggle }), label ? /* @__PURE__ */ import_react23.default.createElement("label", { className: "form-check-label", onClick: handleLabelClick }, label) : null);
   };
   var form_checkbox_default = FormCheckBox;
 
   // src/jsx/components/_markdown.jsx
-  var import_react21 = __toESM(require_react());
+  var import_react24 = __toESM(require_react());
   var MarkDown = ({ contents, url = null, className, style }) => {
     const react = window.$_gooee.react;
     const [cache, setCache] = react.useState({});
@@ -24416,27 +24991,130 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     const markdownHtml = content && content.length > 0 ? processMarkdown(content) : "";
     const md = content && content.length > 0 ? markdownHtml : null;
     const classNames = `markdown${className ? " " + className : ""}`;
-    return /* @__PURE__ */ import_react21.default.createElement("div", { className: classNames, style, dangerouslySetInnerHTML: { __html: md } });
+    return /* @__PURE__ */ import_react24.default.createElement("div", { className: classNames, style, dangerouslySetInnerHTML: { __html: md } });
   };
   var markdown_default = MarkDown;
 
+  // src/jsx/components/_container.jsx
+  var import_react25 = __toESM(require_react());
+  var Container = ({
+    children,
+    onClick,
+    style = null,
+    className = null,
+    onMouseEnter = null,
+    onMouseLeave = null,
+    title = null,
+    description = null,
+    toolTipFloat = "up",
+    toolTipAlign = "center",
+    stopClickPropagation = true,
+    ignoreBubblingClick = false,
+    dropdownMenu = null,
+    dropdownFloat = "down",
+    dropdownAlign = "left",
+    dropdownCloseOnClick = false
+  }) => {
+    const react = window.$_gooee.react;
+    const buttonRef = react.useRef(null);
+    const dropdownRef = react.useRef(null);
+    const [dropdownVisible, setDropdownVisible] = react.useState(false);
+    const { AutoToolTip: AutoToolTip2, ToolTipContent: ToolTipContent2, FloatingElement: FloatingElement2 } = window.$_gooee.framework;
+    const hasToolTip = title && description;
+    const handleClick = (
+      /*react.useCallback(*/
+      (e) => {
+        if (!onClick || ignoreBubblingClick && e.target !== e.currentTarget)
+          return;
+        if (stopClickPropagation)
+          e.stopPropagation();
+        if (onClick.length >= 1)
+          onClick(e);
+        else
+          onClick();
+      }
+    );
+    const internalOnMouseEnter = (e) => {
+      if (!onMouseEnter)
+        return;
+      if (leaveTimeout.current)
+        clearTimeout(leaveTimeout.current);
+      onMouseEnter();
+      if (dropdownMenu)
+        setDropdownVisible(true);
+    };
+    const leaveTimeout = react.useRef(null);
+    react.useEffect(() => {
+      return () => clearTimeout(leaveTimeout.current);
+    }, []);
+    const internalOnMouseLeave = (e) => {
+      if (!onMouseLeave)
+        return;
+      onMouseLeave();
+      if (dropdownMenu) {
+        const isHTMLElement = e.relatedTarget instanceof HTMLElement;
+        leaveTimeout.current = setTimeout(() => {
+          if (dropdownRef.current && (!isHTMLElement || isHTMLElement && !dropdownRef.current.contains(e.relatedTarget))) {
+            setDropdownVisible(false);
+          }
+        }, 250);
+      }
+    };
+    const extraClass = className ? " " + className : "";
+    const onDropdownClosed = () => {
+      setDropdownVisible(false);
+    };
+    const getDropdownRef = (ref) => {
+      dropdownRef.current = ref.current;
+    };
+    return /* @__PURE__ */ import_react25.default.createElement(
+      "div",
+      {
+        ref: buttonRef,
+        className: extraClass + (hasToolTip ? " p-relative" : ""),
+        style,
+        onMouseEnter: internalOnMouseEnter,
+        onMouseLeave: internalOnMouseLeave,
+        onClick: handleClick
+      },
+      children,
+      hasToolTip ? /* @__PURE__ */ import_react25.default.createElement(AutoToolTip2, { targetRef: buttonRef, float: toolTipFloat, align: toolTipAlign }, /* @__PURE__ */ import_react25.default.createElement(ToolTipContent2, { title, description })) : null,
+      dropdownMenu ? /* @__PURE__ */ import_react25.default.createElement(
+        FloatingElement2,
+        {
+          getRef: getDropdownRef,
+          typeKey: "ContainerDropdownMenu",
+          visible: dropdownVisible,
+          float: dropdownFloat,
+          align: dropdownAlign,
+          onHidden: onDropdownClosed,
+          targetRef: buttonRef,
+          closeOnClickOutside: true,
+          closeOnClickInside: dropdownCloseOnClick
+        },
+        dropdownMenu
+      ) : null
+    );
+  };
+  var container_default = Container;
+
   // src/jsx/components/_list.jsx
-  var import_react22 = __toESM(require_react());
+  var import_react26 = __toESM(require_react());
   var List = ({ children, className, ordered = null }) => {
     const renderItems = () => {
-      return import_react22.default.Children.map(children, (child, index) => {
+      return import_react26.default.Children.map(children, (child, index) => {
         const key = `list-item-${index}`;
         const innerContent = child.props.children;
-        return /* @__PURE__ */ import_react22.default.createElement("div", { className: "list-item", key, cohinline: "cohinline" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "list-item-prepend" }, ordered ? /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null, `${index + 1}`, ".") : /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null, "\u2022")), /* @__PURE__ */ import_react22.default.createElement("p", { cohinline: "cohinline", class: "flex-1" }, innerContent));
+        return /* @__PURE__ */ import_react26.default.createElement("div", { className: "list-item", key, cohinline: "cohinline" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "list-item-prepend" }, ordered ? /* @__PURE__ */ import_react26.default.createElement(import_react26.default.Fragment, null, `${index + 1}`, ".") : /* @__PURE__ */ import_react26.default.createElement(import_react26.default.Fragment, null, "\u2022")), /* @__PURE__ */ import_react26.default.createElement("p", { cohinline: "cohinline", class: "flex-1" }, innerContent));
       });
     };
     const classNames = "list" + (className ? " " + className : "") + (ordered ? " list-ordered" : "");
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: classNames }, renderItems());
+    return /* @__PURE__ */ import_react26.default.createElement("div", { className: classNames }, renderItems());
   };
   var list_default = List;
 
   // src/jsx/components/_virtual-list.jsx
-  var import_react23 = __toESM(require_react());
+  var import_react27 = __toESM(require_react());
   var VirtualList = ({ className, contentClassName, border = null, data, onRenderItem, columns = 1, rows = 4, size = null, watch = [] }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
@@ -24618,7 +25296,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         window.removeEventListener("mouseup", onMouseUp);
       };
     }, [data, columns, rows, visibleStartIndex, itemCount, mouseDown, thumbTop]);
-    const thumbContent = react.useMemo(() => thumbHeight > 0 ? /* @__PURE__ */ import_react23.default.createElement("div", { className: "track", onMouseDown: onTrackMouseDown }, /* @__PURE__ */ import_react23.default.createElement("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } })) : null, [thumbHeight, thumbTop, onMouseDown, onMouseEnter, onTrackMouseDown, ...watch]);
+    const thumbContent = react.useMemo(() => thumbHeight > 0 ? /* @__PURE__ */ import_react27.default.createElement("div", { className: "track", onMouseDown: onTrackMouseDown }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } })) : null, [thumbHeight, thumbTop, onMouseDown, onMouseEnter, onTrackMouseDown, ...watch]);
     const visibleChildren = data ? data.slice(visibleStartIndex, visibleStartIndex + visibleItemCount) : [];
     const classNames = "scrollable vertical no-overflow" + (thumbHeight <= 0 + sizeClass + (className ? " " + className : ""));
     const getCellClassName = (index) => {
@@ -24635,17 +25313,17 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     };
     const dummies = react.useMemo(() => {
       const dummyCount = Math.max(0, rows * columns - visibleChildren.length);
-      return Array.from({ length: dummyCount }, (_, index) => /* @__PURE__ */ import_react23.default.createElement("div", { key: index, style: { width: itemWidth, height: itemHeight } }));
+      return Array.from({ length: dummyCount }, (_, index) => /* @__PURE__ */ import_react27.default.createElement("div", { key: index, style: { width: itemWidth, height: itemHeight } }));
     }, [visibleChildren.length, rows, columns, itemWidth, itemHeight]);
     const renderChild = react.useCallback((child, index) => {
-      return /* @__PURE__ */ import_react23.default.createElement("div", { key: index, className: getCellClassName(index), style: { width: itemWidth, height: itemHeight } }, onRenderItem(child, index));
+      return /* @__PURE__ */ import_react27.default.createElement("div", { key: index, className: getCellClassName(index), style: { width: itemWidth, height: itemHeight } }, onRenderItem(child, index));
     }, [itemWidth, itemHeight, rows, columns, ...watch]);
-    return /* @__PURE__ */ import_react23.default.createElement("div", { className: classNames, style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react23.default.createElement("div", { ref: scrollRef, className: "content", style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react23.default.createElement("div", { ref: contentRef, className: (contentClassName ? contentClassName : "") + " h-x flex-1", style: { overflowY: "hidden" } }, visibleChildren.map((child, index) => renderChild(child, index)), dummies)), thumbContent);
+    return /* @__PURE__ */ import_react27.default.createElement("div", { className: classNames, style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react27.default.createElement("div", { ref: scrollRef, className: "content", style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react27.default.createElement("div", { ref: contentRef, className: (contentClassName ? contentClassName : "") + " h-x flex-1", style: { overflowY: "hidden" } }, visibleChildren.map((child, index) => renderChild(child, index)), dummies)), thumbContent);
   };
   var virtual_list_default = VirtualList;
 
   // src/jsx/components/_toggle-button-group.jsx
-  var import_react24 = __toESM(require_react());
+  var import_react28 = __toESM(require_react());
   var ToggleButton = ({ children, selectedIndex = 0, onSelectionChanged }) => {
     const react = window.$_gooee.react;
     const [internalValue, setInternalValue] = react.useState(selectedIndex);
@@ -24657,7 +25335,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     };
     const renderItems = () => {
       let buttonIndex = -1;
-      return import_react24.default.Children.map(children, (child, index) => {
+      return import_react28.default.Children.map(children, (child, index) => {
         if (child.type !== "button") {
           return child;
         }
@@ -24668,29 +25346,60 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         const innerContent = child.props.children;
         const color = isSelected ? "primary" : "light";
         const shade = isSelected ? "" : "trans-faded";
-        const isLast = thisIndex === import_react24.default.Children.toArray(children).filter((c) => c.type === "button").length - 1;
+        const isLast = thisIndex === import_react28.default.Children.toArray(children).filter((c) => c.type === "button").length - 1;
         const classNames = (!isSelected ? "text-light" : "text-dark") + (isLast ? "" : " mb-1");
-        return /* @__PURE__ */ import_react24.default.createElement(Button2, { key, className: classNames, isBlock: true, color, style: shade, onClick: () => changeSelection(thisIndex) }, innerContent);
+        return /* @__PURE__ */ import_react28.default.createElement(Button2, { key, className: classNames, isBlock: true, color, style: shade, onClick: () => changeSelection(thisIndex) }, innerContent);
       });
     };
-    return /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null, children ? renderItems() : null);
+    return /* @__PURE__ */ import_react28.default.createElement(import_react28.default.Fragment, null, children ? renderItems() : null);
   };
   var toggle_button_group_default = ToggleButton;
 
   // src/jsx/components/_progress-bar.jsx
-  var import_react25 = __toESM(require_react());
-  var ProgressBar = ({ className, value = 0.5, min = 0, max = 1, orientation = "horizontal" }) => {
+  var import_react29 = __toESM(require_react());
+  var ProgressBar = ({ style, className, containerClassName, value = 0.5, min = 0, max = 1, orientation = "horizontal", color = null, showLabel = false, label = null, onMouseEnter, onMouseLeave }) => {
     const react = window.$_gooee.react;
     const coreClassNames = "progress-bar";
     const percentage = (value - min) * 100 / (max - min);
     const roundedPercentage = Math.round(percentage * 100) / 100;
     const percentageString = orientation === "vertical" || roundedPercentage % 1 === 0 ? parseInt(roundedPercentage).toString() : roundedPercentage.toFixed(2).toString();
-    return /* @__PURE__ */ import_react25.default.createElement("div", { className: `${coreClassNames} ${orientation}${className ? " " + className : ""}` }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "progress-container" }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "progress", style: orientation === "horizontal" ? { width: `${percentage}%` } : { height: `${percentage}%` } }), /* @__PURE__ */ import_react25.default.createElement("div", { className: "progress-label" }, orientation === "horizontal" ? /* @__PURE__ */ import_react25.default.createElement("span", null, percentageString, "%") : /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null, /* @__PURE__ */ import_react25.default.createElement("span", null, percentageString), /* @__PURE__ */ import_react25.default.createElement("span", null, "%")))));
+    const styles = react.useMemo(() => {
+      if (color) {
+        if (color.includes("#")) {
+          const background = _gHexToRGBA(_gDarkenHex(color, 20), 0.5);
+          const borderColor = _gHexToRGBA(color, 0.8);
+          return {
+            "--gProgressBarForeground": color,
+            "--gProgressBarBackground": background,
+            "--gProgressBarBorderColor": borderColor
+          };
+        }
+      }
+      return {};
+    }, [color]);
+    const onMouseEnterInternal = react.useCallback(() => {
+      if (onMouseEnter)
+        onMouseEnter();
+    }, [onMouseEnter, showLabel, label]);
+    const onMouseLeaveInternal = react.useCallback(() => {
+      if (onMouseLeave)
+        onMouseLeave();
+    }, [onMouseLeave, showLabel, label]);
+    return /* @__PURE__ */ import_react29.default.createElement(
+      "div",
+      {
+        style: { ...style, ...styles },
+        className: `${coreClassNames} ${orientation}${className ? " " + className : ""}`,
+        onMouseEnter: onMouseEnterInternal,
+        onMouseLeave: onMouseLeaveInternal
+      },
+      /* @__PURE__ */ import_react29.default.createElement("div", { className: "progress-container" + (containerClassName ? " " + containerClassName : "") }, /* @__PURE__ */ import_react29.default.createElement("div", { className: "progress", style: orientation === "horizontal" ? { width: `${percentage}%` } : { height: `${percentage}%` } }), /* @__PURE__ */ import_react29.default.createElement("div", { className: "progress-label" }, orientation === "horizontal" ? showLabel && label ? /* @__PURE__ */ import_react29.default.createElement("span", null, label.toUpperCase()) : /* @__PURE__ */ import_react29.default.createElement("span", null, percentageString, "%") : /* @__PURE__ */ import_react29.default.createElement(import_react29.default.Fragment, null, /* @__PURE__ */ import_react29.default.createElement("span", null, percentageString), /* @__PURE__ */ import_react29.default.createElement("span", null, "%"))))
+    );
   };
   var progress_bar_default = ProgressBar;
 
   // src/jsx/components/_pie-chart.jsx
-  var import_react26 = __toESM(require_react());
+  var import_react30 = __toESM(require_react());
   var PieChart = ({ data }) => {
     const total = data.reduce((accu, { value }) => accu + value, 0);
     let endAngle = 0;
@@ -24702,15 +25411,405 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
       const d = `M200,200 L${x1},${y1} A195,195 0 ${angle > 180 ? 1 : 0},1 ${x2},${y2} z`;
       return { d };
     };
-    return /* @__PURE__ */ import_react26.default.createElement("div", { id: "con", style: { resize: "both", overflow: "hidden", display: "inline-block", width: "10em", height: "10em", padding: "0.5em" } }, /* @__PURE__ */ import_react26.default.createElement("svg", { width: "100%", height: "100%", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 400 400" }, /* @__PURE__ */ import_react26.default.createElement("style", null, `path:hover { opacity: 0.8; }`), data.map((option, index) => {
+    return /* @__PURE__ */ import_react30.default.createElement("div", { id: "con", style: { resize: "both", overflow: "hidden", display: "inline-block", width: "10em", height: "10em", padding: "0.5em" } }, /* @__PURE__ */ import_react30.default.createElement("svg", { width: "100%", height: "100%", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 400 400" }, /* @__PURE__ */ import_react30.default.createElement("style", null, `path:hover { opacity: 0.8; }`), data.map((option, index) => {
       const startAngle = endAngle;
       const angle = option.value / total * 360;
       endAngle += angle;
       const { d } = calculatePath(startAngle, angle, index);
-      return /* @__PURE__ */ import_react26.default.createElement("path", { key: index, d, fill: option.color });
+      return /* @__PURE__ */ import_react30.default.createElement("path", { key: index, d, fill: option.color });
     })));
   };
   var pie_chart_default = PieChart;
+
+  // src/jsx/components/_color-picker.jsx
+  var import_react31 = __toESM(require_react());
+  var ColorPicker = ({ className, value, size = null, disabled = null, label = null, onSelectionChanged, onMouseEnter, onMouseLeave }) => {
+    const react = window.$_gooee.react;
+    const { Button: Button2, TextBox: TextBox2, FormGroup: FormGroup2, Slider: Slider2, GridSlider: GridSlider2, FloatingElement: FloatingElement2 } = window.$_gooee.framework;
+    const [red, setRed] = react.useState(255);
+    const [green, setGreen] = react.useState(255);
+    const [blue, setBlue] = react.useState(255);
+    const [hue, setHue] = react.useState(0);
+    const [saturation, setSaturation] = react.useState(100);
+    const [lightness, setLightness] = react.useState(100);
+    const [hex, setHex] = react.useState(value ?? "FF0000");
+    const [hueHex, setHueHex] = react.useState("FF0000");
+    const [dropdownVisible, setDropdownVisible] = react.useState(false);
+    const dropdownRef = react.useRef(null);
+    react.useEffect(() => {
+      setHex(_gRGBToHex(red, green, blue, true));
+    }, [red, green, blue]);
+    const updateHueHex = (h) => {
+      const hueRgb = _gHSVToRGB(parseInt(h), 100, 100);
+      setHueHex(_gRGBToHex(hueRgb.r, hueRgb.g, hueRgb.b, true));
+    };
+    const updateFrom = (rgb) => {
+      setRed(rgb.r);
+      setGreen(rgb.g);
+      setBlue(rgb.b);
+      const hsl = _gRGBToHSV(rgb.r, rgb.g, rgb.b);
+      setHue(parseInt(hsl.h));
+      setSaturation(parseInt(hsl.s));
+      setLightness(parseInt(hsl.v));
+      setHex(_gRGBToHex(rgb.r, rgb.g, rgb.b, true));
+      updateHueHex(hsl.h);
+    };
+    react.useEffect(() => {
+      if (!value)
+        return;
+      const rgb = _gHexToRGB(value);
+      updateFrom(rgb);
+    }, [value]);
+    const onHueUpdated = (newHue) => {
+      const actualHue = parseInt(Math.max(0, Math.min(360, (100 - newHue) / 100 * 360)));
+      setHue(actualHue);
+      const rgb = _gHSVToRGB(actualHue, saturation, lightness);
+      const hueRgb = _gHSVToRGB(actualHue, 100, 100);
+      setHueHex(_gRGBToHex(hueRgb.r, hueRgb.g, hueRgb.b, true));
+      setRed(rgb.r);
+      setGreen(rgb.g);
+      setBlue(rgb.b);
+    };
+    const onSaturationBrightnessUpdated = (newSat, newLightness) => {
+      setSaturation(newSat);
+      setLightness(100 - newLightness);
+      const rgb = _gHSVToRGB(hue, newSat, 100 - newLightness);
+      setRed(rgb.r);
+      setGreen(rgb.g);
+      setBlue(rgb.b);
+    };
+    const classNames = "color-picker-container mt-1 w-x" + (className ? " " + className : "") + (size ? ` color-picker-${size}` : "") + (dropdownVisible ? " visible" : "");
+    const handleClick = (e) => {
+      if (disabled)
+        return;
+      e.stopPropagation();
+      const newVisibleValue = !dropdownVisible;
+      if (newVisibleValue)
+        engine.trigger("audio.playSound", "select-dropdown", 1);
+      setDropdownVisible(newVisibleValue);
+    };
+    const internalOnMouseEnter = (e) => {
+      if (disabled)
+        return;
+      e.stopPropagation();
+      engine.trigger("audio.playSound", "hover-item", 1);
+      if (onMouseEnter)
+        onMouseEnter();
+    };
+    const internalOnMouseLeave = (e) => {
+      if (disabled)
+        return;
+      e.stopPropagation();
+      if (onMouseLeave)
+        onMouseLeave();
+    };
+    const onDropdownHidden = () => {
+      setDropdownVisible(false);
+    };
+    const onClickOkay = (e) => {
+      e.stopPropagation();
+      setDropdownVisible(false);
+      const hexVal = _gRGBToHex(red, green, blue, true);
+      setHex(hexVal);
+      if (onSelectionChanged)
+        onSelectionChanged(hexVal);
+    };
+    const onSanitizeHex = (val) => {
+      return val.replace(/[^0-9A-Fa-f]/g, "").toUpperCase();
+    };
+    const getRed = react.useCallback(() => {
+      return red;
+    }, [red]);
+    const getGreen = react.useCallback(() => {
+      return green;
+    }, [green]);
+    const getBlue = react.useCallback(() => {
+      return blue;
+    }, [blue]);
+    const getHue = react.useCallback(() => {
+      return hue;
+    }, [hue]);
+    const getSaturation = react.useCallback(() => {
+      return saturation;
+    }, [saturation]);
+    const getLightness = react.useCallback(() => {
+      return lightness;
+    }, [lightness]);
+    const onUpdateTextBox = (type, val) => {
+      let rgb = null;
+      let hsl = null;
+      let newVal;
+      switch (type) {
+        case "red":
+          newVal = parseInt(val);
+          hsl = _gRGBToHSV(newVal, getGreen(), getBlue());
+          setRed(newVal);
+          setHue(parseInt(hsl.h));
+          setSaturation(parseInt(hsl.s));
+          setLightness(parseInt(hsl.v));
+          updateHueHex(hsl.h);
+          break;
+        case "green":
+          newVal = parseInt(val);
+          hsl = _gRGBToHSV(getRed(), newVal, getBlue());
+          setGreen(newVal);
+          setHue(parseInt(hsl.h));
+          setSaturation(parseInt(hsl.s));
+          setLightness(parseInt(hsl.v));
+          updateHueHex(hsl.h);
+          break;
+        case "blue":
+          newVal = parseInt(val);
+          hsl = _gRGBToHSV(getRed(), green, newVal);
+          setBlue(newVal);
+          setHue(parseInt(hsl.h));
+          setSaturation(parseInt(hsl.s));
+          setLightness(parseInt(hsl.v));
+          updateHueHex(hsl.h);
+          break;
+        case "hue":
+          newVal = parseInt(val);
+          rgb = _gHSVToRGB(newVal, getSaturation(), getLightness());
+          setHue(newVal);
+          updateHueHex(newVal);
+          setRed(parseInt(rgb.r));
+          setGreen(parseInt(rgb.g));
+          setBlue(parseInt(rgb.b));
+          break;
+        case "saturation":
+          newVal = parseInt(val);
+          rgb = _gHSVToRGB(getHue(), newVal, getLightness());
+          setSaturation(newVal);
+          setRed(parseInt(rgb.r));
+          setGreen(parseInt(rgb.g));
+          setBlue(parseInt(rgb.b));
+          break;
+        case "lightness":
+          newVal = parseInt(val);
+          rgb = _gHSVToRGB(getHue(), getSaturation(), newVal);
+          setLightness(newVal);
+          setRed(parseInt(rgb.r));
+          setGreen(parseInt(rgb.g));
+          setBlue(parseInt(rgb.b));
+          break;
+      }
+    };
+    return /* @__PURE__ */ import_react31.default.createElement(import_react31.default.Fragment, null, /* @__PURE__ */ import_react31.default.createElement("div", { ref: dropdownRef, className: "color-picker-toggle d-flex flex-row align-items-center mb-4" }, /* @__PURE__ */ import_react31.default.createElement(
+      "div",
+      {
+        style: { backgroundColor: `#${value}` },
+        onMouseEnter: internalOnMouseEnter,
+        onMouseLeave: internalOnMouseLeave,
+        onClick: handleClick
+      }
+    ), label ? /* @__PURE__ */ import_react31.default.createElement("label", { className: "ml-2", onClick: handleClick }, label) : null), /* @__PURE__ */ import_react31.default.createElement(FloatingElement2, { typeKey: "ColorPicker", className: !dropdownVisible ? "pointer-events-none" : null, visible: dropdownVisible, onHidden: onDropdownHidden, targetRef: dropdownRef }, /* @__PURE__ */ import_react31.default.createElement("div", { className: classNames, style: { "--gColorPickerColor": `#${hueHex}` } }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-area-container" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-area-content" }, /* @__PURE__ */ import_react31.default.createElement(GridSlider2, { value: { x: saturation, y: 100 - lightness }, className: "color-picker-area", onValueChanged: onSaturationBrightnessUpdated }))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-hue-container" }, /* @__PURE__ */ import_react31.default.createElement(Slider2, { value: 100 - Math.min(100, Math.max(0, parseInt(hue / 360 * 100))), className: "color-picker-hue", basic: true, orientation: "vertical", onValueChanged: onHueUpdated }))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-settings" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-preview" }, /* @__PURE__ */ import_react31.default.createElement("label", null, "New"), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-block-container" }, /* @__PURE__ */ import_react31.default.createElement("div", { style: { backgroundColor: `#${hex}`, width: "75rem", height: "45rem" } }), /* @__PURE__ */ import_react31.default.createElement("div", { style: { backgroundColor: `#${value}`, width: "75rem", height: "45rem" } })), /* @__PURE__ */ import_react31.default.createElement("label", null, "Current")), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "mt-4 form-group-inline mb-1", label: "R", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: red, onChange: (val) => onUpdateTextBox("red", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "G", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: green, onChange: (val) => onUpdateTextBox("green", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "B", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: blue, onChange: (val) => onUpdateTextBox("blue", val) }))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-extras" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-buttons" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "btn-group-vertical" }, /* @__PURE__ */ import_react31.default.createElement(Button2, { onClick: onClickOkay, className: "px-6", color: "success", size: "sm", style: "trans" }, "OK"), /* @__PURE__ */ import_react31.default.createElement(Button2, { onClick: onDropdownHidden, className: "px-6", color: "danger", size: "sm", style: "trans" }, "Cancel"))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "d-flex align-items-start flex-cplumn justify-content-center w-x mt-x align-self-end" }, /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline ml-x", label: "#", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { onSanitize: onSanitizeHex, maxLength: 6, selectOnFocus: true, style: { width: "95rem" }, size: "sm", text: hex, onChange: (val) => onUpdateTextBox("hex", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "mt-4 form-group-inline mb-1", label: "H", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 360, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: hue, onChange: (val) => onUpdateTextBox("hue", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "S", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 100, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: saturation, onChange: (val) => onUpdateTextBox("saturation", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "L", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 100, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: lightness, onChange: (val) => onUpdateTextBox("lightness", val) })))))));
+  };
+  var color_picker_default = ColorPicker;
+
+  // src/jsx/components/_floating-element.jsx
+  var import_react32 = __toESM(require_react());
+  var import_react_dom3 = __toESM(require_react_dom());
+  var FloatingElement = ({
+    getRef,
+    typeKey,
+    targetRef,
+    visible,
+    onHidden,
+    children,
+    float = "down",
+    align = "left",
+    closeOnClickOutside = false,
+    closeOnClickInside = false,
+    sideAlignVertical = false
+  }) => {
+    const react = window.$_gooee.react;
+    const [portalContainer, setPortalContainer] = react.useState(null);
+    const [guid] = react.useState(ReactId());
+    const elementRef = react.useRef(null);
+    const [elementPos, setElementPos] = react.useState({ x: -9999, y: -9999 });
+    const portalName = "gooee-floating-element-portal";
+    react.useEffect(() => {
+      if (getRef) {
+        getRef(elementRef);
+      }
+    }, [elementRef.current]);
+    react.useEffect(() => {
+      const handleVisibilityChange = (event) => {
+        if (event.detail.typeKey === typeKey && event.detail.guid !== guid && visible && elementRef.current) {
+          onHidden && onHidden();
+        }
+      };
+      document.addEventListener("floatingElementVisibilityChange", handleVisibilityChange);
+      return () => {
+        document.removeEventListener("floatingElementVisibilityChange", handleVisibilityChange);
+      };
+    }, [visible, typeKey, onHidden]);
+    react.useEffect(() => {
+      if (visible) {
+        _gBroadcastVisibilityChange(typeKey, guid);
+      }
+    }, [visible, typeKey]);
+    react.useEffect(() => {
+      if (!document.getElementById(portalName)) {
+        const container = document.createElement("div");
+        container.id = portalName;
+        document.body.appendChild(container);
+        setPortalContainer(container);
+      } else {
+        setPortalContainer(document.getElementById(portalName));
+      }
+    }, []);
+    const constrainPosition = (p) => {
+      if (!elementRef.current)
+        return p;
+      const rect = elementRef.current.getBoundingClientRect();
+      if (p.x + rect.width >= window.innerWidth)
+        p.x = window.innerWidth - rect.width;
+      else if (p.x < 0)
+        p.x = 0;
+      if (p.y + rect.height >= window.innerHeight)
+        p.y = window.innerHeight - rect.height;
+      else if (p.y < 0)
+        p.y = 0;
+      return p;
+    };
+    const getElementPosition = react.useCallback(() => {
+      let p = null;
+      if (targetRef.current && elementRef.current) {
+        const rect = targetRef.current.getBoundingClientRect();
+        const elementRect = elementRef.current.getBoundingClientRect();
+        if (float === "up" && align === "center") {
+          p = {
+            top: rect.top + window.scrollY - elementRect.height - elementRect.height * 0.1,
+            left: rect.left + window.scrollX + rect.width / 2 - elementRect.width / 2,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "up" && align === "left") {
+          p = {
+            top: rect.top + window.scrollY - elementRect.height - elementRect.height * 0.1,
+            left: rect.left + window.scrollX,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "up" && align === "right") {
+          p = {
+            top: rect.top + window.scrollY - elementRect.height - elementRect.height * 0.1,
+            left: rect.left + rect.width / 2 + window.scrollX - elementRect.width,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "down" && align === "center") {
+          p = {
+            top: rect.top + window.scrollY + rect.height - elementRect.height * 0.1,
+            left: rect.left + window.scrollX + rect.width / 2 - elementRect.width / 2,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "down" && align === "left") {
+          p = {
+            top: rect.top + window.scrollY + rect.height - elementRect.height * 0.1,
+            left: rect.left + window.scrollX,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "down" && align === "right") {
+          p = {
+            top: rect.top + window.scrollY + rect.height - elementRect.height * 0.1,
+            left: rect.left + rect.width / 2 + window.scrollX - elementRect.width,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "left" && align === "left") {
+          p = {
+            top: rect.top + window.scrollY + (sideAlignVertical ? rect.height / 2 - elementRect.height / 2 : 0),
+            left: rect.left + window.scrollX - elementRect.width - elementRect.height * 0.1,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "left" && align === "right") {
+          p = {
+            top: rect.top + window.scrollY + (sideAlignVertical ? rect.height - elementRect.height * 0.1 : 0),
+            left: rect.left + rect.width + window.scrollX,
+            bottom: null,
+            right: null
+          };
+        } else if (float === "right" && align === "left") {
+          p = {
+            top: rect.top + window.scrollY + (sideAlignVertical ? rect.height / 2 - elementRect.height / 2 : 0),
+            left: rect.left + rect.width + window.scrollX + elementRect.width * 0.1,
+            // Assuming you want some offset
+            bottom: null,
+            right: null
+          };
+        } else if (float === "right" && align === "center") {
+          p = {
+            top: rect.top + window.scrollY + (sideAlignVertical ? rect.height / 2 - elementRect.height / 2 : 0),
+            left: rect.left + rect.width + window.scrollX - elementRect.width / 2 + rect.width / 2,
+            // Center align relative to the target
+            bottom: null,
+            right: null
+          };
+        } else if (float === "right" && align === "right") {
+          p = {
+            top: rect.top + window.scrollY + (sideAlignVertical ? rect.height / 2 - elementRect.height / 2 : 0),
+            left: rect.left + rect.width + window.scrollX,
+            // Directly to the right of the target element
+            bottom: null,
+            right: null
+          };
+        } else {
+          p = {
+            top: rect.bottom + window.scrollY,
+            left: rect.left + window.scrollX,
+            bottom: null,
+            right: null
+          };
+        }
+        const constrainedPos = constrainPosition({ x: p.left, y: p.top });
+        p.left = constrainedPos.x;
+        p.top = constrainedPos.y;
+      }
+      return p;
+    }, [targetRef, elementRef, float, align]);
+    react.useEffect(() => {
+      if (visible) {
+        const position = constrainPosition(getElementPosition());
+        setElementPos(position);
+        if (elementRef.current) {
+          elementRef.current.style.top = `${position.top}px`;
+          elementRef.current.style.left = `${position.left}px`;
+        }
+      }
+    }, [visible, getElementPosition, float, align]);
+    const handleClickOutside = (event) => {
+      if (elementRef.current && !elementRef.current.contains(event.target)) {
+        if (onHidden)
+          onHidden();
+      }
+    };
+    react.useEffect(() => {
+      if (closeOnClickOutside) {
+        if (visible) {
+          document.addEventListener("click", handleClickOutside, true);
+        } else {
+          document.removeEventListener("click", handleClickOutside, true);
+        }
+      }
+      return () => {
+        if (closeOnClickOutside) {
+          document.removeEventListener("click", handleClickOutside, true);
+        }
+      };
+    }, [visible, closeOnClickOutside]);
+    const onClick = react.useCallback(() => {
+      if (closeOnClickInside && onHidden)
+        onHidden();
+    }, [closeOnClickInside]);
+    const elementContents = targetRef.current ? /* @__PURE__ */ import_react32.default.createElement("div", { ref: elementRef, className: "p-fixed", style: elementPos, onClick }, /* @__PURE__ */ import_react32.default.createElement("div", { className: visible ? "" : "d-none" }, children)) : null;
+    return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null, portalContainer && elementContents && import_react_dom3.default.createPortal(elementContents, portalContainer));
+  };
+  var floating_element_default = FloatingElement;
 
   // src/jsx/gooee.jsx
   var GooeeContainer = ({ react, pluginType, photoMode }) => {
@@ -24824,22 +25923,36 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
         case "bottom-center-toolbar":
         case "main-container":
         case "photomode-container":
-          return /* @__PURE__ */ import_react27.default.createElement(ComponentInstance, { key: name, react, setupController });
+          return /* @__PURE__ */ import_react33.default.createElement(ComponentInstance, { key: name, react, setupController });
           break;
         case "infomode-menu":
-          return /* @__PURE__ */ import_react27.default.createElement(ComponentInstance, { key: name, react, setupController });
+          return /* @__PURE__ */ import_react33.default.createElement(ComponentInstance, { key: name, react, setupController });
           break;
         default:
         case "default":
-          return /* @__PURE__ */ import_react27.default.createElement("div", { key: name, class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100" }, /* @__PURE__ */ import_react27.default.createElement(ComponentInstance, { react, setupController }));
+          return /* @__PURE__ */ import_react33.default.createElement("div", { key: name, class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100" }, /* @__PURE__ */ import_react33.default.createElement(ComponentInstance, { react, setupController }));
           break;
       }
     });
     const topLeftToolbar = () => {
       const pluginIds = Object.keys(window.$_gooee_toolbar);
       const [toolbarVisible, setToolbarVisible] = react.useState(false);
-      const panelRef = react.useRef(false);
       const buttonRef = react.useRef(false);
+      const [toolbarDynamicChildren, setToolbarDynamicChildren] = react.useState({});
+      react.useEffect(() => {
+        const eventName = "gooee.toolbarChildren";
+        const updateEvent = eventName + ".update";
+        const subscribeEvent = eventName + ".subscribe";
+        const unsubscribeEvent = eventName + ".unsubscribe";
+        var sub = engine.on(updateEvent, (data) => {
+          setToolbarDynamicChildren(data ? JSON.parse(data) : {});
+        });
+        engine.trigger(subscribeEvent);
+        return () => {
+          engine.trigger(unsubscribeEvent);
+          sub.clear();
+        };
+      }, []);
       const onMouseOverToolbar = () => {
         engine.trigger("audio.playSound", "hover-item", 1);
       };
@@ -24867,30 +25980,110 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
           subscription.clear();
         };
       }, [toolbarVisible]);
-      const handleClickOutside = (event) => {
+      const onDropdownHidden = () => {
         if (!toolbarVisible)
           return;
-        if (panelRef.current && !panelRef.current.contains(event.target) && buttonRef.current && buttonRef.current !== event.target.parentElement) {
-          setToolbarVisible(false);
-          engine.trigger("audio.playSound", "close-panel", 1);
-        }
-      };
-      react.useEffect(() => {
-        if (toolbarVisible) {
-          document.addEventListener("click", handleClickOutside, true);
-        } else {
-          document.removeEventListener("click", handleClickOutside, true);
-        }
-      }, [toolbarVisible]);
-      const onItemClicked = (p) => {
         setToolbarVisible(false);
-        engine.trigger(`${p.Name.toLowerCase()}.${p.Controller}.${p.Method}`);
+        engine.trigger("audio.playSound", "close-panel", 1);
       };
-      return /* @__PURE__ */ import_react27.default.createElement("button", { ref: buttonRef, className: "button_ke4 button_ke4 button_H9N", onMouseEnter: onMouseOverToolbar, onClick: onMouseClickToolbar }, /* @__PURE__ */ import_react27.default.createElement(icon_default, { icon: "solid-toolbox", className: "icon_be5", size: "lg", fa: true }), toolbarVisible ? /* @__PURE__ */ import_react27.default.createElement("div", { ref: panelRef, className: "bg-panel text-light mt-3 rounded-sm", style: { position: "absolute", top: "100%", left: "0" } }, pluginIds.map((p, index) => /* @__PURE__ */ import_react27.default.createElement(button_default, { color: "light", onClick: () => onItemClicked(window.$_gooee_toolbar[p]), isBlock: true, className: "text-light btn-transparent", style: "trans-faded", key: index }, /* @__PURE__ */ import_react27.default.createElement(icon_default, { className: "mr-1", icon: window.$_gooee_toolbar[p].Icon }), " ", window.$_gooee_toolbar[p].Name))) : null);
+      const onDropDownItemClick = (key) => {
+        const toolbarItem = window.$_gooee_toolbar[key];
+        if (!toolbarItem)
+          return;
+        setToolbarVisible(false);
+        const triggerKey = `${toolbarItem.Name.toLowerCase()}.${toolbarItem.Controller}.${toolbarItem.Method}`;
+        if (toolbarItem.MethodKey)
+          engine.trigger(triggerKey, toolbarItem.MethodKey);
+        else
+          engine.trigger(triggerKey);
+      };
+      const onDropDownChildItemClick = (key, childItem) => {
+        const toolbarItem = window.$_gooee_toolbar[key];
+        if (!toolbarItem || !toolbarItem.Children && (!toolbarDynamicChildren || toolbarDynamicChildren && !toolbarDynamicChildren[key.toLowerCase()]))
+          return;
+        const childKey = childItem.key;
+        const childIndex = parseInt(childKey);
+        if (!isNaN(childIndex) && childIndex >= 0) {
+          const childToolbarItem = childItem.isDynamic ? toolbarDynamicChildren[key.toLowerCase()][childIndex] : toolbarItem.Children[childIndex];
+          if (childToolbarItem) {
+            const method = childToolbarItem.OnClick ? childToolbarItem.OnClick : childToolbarItem.Method;
+            const triggerKey = `${toolbarItem.Name.toLowerCase()}.${toolbarItem.Controller}.${method}`;
+            const methodKey = childItem.isDynamic && childToolbarItem.OnClickKey ? childToolbarItem.OnClickKey : childToolbarItem.MethodKey;
+            if (methodKey)
+              engine.trigger(triggerKey, methodKey);
+            else
+              engine.trigger(triggerKey);
+          }
+        }
+        setToolbarVisible(false);
+      };
+      const dropdownMenuItems = react.useMemo(() => {
+        let items = [];
+        pluginIds.forEach((pluginId) => {
+          const toolbarItem = window.$_gooee_toolbar[pluginId];
+          if (!toolbarItem)
+            return;
+          let childItems = [];
+          if (toolbarItem.Children && toolbarItem.Children.length > 0) {
+            toolbarItem.Children.forEach((childItem, index) => {
+              childItems.push({
+                key: `${index}`,
+                label: engine.translate(childItem.Label),
+                icon: childItem.Icon,
+                iconClassName: childItem.IconClassName,
+                fa: childItem.IsFAIcon,
+                isDynamic: false
+              });
+            });
+          }
+          if (toolbarDynamicChildren && toolbarDynamicChildren[pluginId]) {
+            const dynamicChildren = toolbarDynamicChildren[pluginId];
+            dynamicChildren.forEach((childItem, index) => {
+              childItems.push({
+                key: `${index}`,
+                label: engine.translate(childItem.Label),
+                icon: childItem.Icon,
+                iconClassName: childItem.IconClassName,
+                fa: childItem.IsFAIcon,
+                isDynamic: true
+              });
+            });
+          }
+          items.push({
+            key: pluginId,
+            label: engine.translate(toolbarItem.Label && toolbarItem.Label.length > 0 ? toolbarItem.Label : toolbarItem.Name),
+            icon: toolbarItem.Icon,
+            iconClassName: toolbarItem.IconClassName,
+            fa: toolbarItem.IsFAIcon,
+            children: childItems.length == 0 ? null : childItems
+          });
+        });
+        return items;
+      }, [toolbarDynamicChildren]);
+      return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, /* @__PURE__ */ import_react33.default.createElement(
+        "button",
+        {
+          ref: buttonRef,
+          className: "button_ke4 button_ke4 button_H9N",
+          onMouseEnter: onMouseOverToolbar,
+          onClick: onMouseClickToolbar
+        },
+        /* @__PURE__ */ import_react33.default.createElement(icon_default, { icon: "solid-toolbox", className: "icon_be5", size: "lg", fa: true })
+      ), /* @__PURE__ */ import_react33.default.createElement(
+        dropdown_menu_default,
+        {
+          buttonRef,
+          visible: toolbarVisible,
+          items: dropdownMenuItems,
+          onItemClick: onDropDownItemClick,
+          onChildItemClick: onDropDownChildItemClick,
+          onHidden: onDropdownHidden
+        }
+      ));
     };
-    const render = /* @__PURE__ */ import_react27.default.createElement(import_react27.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react27.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react27.default.createElement(import_react27.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins));
+    const render = /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react33.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins));
     if (pluginType === "photomode-container") {
-      return /* @__PURE__ */ import_react27.default.createElement("div", { className: photoMode.className }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "photomode-wrapper" }, photoMode.children), render);
+      return /* @__PURE__ */ import_react33.default.createElement("div", { className: photoMode.className }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "photomode-wrapper" }, photoMode.children), render);
     }
     return render;
   };
@@ -24901,12 +26094,15 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     ToggleButtonGroup: toggle_button_group_default,
     Grid: grid_default,
     ToolTip: tooltip_default,
+    Container: container_default,
     AutoToolTip: auto_tooltip_default,
     ToolTipContent: tooltip_content_default,
     Scrollable: scrollable_default,
     Modal: modal_default,
     TabModal: tab_modal_default,
+    MoveableModal: moveable_modal_default,
     Dropdown: dropdown_default,
+    DropdownMenu: dropdown_menu_default,
     CheckBox: checkbox_default,
     CheckBoxGroup: checkbox_group_default,
     RadioItem: radio_item_default,
@@ -24915,6 +26111,7 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     TextBox: textbox_default,
     Icon: icon_default,
     Slider: slider_default,
+    GridSlider: grid_slider_default,
     GradientSlider: gradient_slider_default,
     FormGroup: form_group_default,
     FormCheckBox: form_checkbox_default,
@@ -24922,7 +26119,9 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     List: list_default,
     VirtualList: virtual_list_default,
     ProgressBar: progress_bar_default,
-    PieChart: pie_chart_default
+    PieChart: pie_chart_default,
+    ColorPicker: color_picker_default,
+    FloatingElement: floating_element_default
   };
 })();
 /*! Bundled license information:
