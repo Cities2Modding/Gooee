@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-const Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged, selected, options }) => {
+const Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged, selected, options, float = "down", scrollable = null }) => {
     const react = window.$_gooee.react;
     const [active, setActive] = react.useState(false);
     const [internalValue, setInternalValue] = react.useState(selected);
     const [portalContainer, setPortalContainer] = react.useState(null);
     const dropdownRef = react.useRef(null); // Ref to attach to the select field
     const menuRef = react.useRef(null); // Ref for the dropdown content
+    const { Icon, Scrollable } = window.$_gooee.framework;
 
     // Function to check if the click is outside the dropdown
     const handleClickOutside = (event) => {
@@ -51,13 +52,24 @@ const Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged,
     }, [active]);
 
     const getDropdownPosition = () => {
-        if (dropdownRef.current) {
+        if (dropdownRef.current && menuRef.current) {
             const rect = dropdownRef.current.getBoundingClientRect();
-            return {
-                top: rect.bottom + window.scrollY,
-                left: rect.left + window.scrollX,
-                width: rect.width
-            };
+            const menuRect = menuRef.current.getBoundingClientRect();
+
+            if (float === "down") {
+                return {
+                    top: rect.bottom + window.scrollY,
+                    left: rect.left + window.scrollX,
+                    width: rect.width
+                };
+            }
+            else {
+                return {
+                    top: rect.top + window.scrollY - menuRect.height,
+                    left: rect.left + window.scrollX,
+                    width: rect.width
+                };
+            }
         }
         return {};
     };
@@ -82,28 +94,35 @@ const Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged,
         engine.trigger("audio.playSound", "hover-item", 1);
     };
 
-    const selectedIndex = !options ? -1 : options.findIndex(o => o.value === internalValue);
 
-    const dropdownMenuClass = "dropdown-menu" + (size ? ` dropdown-menu-${size}` : "");
+    const dropdownMenuClass = "dropdown-menu" + (size ? ` dropdown-menu-${size}` : "") + (!active ? " hidden" : "") + (float !== "down" ? ` dropdown-menu-${float}` : "");
+
+    const getOptions = react.useMemo(() => {
+        if (float === "up")
+            return options.reverse();
+
+        return options;
+    }, [options, options.length, float]);
+
+    const selectedIndex = !getOptions ? -1 : getOptions.findIndex(o => o.value === internalValue);
+
+    const getOptionsMap = getOptions ?
+        getOptions.map((option) => (
+            <button key={option.value} className="dropdown-item" onMouseEnter={onMouseEnter} onClick={() => changeSelection(option.value)}>{option.label}</button>
+        )) : null;
 
     // Define the dropdown content
-    const dropdownContent = active ? (
-        <div className={dropdownMenuClass} ref={menuRef} style={getDropdownPosition()}>                
-            {options ?
-                options.map((option) => (
-                    <button key={option.value} className="dropdown-item" onMouseEnter={onMouseEnter} onClick={() => changeSelection(option.value)}>{option.label}</button>
-                )) : null
-            }
-        </div>
-    ) : null;
+    const dropdownContent = <div className={dropdownMenuClass} ref={menuRef} style={getDropdownPosition()}>
+        {scrollable ? <Scrollable className="vh-40" startBottom={float === "up"} size="sm">{getOptionsMap}</Scrollable> : getOptionsMap}
+    </div>;
 
-    const classNames = (className ? `dropdown ${className}` : "dropdown") + ( size ? ` dropdown-${size}` : "" );
+    const classNames = (className ? `dropdown ${className}` : "dropdown") + (size ? ` dropdown-${size}` : "") + (scrollable ? " dropdown-menu-scrollable" : "");
     const toggleClassNames = toggleClassName ? "dropdown-toggle " + toggleClassName : "dropdown-toggle";
 
     return <div className={classNames} style={{ ...style }}>
         <button ref={dropdownRef} onMouseEnter={onMouseEnter} className={toggleClassNames} onClick={onToggle}>
             <div className="caption">{selectedIndex >= 0 ? options[selectedIndex].label : null}</div>
-            <div className="icon mask-icon" style={{ maskImage: "url(Media/Glyphs/StrokeArrowDown.svg)" }}></div>
+            <Icon icon={float === "down" ? "stroke-arrow-down" : "stroke-arrow-up"} mask={true} size={size} />
         </button>
         {portalContainer && dropdownContent && ReactDOM.createPortal(dropdownContent, portalContainer)}
     </div>;

@@ -28,8 +28,8 @@
 		<Copyright>Cities2Modding</Copyright>
 		<PackageProjectUrl>https://github.com/Cities2Modding/Gooee</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Cities2Modding/Gooee</RepositoryUrl>
-		<AssemblyVersion>0.0.7.0</AssemblyVersion>
-		<Version>0.0.7.0</Version>
+		<AssemblyVersion>0.1.1.1</AssemblyVersion>
+		<Version>0.1.1.1</Version>
 	</PropertyGroup>
 	
 	<ItemGroup>

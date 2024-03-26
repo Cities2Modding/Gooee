@@ -2,16 +2,21 @@ import React from "react";
 
 const Container = ({
     children, onClick, style = null,
-    className = null, onMouseEnter = null, onMouseLeave = null, title = null,
+    className = null, onMouseEnter = null, onMouseLeave = null, onDropdownHidden, title = null,
     description = null, toolTipFloat = "up", toolTipAlign = "center",
     stopClickPropagation = true, ignoreBubblingClick = false,
     dropdownMenu = null, dropdownFloat = "down", dropdownAlign = "left",
-    dropdownCloseOnClick = false }) => {
+    showDropDown = false,
+    dropdownCloseOnClick = false, dropdownCloseOnClickOutside = true }) => {
 
     const react = window.$_gooee.react;
     const buttonRef = react.useRef(null);
     const dropdownRef = react.useRef(null);
-    const [dropdownVisible, setDropdownVisible] = react.useState(false);
+    const [dropdownVisible, setDropdownVisible] = react.useState(showDropDown);
+
+    react.useEffect(() => {
+        setDropdownVisible(showDropDown);
+    }, [showDropDown]);
 
     const { AutoToolTip, ToolTipContent, FloatingElement } = window.$_gooee.framework;
     const hasToolTip = title && description;
@@ -62,6 +67,8 @@ const Container = ({
                 if (dropdownRef.current &&
                     (!isHTMLElement || (isHTMLElement && !dropdownRef.current.contains(e.relatedTarget)))) {
                     setDropdownVisible(false);
+                    if (onDropdownHidden)
+                        onDropdownHidden();
                 }
             }, 250);
         }
@@ -70,6 +77,9 @@ const Container = ({
     const extraClass = className ? " " + className : "";
     const onDropdownClosed = () => {
         setDropdownVisible(false);
+
+        if (onDropdownHidden)
+            onDropdownHidden();
     };
 
     const getDropdownRef = (ref) => {
@@ -84,7 +94,7 @@ const Container = ({
         </AutoToolTip> : null}
         {dropdownMenu ? <FloatingElement getRef={getDropdownRef} typeKey="ContainerDropdownMenu" visible={dropdownVisible}
             float={dropdownFloat} align={dropdownAlign}
-            onHidden={onDropdownClosed} targetRef={buttonRef} closeOnClickOutside={true} closeOnClickInside={dropdownCloseOnClick}>
+            onHidden={onDropdownClosed} targetRef={buttonRef} closeOnClickOutside={dropdownCloseOnClickOutside} closeOnClickInside={dropdownCloseOnClick}>
             {dropdownMenu}
         </FloatingElement> : null}
     </div>;

@@ -59,41 +59,41 @@ namespace Gooee.Injection
         {
             // Use this as a guide to find when patch changes the names!!
             // Look for 'Continue Tutorial'
-            // (0,e.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,e.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,e.jsx)("div",{className:zTe,children:(0,e.jsxs)(Fn,{focusKey:tIe,children:[(0,e.jsx)(Ok,{}),(0,e.jsx)(qG,{}),(0,e.jsx)(jOe,{}),(0,e.jsx)(VOe,{}),(0,e.jsx)(UOe,{}),(0,e.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}})
-            ("(0,e.jsx)(ITe,{})]", "(0,e.jsx)(ITe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-right-toolbar'})]"),
-            
+            // (0,z.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,z.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,z.jsx)("div",{className:zTe,children:(0,z.jsxs)(Fn,{focusKey:tIe,children:[(0,z.jsx)(Ok,{}),(0,z.jsx)(qG,{}),(0,z.jsx)(jOe,{}),(0,z.jsx)(VOe,{}),(0,z.jsx)(UOe,{}),(0,z.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}})
+            ("(0,z.jsx)(BSe,{})]", "(0,z.jsx)(BSe,{}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'bottom-right-toolbar'})]"),
+            //Y
             // This one tends to be quite reliable due to pauseMenuLayout
             // but the xxx. will vary between patches
-            // className:Bge.pauseMenuLayout,children:[R&&(0,e.jsx)
-            ("className:Bge.pauseMenuLayout,children:[R&&(0,e.jsx)", "className:Bge.pauseMenuLayout,children:[(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-right-toolbar'}),R&&(0,e.jsx)"),
+            // className:Bge.pauseMenuLayout,children:[R&&(0,z.jsx)
+            ("className:nbe.pauseMenuLayout,children:[", "className:nbe.pauseMenuLayout,children:[(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'top-right-toolbar'}),"),
             
             // This one is a bit of a pain in the arse so you still have
             // to use 'Continue Tutorial' and this structure to find it
-            // (0,e.jsx)(JOe,{})]}),(0,e.jsx)(ATe,{focusKey:nIe}),(0,e.jsxs)("div",{className:qTe,children:[aIe,(0,e.jsx)(jTe,{}),oIe,(0,e.jsx)(ETe,{}),oIe,(0,e.jsx)(OTe,{}),oIe,(0,e.jsx)(DTe,{}),aIe,(0,e.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,e.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,e.jsx)("div",{className:zTe,children:(0,e.jsxs)(Fn,{focusKey:tIe,children:[(0,e.jsx)(Ok,{}),(0,e.jsx)(qG,{}),(0,e.jsx)(jOe,{}),(0,e.jsx)(VOe,{}),(0,e.jsx)(UOe,{}),(0,e.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}}),[]),c=(0,i.useMemo)((function(){return{"Previous Tutorial Phase":iS}})
-            ("(0,e.jsx)(JOe,{})]", "(0,e.jsx)(JOe,{}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'bottom-left-toolbar'})]"),
+            // (0,z.jsx)(JOe,{})]}),(0,z.jsx)(ATe,{focusKey:nIe}),(0,z.jsxs)("div",{className:qTe,children:[aIe,(0,z.jsx)(jTe,{}),oIe,(0,z.jsx)(ETe,{}),oIe,(0,z.jsx)(OTe,{}),oIe,(0,z.jsx)(DTe,{}),aIe,(0,z.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,z.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,z.jsx)("div",{className:zTe,children:(0,z.jsxs)(Fn,{focusKey:tIe,children:[(0,z.jsx)(Ok,{}),(0,z.jsx)(qG,{}),(0,z.jsx)(jOe,{}),(0,z.jsx)(VOe,{}),(0,z.jsx)(UOe,{}),(0,z.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}}),[]),c=(0,i.useMemo)((function(){return{"Previous Tutorial Phase":iS}})
+            ("(0,z.jsx)(vSe,{})]", "(0,z.jsx)(vSe,{}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'bottom-left-toolbar'})]"),
 
             // This one is quite easy to find as .toolbar is a constant
             // but xxx. and the (xxx, will vary between patches
-            // (0,e.jsx)(rIe,{focusKey:MSe.toolbar})
-            ("(0,e.jsx)(rIe,{focusKey:MSe.toolbar})", "(0,e.jsx)(rIe,{focusKey:MSe.toolbar}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'default'})"),
+            // (0,z.jsx)(rIe,{focusKey:MSe.toolbar})
+            ("(0,z.jsx)(rTe,{focusKey:pIe.toolbar})", "(0,z.jsx)(rTe,{focusKey:pIe.toolbar}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'default'})"),
             
             // This is similar to the above, so follow the same procedure
-            // ]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})
-            ("]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})", ",(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'main-container'})]}),(0,e.jsx)(rIe,{focusKey:MSe.toolbar})"),
+            // ]}),(0,z.jsx)(rIe,{focusKey:MSe.toolbar})
+            ("]}),(0,z.jsx)(rTe,{focusKey:pIe.toolbar})", ",(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'main-container'}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'main-container-end'})]}),(0,z.jsx)(rTe,{focusKey:pIe.toolbar})"),
 
             // This is again fairly easy due to the photoModeLayout
             // but xxx. will vary etc between patches
-            // var n=t.children;return(0,e.jsx)(\"div\",{className:Oe()(Bge.photoModePanelLayout),children:n})
-            ("var n=t.children;return(0,e.jsx)(\"div\",{className:Oe()(Bge.photoModePanelLayout),children:n})", "var n=t.children;return(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'photomode-container',photoMode:{className:Oe()(Bge.photoModePanelLayout),children:n}})"),
-        
+            // var n=t.children;return(0,z.jsx)(\"div\",{className:Oe()(Bge.photoModePanelLayout),children:n})
+            ("var t=e.children;return(0,z.jsx)(\"div\",{className:_d()(nbe.photoModePanelLayout),children:t})", "var t=e.children;return(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'photomode-container',photoMode:{className:_d()(nbe.photoModePanelLayout),children:t}})"),
+           // 
         };
 
         // This one is quite static as it relies simply on HookUI
-        static readonly (string Search, string Replacement) HOOKUI_INJECTION_POINT = ("(0,e.jsx)(window._$hookui_menu,{react:i})]", "(0,e.jsx)(window._$hookui_menu,{react:i}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-left-toolbar'})]");
+        static readonly (string Search, string Replacement) HOOKUI_INJECTION_POINT = ("(0,z.jsx)(window._$hookui_menu,{react:Y})]", "(0,z.jsx)(window._$hookui_menu,{react:Y}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'top-left-toolbar'})]");
 
         // This one is quite easy, you can look for .lock or the class names like so:
         // qge.lock})})})})]})};const Qge={field:"field_eZ6",header:"header_oa2"
-        static readonly (string Search, string Replacement) NON_HOOKUI_INJECTION_POINT = ("qge.lock})})})})]", "qge.lock})})})}),(0,e.jsx)(window.$_gooee.container,{react:i,pluginType:'top-left-toolbar'})]");
+        static readonly (string Search, string Replacement) NON_HOOKUI_INJECTION_POINT = ("ube.lock})})})})]", "ube.lock})})})}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'top-left-toolbar'})]");
 
         private static readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
 
@@ -130,7 +130,7 @@ namespace Gooee.Injection
 
             var files = Directory.GetFiles( parent, "*.dll", SearchOption.AllDirectories );
 
-            MakeHookUICompatible = files.Count( f => f.ToLower( ).EndsWith( "hookuimod.dll" ) ) > 0;
+            MakeHookUICompatible = AppDomain.CurrentDomain.GetAssemblies( ).Count( a => Path.GetFileName( a.Location ).ToLowerInvariant( ) == "hookuimod.dll" ) > 0;
             
             return MakeHookUICompatible;
         }
@@ -452,18 +452,31 @@ namespace Gooee.Injection
         /// </summary>
         public static void SetupResourceHandler( )
         {
-            var resourceHandler = ( GameUIResourceHandler ) GameManager.instance.userInterface.view.uiSystem.resourceHandler;
-
-            if ( resourceHandler == null || resourceHandler.HostLocationsMap.ContainsKey( UI_IDENTIFIER ) )
+            var uiSystem = GameManager.instance.userInterface.view.uiSystem;
+            
+            if ( uiSystem == null )
             {
                 _log.Error( "Failed to setup resource handler for Gooee." );
                 return;
             }
 
             _log.Info( "Setup resource handler for Gooee." );
-            resourceHandler.HostLocationsMap.Add( UI_IDENTIFIER, new List<string> { MOD_PATH } );
+            uiSystem.AddHostLocation( UI_IDENTIFIER, MOD_PATH, false );
         }
 
+        public static void MountResources( string uri, string path )
+        {
+            var uiSystem = GameManager.instance.userInterface.view.uiSystem;
+
+            if ( uiSystem == null )
+            {
+                _log.Error( "Failed to setup resource handler for " + uri + "." );
+                return;
+            }
+
+            _log.Info( "Setup resource handler for " + uri + "." );
+            uiSystem.AddHostLocation( uri, path, false );
+        }
         static FileSystemWatcher _watcher;
 
         private static void SetupFileWatcher( )

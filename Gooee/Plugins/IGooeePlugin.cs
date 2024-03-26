@@ -22,6 +22,7 @@ namespace Gooee.Plugins
     /// <summary>
     /// Plugin interface with a controller
     /// </summary>
+    [Obsolete( "Please use ControllerTypes with IGooeePluginWithControllers instead!" )]
     public interface IGooeePluginWithController : IGooeePlugin
     {
         IController Controller

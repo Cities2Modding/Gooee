@@ -1,6 +1,6 @@
 import React from "react";
 
-const Scrollable = ({ className, children, size = null, style }) => {
+const Scrollable = ({ className, children, size = null, style, startBottom = null }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
     const contentRef = react.useRef(null);
@@ -56,6 +56,18 @@ const Scrollable = ({ className, children, size = null, style }) => {
         }
     };
 
+    const scrollToBottom = () => {
+        if (startBottom && scrollRef.current && contentRef.current) {
+            const totalContentHeight = contentRef.current.scrollHeight;
+            scrollRef.current.scrollTop = totalContentHeight;
+            calculateThumbSizeAndPosition();
+        }
+    };
+
+    react.useEffect(() => {
+        scrollToBottom();
+    }, [startBottom, scrollRef.current, contentRef.current]);
+
     const onMouseUp = (e) => {
         if (mouseDown) {
             setMouseDown(false);
@@ -63,6 +75,9 @@ const Scrollable = ({ className, children, size = null, style }) => {
     };
 
     const onMouseDown = (e) => {
+        if (e.target != e.currentTarget)
+            return;
+        e.stopPropagation();
         if (!mouseDown) {
             setMouseDown(true);
             return true;
@@ -79,6 +94,7 @@ const Scrollable = ({ className, children, size = null, style }) => {
     const onTrackMouseDown = (e) => {
         if (e.target != e.currentTarget)
             return;
+        e.stopPropagation();
         if (scrollRef.current && contentRef.current) {
             const viewableHeight = scrollRef.current.clientHeight;
             const totalContentHeight = contentRef.current.scrollHeight;

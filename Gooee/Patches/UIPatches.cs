@@ -19,14 +19,7 @@ namespace Gooee.Patches
 
         private static void EnsureFolder( )
         {
-            var resourceHandler = ( GameUIResourceHandler ) GameManager.instance.userInterface.view.uiSystem.resourceHandler;
-
-            if ( resourceHandler == null || resourceHandler.HostLocationsMap.ContainsKey( "gooeeui" ) )
-                return;
-
-            Directory.CreateDirectory( ResourceInjector.MOD_PATH );
-            resourceHandler.HostLocationsMap.Add( "gooeeui", new List<string> { ResourceInjector.MOD_PATH } );
-            UnityEngine.Debug.Log( "Added GooeeUI resource location" );
+            ResourceInjector.SetupResourceHandler( );
         }
 
         [HarmonyPatch( typeof( GameManager ), "InitializeUI" )]

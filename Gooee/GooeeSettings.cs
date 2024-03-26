@@ -15,6 +15,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Unity.Entities;
+using static Game.UI.Menu.AutomaticSettings;
 
 namespace Gooee
 {
@@ -126,7 +127,7 @@ namespace Gooee
             {
                 if ( !string.IsNullOrEmpty( group.Description ) )
                 {
-                    AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( )
+                    AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.StringField )
                     {
                         setting = this,
                         property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), group.Description )
@@ -144,7 +145,6 @@ namespace Gooee
                         },
                         simpleGroup = group.Title,
                         advancedGroup = group.Title,
-                        widgetType = AutomaticSettings.WidgetType.StringField
                     };
                     pageData[tab].AddItem( settingItemData );
                     pageData.AddGroup( settingItemData.simpleGroup );
@@ -157,7 +157,7 @@ namespace Gooee
                     {
                         if ( element is GooeeSettingButton button )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( )
+                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.BoolButton )
                             {
                                 setting = this,
                                 property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), button.Content )
@@ -177,7 +177,6 @@ namespace Gooee
                                 },
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title,
-                                widgetType = AutomaticSettings.WidgetType.BoolButton
                             };
                             pageData[tab].AddItem( settingItemData );
                             pageData.AddGroup( settingItemData.simpleGroup );
@@ -189,7 +188,7 @@ namespace Gooee
                         }
                         else if ( element is GooeeSettingCheckBox checkbox )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( )
+                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.BoolToggle )
                             {
                                 setting = this,
                                 property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), checkbox.IsChecked )
@@ -216,8 +215,7 @@ namespace Gooee
                                     },
                                 },
                                 simpleGroup = group.Title,
-                                advancedGroup = group.Title,
-                                widgetType = AutomaticSettings.WidgetType.BoolToggle
+                                advancedGroup = group.Title
                             };
                             pageData[tab].AddItem( settingItemData );
                             pageData.AddGroup( settingItemData.simpleGroup );
@@ -225,7 +223,7 @@ namespace Gooee
                         }
                         else if ( element is GooeeSettingDropdown dropDown )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( )
+                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.StringDropdown )
                             {
                                 setting = this,
                                 property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), dropDown.Selected )
@@ -252,8 +250,7 @@ namespace Gooee
                                     },
                                 },
                                 simpleGroup = group.Title,
-                                advancedGroup = group.Title,
-                                widgetType = AutomaticSettings.WidgetType.StringDropdown
+                                advancedGroup = group.Title
                             };
                             pageData[tab].AddItem( settingItemData );
                             pageData.AddGroup( settingItemData.simpleGroup );

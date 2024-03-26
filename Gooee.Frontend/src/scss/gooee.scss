@@ -30,6 +30,7 @@
 @import "components/_list.scss";
 @import "components/_progress-bar.scss";
 @import "components/_colour-picker.scss";
+@import "components/_tab-control.scss";
 
 @import "_font-awesome.scss";
 
@@ -147,6 +148,14 @@
         padding-bottom: 0 !important;
         padding-left: 16rem !important;
         padding-right: 0 !important;
+
+        &.asset-menu-vertical
+        {
+            --assetMenuColumns: 6;
+            --assetMenuRows: 12;
+            height: calc( var(--assetMenuRows) * ( var(--assetMenuItemSize) + var(--assetMenuItemGap) ) - var(--assetMenuItemGap));
+            padding-left: 0 !important;
+        }
 
         > .asset-menu-container
         {

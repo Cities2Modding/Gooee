@@ -163,6 +163,46 @@ function _gDarkenHex(hex, amount) {
     return `#${f(0)}${f(8)}${f(4)}`;
 }
 
+function _gRgbaToHex(rgba) {
+    const match = rgba.match(/rgba?\((\d+), (\d+), (\d+)(?:, (.*))?\)/);
+    if (!match) {
+        throw new Error('Invalid RGBA color: ' + rgba);
+    }
+
+    const r = parseInt(match[1]);
+    const g = parseInt(match[2]);
+    const b = parseInt(match[3]);
+    const alpha = match[4] || '1'; // Keep the alpha as a string
+
+    return {
+        hex: `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`,
+        alpha: alpha === '1' ? undefined : alpha // Only store alpha if it's not 1
+    };
+}
+
+function _gParseRgba(rgba) {
+    const match = rgba.match(/rgba?\((\d+), (\d+), (\d+)(?:, (.*))?\)/);
+    if (!match) {
+        throw new Error('Invalid RGBA color: ' + rgba);
+    }
+
+    // Parse the red, green, and blue values directly from the match
+    const r = parseInt(match[1]);
+    const g = parseInt(match[2]);
+    const b = parseInt(match[3]);
+    const a = match[4] ? match[4].startsWith("var(") ? match[4] : parseFloat(match[4]) : 1;    
+    return { r, g, b, a };
+}
+
+function _gHexToRgba(hex, alpha) {
+    const hexValue = hex.replace(/^#/, '');
+    const r = parseInt(hexValue.substring(0, 2), 16);
+    const g = parseInt(hexValue.substring(2, 4), 16);
+    const b = parseInt(hexValue.substring(4, 6), 16);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha ?? 1})`;
+}
+
 function _gBroadcastVisibilityChange(typeKey, guid) {
     const event = new CustomEvent('floatingElementVisibilityChange', {
         detail: { typeKey, guid }

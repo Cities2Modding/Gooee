@@ -1,13 +1,16 @@
 import React from "react";
 import { ReactId } from "reactjs-id";
 
-const ColorPicker = ({ className, value, size = null, disabled = null, label = null, onSelectionChanged, onMouseEnter, onMouseLeave }) => {
+const ColorPicker = ({ className, toggleClassName, value, size = null, disabled = null, label = null, onSelectionChanged, onMouseEnter, onMouseLeave }) => {
     const react = window.$_gooee.react;
     const { Button, TextBox, FormGroup, Slider, GridSlider, FloatingElement } = window.$_gooee.framework;
 
+    const [isRgba, setIsRgba] = react.useState(value && value.startsWith("rgba"));
+    const [hasHash, setHasHash] = react.useState(value && value.startsWith("#"));
     const [red, setRed] = react.useState(255);
     const [green, setGreen] = react.useState(255);
     const [blue, setBlue] = react.useState(255);
+    const [alpha, setAlpha] = react.useState(1);
     const [hue, setHue] = react.useState(0);
     const [saturation, setSaturation] = react.useState(100);
     const [lightness, setLightness] = react.useState(100);
@@ -30,6 +33,12 @@ const ColorPicker = ({ className, value, size = null, disabled = null, label = n
         setGreen(rgb.g);
         setBlue(rgb.b);
 
+        if (typeof rgb.a !== undefined) {
+            setAlpha(rgb.a);
+        }
+        else
+            setAlpha(1);
+
         const hsl = _gRGBToHSV(rgb.r, rgb.g, rgb.b);
         setHue(parseInt(hsl.h));
         setSaturation(parseInt(hsl.s));
@@ -43,8 +52,20 @@ const ColorPicker = ({ className, value, size = null, disabled = null, label = n
     react.useEffect(() => {
         if (!value)
             return;
-        const rgb = _gHexToRGB(value);
-        updateFrom(rgb);
+
+        const isRgba = value.startsWith("rgba");
+        setIsRgba(isRgba);
+
+        if (isRgba) {
+            setHasHash(false);
+            const rgba = _gParseRgba(value);
+            updateFrom(rgba);
+        }
+        else {
+            setHasHash(value.startsWith("#"));
+            const rgb = _gHexToRGB(value);
+            updateFrom(rgb);
+        }
     }, [value]);
 
     const onHueUpdated = (newHue) => {
@@ -121,7 +142,7 @@ const ColorPicker = ({ className, value, size = null, disabled = null, label = n
         setHex(hexVal);
         
         if (onSelectionChanged)
-            onSelectionChanged(hexVal);
+            onSelectionChanged(isRgba ? `rgba(${red}, ${green}, ${blue}, ${alpha})` : hasHash && !hexVal.startsWith("#") ? "#" + hexVal : hexVal);
     };
 
     const onSanitizeHex = (val) => {
@@ -232,9 +253,9 @@ const ColorPicker = ({ className, value, size = null, disabled = null, label = n
     };
 
     return <>
-        <div ref={dropdownRef} className="color-picker-toggle d-flex flex-row align-items-center mb-4">
+        <div ref={dropdownRef} className={"color-picker-toggle d-flex flex-row align-items-center" + (toggleClassName ? " " + toggleClassName : "")}>
             <div
-                style={{ backgroundColor: `#${value}` }}
+                style={{ backgroundColor: (isRgba || hasHash ? value : `#${value}`) }}
                 onMouseEnter={internalOnMouseEnter} onMouseLeave={internalOnMouseLeave}
                 onClick={handleClick}></div>
             {label ? <label className="ml-2" onClick={handleClick}>{label}</label> : null}
@@ -256,7 +277,7 @@ const ColorPicker = ({ className, value, size = null, disabled = null, label = n
                         <label>New</label>
                         <div className="color-picker-block-container">
                             <div style={{ backgroundColor: `#${hex}`, width: "75rem", height: "45rem" }}></div>
-                            <div style={{ backgroundColor: `#${value}`, width: "75rem", height: "45rem" }}></div>
+                            <div style={{ backgroundColor: (isRgba || hasHash ? value : `#${value}`), width: "75rem", height: "45rem" }}></div>
                         </div>
                         <label>Current</label>
                     </div>

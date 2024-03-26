@@ -20,7 +20,7 @@
 
         .dropdown-menu
         {
-            > .dropdown-item
+            .dropdown-item
             {
                 font-size: $font-size-xs;
             }
@@ -45,7 +45,7 @@
 
         .dropdown-menu
         {
-            > .dropdown-item
+            .dropdown-item
             {
                 font-size: $font-size-sm;
             }
@@ -70,7 +70,7 @@
 
         .dropdown-menu
         {
-            > .dropdown-item
+            .dropdown-item
             {
                 font-size: $font-size-xl;
             }
@@ -108,8 +108,28 @@
     background-color: getColour("grey", "dark");
     @include borderAll($input-border-colour, $input-border-thickness);
     border-top-width: 0 !important;
+    opacity: 1;
+    transition: opacity 0.2s linear;
+    pointer-events: auto;
 
-    > .dropdown-item
+    &.dropdown-menu-up
+    {        
+        border-top-width: $input-border-thickness !important;
+        border-bottom-width: 0 !important;
+    }
+
+    &.hidden
+    {
+        opacity: 0;
+        pointer-events: none;
+
+        *
+        {
+            pointer-events: none !important;
+        }
+    }
+
+    .dropdown-item
     {
         @include paddingAll($input-padding-h, $input-padding-v);
         color: map-get($text-colours, "grey");
@@ -131,7 +151,7 @@
 
     &.dropdown-menu-xs
     {
-        > .dropdown-item
+        .dropdown-item
         {
             font-size: $font-size-xs;
         }
@@ -139,7 +159,7 @@
 
     &.dropdown-menu-sm
     {
-        > .dropdown-item
+        .dropdown-item
         {
             font-size: $font-size-sm;
         }
@@ -147,7 +167,67 @@
 
     &.dropdown-menu-lg
     {
-        > .dropdown-item
+        .dropdown-item
+        {
+            font-size: $font-size-lg;
+        }
+    }
+}
+
+.faux-dropdown-menu
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    pointer-events: auto;
+    background-color: getColour("grey", "dark");
+    @include borderAll($input-border-colour, $input-border-thickness);
+    border-top-width: 0 !important;
+
+    > .dropdown-item
+    {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        @include paddingAll($input-padding-h, $input-padding-v);
+        color: map-get($text-colours, "grey");
+        text-align: left;
+        font-size: $font-size-lg;
+        font-family: $font-family-sans-serif;
+        white-space: nowrap;
+        letter-spacing: normal;
+        font-style: normal;
+        font-weight: normal;
+        line-height: normal;
+        text-transform: none;
+
+        &:hover
+        {            
+            background-color: getColour("grey", "base");
+        }
+    }
+
+    &.dropdown-menu-xs
+    {
+        .dropdown-item
+        {
+            font-size: $font-size-xs;
+        }
+    }
+
+    &.dropdown-menu-sm
+    {
+        .dropdown-item
+        {
+            font-size: $font-size-sm;
+        }
+    }
+
+    &.dropdown-menu-lg
+    {
+        .dropdown-item
         {
             font-size: $font-size-lg;
         }

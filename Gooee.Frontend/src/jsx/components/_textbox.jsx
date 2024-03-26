@@ -1,6 +1,6 @@
 import React from "react";
 
-const TextBox = ({ className, style, text, onChange, type = "text", size = null, disabled = null, rows = 1, maxLength = null, selectOnFocus = null, minValue = null, maxValue = null, onSanitize = null }) => {
+const TextBox = ({ className, style, text, onClick, onChange, onBlur, type = "text", size = null, disabled = null, rows = 1, maxLength = null, selectOnFocus = null, minValue = null, maxValue = null, onSanitize = null }) => {
     const react = window.$_gooee.react;
     const [value, setValue] = react.useState(text);
     const elementRef = react.useRef(null);
@@ -64,15 +64,17 @@ const TextBox = ({ className, style, text, onChange, type = "text", size = null,
             onChange(newVal);
     };
 
-    const onClick = () => {
+    const onDoubleClick = () => {
         if (selectOnFocus && elementRef && elementRef.current) {
             elementRef.current.focus()
             elementRef.current.setSelectionRange(0, elementRef.current.value.length);
         }
     };
 
-    return rows === 1 ? <input ref={elementRef} type={type} className={classNames} onClick={onClick} onMouseEnter={onMouseEnter} onChange={(e) => onValueChange(e.target.value)} style={style} value={value} /> :
-        <textarea ref={elementRef} rows={rows} className={classNames} onClick={onClick} onMouseEnter={onMouseEnter} onChange={(e) => onValueChange(e.target.value)} style={style}>{value}</textarea>;
+    return rows === 1 ? <input ref={elementRef} type={type} className={classNames}
+        onClick={onClick} onDoubleClick={onDoubleClick} onBlur={onBlur} onMouseEnter={onMouseEnter} onChange={(e) => onValueChange(e.target.value)} style={style} value={value} /> :
+        <textarea ref={elementRef} rows={rows} className={classNames}
+            onClick={onClick} onDoubleClick={onDoubleClick} onBlur={onBlur} onMouseEnter={onMouseEnter} onChange={(e) => onValueChange(e.target.value)} style={style}>{value}</textarea>;
 };
 
 export default TextBox;

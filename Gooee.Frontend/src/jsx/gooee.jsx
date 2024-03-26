@@ -31,6 +31,8 @@ import ProgressBar from "./components/_progress-bar";
 import PieChart from "./components/_pie-chart";
 import ColorPicker from "./components/_color-picker";
 import FloatingElement from "./components/_floating-element";
+import TabControl from "./components/_tab-control";
+import useDebouncedCallback from "./_debouncer";
 
 //import ChangeLog from "./modules/_changelog";
 
@@ -38,7 +40,10 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
     window.$_gooee.react = react;
     const [plugins, setPlugins] = react.useState([]);
 
-    const wrapWithGooee = pluginType === "default" || pluginType === "main-container" || pluginType === "photomode-container";
+    const wrapWithGooee = pluginType === "default"
+        || pluginType === "main-container"
+        || pluginType === "main-container-end"
+        || pluginType === "photomode-container";
 
     const getColours = react.useCallback(() => {
         const rootStyle = getComputedStyle(document.documentElement);
@@ -159,6 +164,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                 case "bottom-left-toolbar":
                 case "bottom-center-toolbar":
                 case "main-container":
+                case "main-container-end":
                 case "photomode-container":
                     return <ComponentInstance key={name} react={react} setupController={setupController} />;
                     break;
@@ -403,6 +409,7 @@ window.$_gooee.framework = {
     Scrollable,
     Modal,
     TabModal,
+    TabControl,
     MoveableModal,
     Dropdown,
     DropdownMenu,
@@ -424,5 +431,6 @@ window.$_gooee.framework = {
     ProgressBar,
     PieChart,
     ColorPicker,
-    FloatingElement
+    FloatingElement,
+    useDebouncedCallback
 };

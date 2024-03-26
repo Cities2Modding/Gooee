@@ -120,6 +120,15 @@
         flex: 1;
         margin-left: map-get($spacers, "2");
     }
+
+    &.form-check-reverse
+    {
+        > .form-check-label
+        {
+            flex: 1;
+            margin-right: map-get($spacers, "2");
+        }
+    }
 }
 
 .form-check-input

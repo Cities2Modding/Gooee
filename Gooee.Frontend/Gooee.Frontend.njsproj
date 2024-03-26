@@ -37,6 +37,8 @@
     <Content Include="src\jsx\components\_color-picker.jsx" />
     <Content Include="src\jsx\components\_grid-slider.jsx" />
     <Content Include="src\jsx\components\_moveable-modal.jsx" />
+    <Content Include="src\jsx\components\_tab-control.jsx" />
+    <Content Include="src\jsx\_debouncer.jsx" />
     <Content Include="src\scss\components\_colour-picker.scss" />
     <Content Include="src\jsx\components\_pie-chart.jsx" />
     <Content Include="src\jsx\components\_progress-bar.jsx" />
@@ -84,6 +86,7 @@
     <Content Include="src\scss\components\_progress-bar.scss" />
     <Content Include="src\scss\components\_scrollable.scss" />
     <Content Include="src\scss\components\_slider.scss" />
+    <Content Include="src\scss\components\_tab-control.scss" />
     <Content Include="src\scss\utilities\_border.scss" />
     <Content Include="src\scss\utilities\_display.scss" />
     <Content Include="src\scss\utilities\_flex.scss" />

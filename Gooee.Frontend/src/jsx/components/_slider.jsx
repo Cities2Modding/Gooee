@@ -77,7 +77,7 @@ const Slider = ({ className, value, onValueChanged, style, orientation = "horizo
     }, [mouseDown, sliderRef.current]);
 
     const classNames = (basic ? "form-slider-basic" : "form-slider") + (orientation === "vertical" ? " form-slider-vertical" : "") + (className ? " " + className : "");
-    const valuePercent = (100 - internalValue) + "%";
+    const valuePercent = (internalValue) + "%";
 
     return <div className={classNames}
         ref={sliderRef}

@@ -133,6 +133,30 @@
     border-bottom-left-radius: $border-radius;
 }
 
+.rounded-top-sm
+{ 
+    border-top-left-radius: calc($border-radius/2);
+    border-top-right-radius: calc($border-radius/2);
+}
+
+.rounded-right-sm
+{ 
+    border-top-right-radius: calc($border-radius/2);
+    border-bottom-right-radius: calc($border-radius/2);
+}
+
+.rounded-bottom-sm
+{ 
+    border-bottom-right-radius: calc($border-radius/2);
+    border-bottom-left-radius: calc($border-radius/2);
+}
+
+.rounded-left-sm
+{ 
+    border-top-left-radius: calc($border-radius/2);
+    border-bottom-left-radius: calc($border-radius/2);
+}
+
 .rounded-circle 
 {
     border-top-left-radius: 50%;

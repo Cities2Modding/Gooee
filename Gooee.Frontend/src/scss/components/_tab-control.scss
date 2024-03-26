@@ -1,0 +1,10 @@
+.tab-control
+{
+    @include tabControl;
+}
+
+.tab-control-body
+{
+    padding: $modal-content-padding;
+    flex: 1;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 
-const FormCheckBox = ({ className, label, checkClassName, style, checked, onToggle }) => {
-    const classNames = "form-check" + (className ? " " + className : "" );
+const FormCheckBox = ({ className, label, checkClassName, style, checked, onToggle, reverseOrder = null }) => {
+    const classNames = "form-check" + (className ? " " + className : "") + (reverseOrder ? " form-check-reverse" : "");
     const { CheckBox } = window.$_gooee.framework;
 
     const handleLabelClick = () => {
@@ -12,8 +12,13 @@ const FormCheckBox = ({ className, label, checkClassName, style, checked, onTogg
     }
 
     return <div className={classNames} style={style}>
-        <CheckBox className={checkClassName} checked={checked} onToggle={onToggle} />
-        {label ? <label className="form-check-label" onClick={handleLabelClick}>{label}</label> : null}
+        {reverseOrder ? <>
+            {label ? <label className="form-check-label" onClick={handleLabelClick}>{label}</label> : null}
+            <CheckBox className={checkClassName} checked={checked} onToggle={onToggle} />
+        </> : <>
+            <CheckBox className={checkClassName} checked={checked} onToggle={onToggle} />
+            {label ? <label className="form-check-label" onClick={handleLabelClick}>{label}</label> : null}
+        </>}
     </div>;
 };
 

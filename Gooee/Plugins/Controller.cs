@@ -252,12 +252,7 @@ namespace Gooee.Plugins
         /// <param name="path">The local file system path to mount</param>
         protected void MountResources( string route, string path )
         {
-            var resourceHandler = ( GameUIResourceHandler ) GameManager.instance.userInterface.view.uiSystem.resourceHandler;
-
-            if ( resourceHandler == null || resourceHandler.HostLocationsMap.ContainsKey( route ) )
-                return;
-
-            resourceHandler.HostLocationsMap.Add( route, new List<string> { path } );
+            ResourceInjector.MountResources( route, path );
         }
 
         protected void TriggerUpdate( )
@@ -358,6 +353,11 @@ namespace Gooee.Plugins
                     result = intValue2 / 100m;
                     return true;
                 }
+            }
+            else if ( propertyType == typeof( int ) && val is long longValue )
+            {
+                result = ( int ) longValue;
+                return true;
             }
             else if ( propertyType.IsEnum && val is string strVal )
             {
