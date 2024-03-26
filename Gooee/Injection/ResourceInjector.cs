@@ -130,7 +130,7 @@ namespace Gooee.Injection
 
             var files = Directory.GetFiles( parent, "*.dll", SearchOption.AllDirectories );
 
-            MakeHookUICompatible = AppDomain.CurrentDomain.GetAssemblies( ).Count( a => Path.GetFileName( a.Location ).ToLowerInvariant( ) == "hookuimod.dll" ) > 0;
+            MakeHookUICompatible = AppDomain.CurrentDomain.GetAssemblies( ).Count( a => !a.IsDynamic && Path.GetFileName( a.Location ).ToLowerInvariant( ) == "hookuimod.dll" ) > 0;
             
             return MakeHookUICompatible;
         }
@@ -159,7 +159,7 @@ namespace Gooee.Injection
             InjectHTML( );
 
             SetupFileWatcher( );
-            _log.Info( "Installed Gooee!" );
+            _log.Info( $"Installed Gooee ({(MakeHookUICompatible ? "HOOKUI-INJECTION" : "DEFAULT-INJECTION" )})." );
             HasInjected = true;
         }
 
