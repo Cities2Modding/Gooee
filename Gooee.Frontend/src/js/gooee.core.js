@@ -7,6 +7,10 @@ window.$_gooee.register = function (plugin, name, component, type, controller) {
     if (!window.$_gooee.components[actualType])
         window.$_gooee.components[actualType] = [];
 
+    if (window.$_gooee.components[actualType][name] && window.$_gooee.components[actualType][name].PluginName !== plugin) {
+        console.log(`Cannot register under ${name} as it already exists for another plugin. Making unique...`);
+        name = `${plugin}_${name}`;
+    }
     window.$_gooee.components[actualType][name] = {
         PluginName: plugin,
         ComponentInstance: component,
