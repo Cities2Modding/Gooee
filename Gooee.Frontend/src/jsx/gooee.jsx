@@ -178,7 +178,55 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                     return <div key={name} class="d-flex align-items-center justify-content-center position-fixed w-100 h-100"><ComponentInstance react={react} setupController={setupController} /></div>;
                     break;
             }
-        });            
+        });      
+
+    // Add a stub button for MoveIt compatibility!
+    const bottomRightToolbar = () => {
+        const [moveItBtn, setMoveItBtn] = react.useState(null);
+        const [moveItActive, setMoveItActive] = react.useState(null);
+
+        react.useEffect(() => {
+            const buttonQuery = document.getElementsByClassName("mainButton_jRD");
+            let onToolEnabled = null;
+            if (buttonQuery && buttonQuery.length == 1) {
+                setMoveItBtn(buttonQuery[0]);
+                onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
+                    setMoveItActive(isEnabled);
+                });
+                window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
+            }
+
+            return () => {
+                if (onToolEnabled) {
+                    window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
+                    onToolEnabled.clear();
+                }
+            };
+        }, []);
+
+        const onMoveItClick = () => {
+            if (!moveItBtn)
+                return;           
+            engine.trigger("MoveIt.MIT_EnableToggle");
+            engine.trigger("MoveIt.MIT_ToolEnabled", true);
+            engine.trigger("audio.playSound", "select-item", 1);
+        };
+
+        const onMoveItHover = () => {
+            engine.trigger("audio.playSound", "hover-item", 1);
+        };
+
+        const btnClassNames = "button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT toggle-states_X82 toggle-states_DTm" + (moveItActive ? " border-success" : "");
+
+        return <>
+            {moveItBtn ? <>
+                <div className="divider_GaZ"></div>
+                <button onClick={onMoveItClick} className={btnClassNames} onMouseEnter={onMoveItHover}>
+                    <img src="coui://ui-mods/images/MoveIt_Off.png" style={{ width: "40rem", height: "40rem" }} />
+                </button>
+            </> : null}
+        </>;
+    };
 
     const topLeftToolbar = () => {
         const pluginIds = Object.keys(window.$_gooee_toolbar);
@@ -376,7 +424,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
     const render = <>
         {wrapWithGooee ? <div class="gooee">
         {renderPlugins}
-        </div> : <>{pluginType === "top-left-toolbar" ? topLeftToolbar() : null}{renderPlugins}</>}
+        </div> : <>{pluginType === "top-left-toolbar" ? topLeftToolbar() : null}{renderPlugins}{pluginType === "bottom-right-toolbar" ? bottomRightToolbar() : null}</>}
     </>;
 
     if (pluginType === "photomode-container") {

@@ -26218,6 +26218,40 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
           break;
       }
     });
+    const bottomRightToolbar = () => {
+      const [moveItBtn, setMoveItBtn] = react.useState(null);
+      const [moveItActive, setMoveItActive] = react.useState(null);
+      react.useEffect(() => {
+        const buttonQuery = document.getElementsByClassName("mainButton_jRD");
+        let onToolEnabled = null;
+        if (buttonQuery && buttonQuery.length == 1) {
+          setMoveItBtn(buttonQuery[0]);
+          console.log("got buttn");
+          onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
+            setMoveItActive(isEnabled);
+          });
+          window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
+        }
+        return () => {
+          if (onToolEnabled) {
+            window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
+            onToolEnabled.clear();
+          }
+        };
+      }, []);
+      const onMoveItClick = () => {
+        if (!moveItBtn)
+          return;
+        engine.trigger("MoveIt.MIT_EnableToggle");
+        engine.trigger("MoveIt.MIT_ToolEnabled", true);
+        engine.trigger("audio.playSound", "select-item", 1);
+      };
+      const onMoveItHover = () => {
+        engine.trigger("audio.playSound", "hover-item", 1);
+      };
+      const btnClassNames = "button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT toggle-states_X82 toggle-states_DTm" + (moveItActive ? " border-success" : "");
+      return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, moveItBtn ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "divider_GaZ" }), /* @__PURE__ */ import_react35.default.createElement("button", { onClick: onMoveItClick, className: btnClassNames, onMouseEnter: onMoveItHover }, /* @__PURE__ */ import_react35.default.createElement("img", { src: "coui://ui-mods/images/MoveIt_Off.png", style: { width: "40rem", height: "40rem" } }))) : null);
+    };
     const topLeftToolbar = () => {
       const pluginIds = Object.keys(window.$_gooee_toolbar);
       const [toolbarVisible, setToolbarVisible] = react.useState(false);
@@ -26365,7 +26399,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         }
       ));
     };
-    const render = /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react35.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins));
+    const render = /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react35.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins, pluginType === "bottom-right-toolbar" ? bottomRightToolbar() : null));
     if (pluginType === "photomode-container") {
       return /* @__PURE__ */ import_react35.default.createElement("div", { className: photoMode.className }, /* @__PURE__ */ import_react35.default.createElement("div", { className: "photomode-wrapper" }, photoMode.children), render);
     }
