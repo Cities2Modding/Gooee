@@ -28,13 +28,15 @@ namespace Gooee.Patches
             public static void Postfix( GameManager __instance )
             {
                 if ( ResourceInjector.IsHookUILoaded( ) )
+                {
                     return;
+                }
 
                 UnityEngine.Debug.Log( "Using non-HookUI injection!" );
                 EnsureFolder( );
                 ResourceInjector.Inject( );
                 __instance.userInterface.view.url = INDEX_PATH;
-                AccessTools.Field( typeof( GameManager ), "m_UILocation" ).SetValue( __instance, INDEX_PATH );
+                UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
             }
         }
 
@@ -44,12 +46,14 @@ namespace Gooee.Patches
             public static void Postfix( UISystemBootstrapper __instance )
             {
                 if ( ResourceInjector.IsHookUILoaded( ) )
-                    return;
+                {
+                   return;
+                }
 
                 EnsureFolder( );
                 ResourceInjector.Inject( );
                 UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
-                AccessTools.Field( typeof( UISystemBootstrapper ), "m_Url" ).SetValue( __instance, INDEX_PATH );
+                __instance.m_Url = INDEX_PATH;
             }
         }
 

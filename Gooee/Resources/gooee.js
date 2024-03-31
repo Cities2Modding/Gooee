@@ -26219,28 +26219,32 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       }
     });
     const bottomRightToolbar = () => {
-      const [moveItBtn, setMoveItBtn] = react.useState(null);
+      const [hasMoveIt, setHasMoveIt] = react.useState(null);
       const [moveItActive, setMoveItActive] = react.useState(null);
       react.useEffect(() => {
-        const buttonQuery = document.getElementsByClassName("mainButton_jRD");
-        let onToolEnabled = null;
-        if (buttonQuery && buttonQuery.length == 1) {
-          setMoveItBtn(buttonQuery[0]);
-          console.log("got buttn");
-          onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
-            setMoveItActive(isEnabled);
-          });
-          window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
-        }
+        const hasMoveItSub = window.engine.on("Gooee.hasMoveIt.update", (isPresent) => {
+          setHasMoveIt(isPresent);
+        });
+        window.engine.trigger("Gooee.hasMoveIt.subscribe");
         return () => {
-          if (onToolEnabled) {
-            window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
-            onToolEnabled.clear();
-          }
+          window.engine.trigger("Gooee.hasMoveIt.unsubscribe");
+          hasMoveItSub.clear();
         };
       }, []);
+      react.useEffect(() => {
+        if (!hasMoveIt)
+          return;
+        const onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
+          setMoveItActive(isEnabled);
+        });
+        window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
+        return () => {
+          window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
+          onToolEnabled.clear();
+        };
+      }, [hasMoveIt]);
       const onMoveItClick = () => {
-        if (!moveItBtn)
+        if (!hasMoveIt)
           return;
         engine.trigger("MoveIt.MIT_EnableToggle");
         engine.trigger("MoveIt.MIT_ToolEnabled", true);
@@ -26250,11 +26254,12 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         engine.trigger("audio.playSound", "hover-item", 1);
       };
       const btnClassNames = "button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT toggle-states_X82 toggle-states_DTm" + (moveItActive ? " border-success" : "");
-      return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, moveItBtn ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "divider_GaZ" }), /* @__PURE__ */ import_react35.default.createElement("button", { onClick: onMoveItClick, className: btnClassNames, onMouseEnter: onMoveItHover }, /* @__PURE__ */ import_react35.default.createElement("img", { src: "coui://ui-mods/images/MoveIt_Off.png", style: { width: "40rem", height: "40rem" } }))) : null);
+      return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, hasMoveIt ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "divider_GaZ" }), /* @__PURE__ */ import_react35.default.createElement("button", { onClick: onMoveItClick, className: btnClassNames, onMouseEnter: onMoveItHover }, /* @__PURE__ */ import_react35.default.createElement("img", { src: "coui://ui-mods/images/MoveIt_Off.png", style: { width: "40rem", height: "40rem" } }))) : null);
     };
     const topLeftToolbar = () => {
       const pluginIds = Object.keys(window.$_gooee_toolbar);
       const [toolbarVisible, setToolbarVisible] = react.useState(false);
+      const [hasPluginsToShow, setHasPluginsToShow] = react.useState(false);
       const buttonRef = react.useRef(false);
       const [toolbarDynamicChildren, setToolbarDynamicChildren] = react.useState({});
       react.useEffect(() => {
@@ -26375,10 +26380,12 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
             fa: toolbarItem.IsFAIcon,
             children: childItems.length == 0 ? null : childItems
           });
+          if (!hasPluginsToShow)
+            setHasPluginsToShow(childItems.length >= 1);
         });
         return items;
       }, [toolbarDynamicChildren]);
-      return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(
+      return hasPluginsToShow ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(
         "button",
         {
           ref: buttonRef,
@@ -26386,7 +26393,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
           onMouseEnter: onMouseOverToolbar,
           onClick: onMouseClickToolbar
         },
-        /* @__PURE__ */ import_react35.default.createElement(icon_default, { icon: "solid-toolbox", className: "icon_be5", size: "lg", fa: true })
+        /* @__PURE__ */ import_react35.default.createElement(icon_default, { icon: "solid-briefcase", className: "icon_be5", size: "lg", fa: true })
       ), /* @__PURE__ */ import_react35.default.createElement(
         dropdown_menu_default,
         {
@@ -26397,7 +26404,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
           onChildItemClick: onDropDownChildItemClick,
           onHidden: onDropdownHidden
         }
-      ));
+      )) : null;
     };
     const render = /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react35.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins, pluginType === "bottom-right-toolbar" ? bottomRightToolbar() : null));
     if (pluginType === "photomode-container") {

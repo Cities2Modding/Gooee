@@ -182,30 +182,40 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
 
     // Add a stub button for MoveIt compatibility!
     const bottomRightToolbar = () => {
-        const [moveItBtn, setMoveItBtn] = react.useState(null);
+        const [hasMoveIt, setHasMoveIt] = react.useState(null);
         const [moveItActive, setMoveItActive] = react.useState(null);
 
         react.useEffect(() => {
-            const buttonQuery = document.getElementsByClassName("mainButton_jRD");
-            let onToolEnabled = null;
-            if (buttonQuery && buttonQuery.length == 1) {
-                setMoveItBtn(buttonQuery[0]);
-                onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
-                    setMoveItActive(isEnabled);
-                });
-                window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
-            }
+            const hasMoveItSub = window.engine.on("Gooee.hasMoveIt.update", (isPresent) => {
+                setHasMoveIt(isPresent);
+            });
 
+            window.engine.trigger("Gooee.hasMoveIt.subscribe");
+            
             return () => {
-                if (onToolEnabled) {
-                    window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
-                    onToolEnabled.clear();
-                }
+                window.engine.trigger("Gooee.hasMoveIt.unsubscribe");
+                hasMoveItSub.clear();
             };
         }, []);
 
+        react.useEffect(() => {
+            if (!hasMoveIt)
+                return;
+
+            const onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
+                setMoveItActive(isEnabled);
+            });
+
+            window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
+
+            return () => {
+                window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
+                onToolEnabled.clear();
+            };
+        }, [hasMoveIt]);
+
         const onMoveItClick = () => {
-            if (!moveItBtn)
+            if (!hasMoveIt)
                 return;           
             engine.trigger("MoveIt.MIT_EnableToggle");
             engine.trigger("MoveIt.MIT_ToolEnabled", true);
@@ -219,7 +229,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
         const btnClassNames = "button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT toggle-states_X82 toggle-states_DTm" + (moveItActive ? " border-success" : "");
 
         return <>
-            {moveItBtn ? <>
+            {hasMoveIt ? <>
                 <div className="divider_GaZ"></div>
                 <button onClick={onMoveItClick} className={btnClassNames} onMouseEnter={onMoveItHover}>
                     <img src="coui://ui-mods/images/MoveIt_Off.png" style={{ width: "40rem", height: "40rem" }} />
@@ -231,6 +241,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
     const topLeftToolbar = () => {
         const pluginIds = Object.keys(window.$_gooee_toolbar);
         const [toolbarVisible, setToolbarVisible] = react.useState(false);
+        const [hasPluginsToShow, setHasPluginsToShow] = react.useState(false);
         //const panelRef = react.useRef(false);
         const buttonRef = react.useRef(false);
 
@@ -405,20 +416,22 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                     fa: toolbarItem.IsFAIcon,
                     children: childItems.length == 0 ? null : childItems
                 });
+                if (!hasPluginsToShow)
+                    setHasPluginsToShow(childItems.length >= 1);
             });
 
             return items;
         }, [toolbarDynamicChildren]);
 
-        return <>
+        return hasPluginsToShow ? <>
             <button ref={buttonRef} className="button_ke4 button_ke4 button_H9N"
                 onMouseEnter={onMouseOverToolbar} onClick={onMouseClickToolbar}>
-                <Icon icon="solid-toolbox" className="icon_be5" size="lg" fa />
+                <Icon icon="solid-briefcase" className="icon_be5" size="lg" fa />
             </button>
             <DropdownMenu buttonRef={buttonRef} visible={toolbarVisible} items={dropdownMenuItems}
                 onItemClick={onDropDownItemClick} onChildItemClick={onDropDownChildItemClick}
                 onHidden={onDropdownHidden} />
-        </>;
+        </> : null;
     };
 
     const render = <>

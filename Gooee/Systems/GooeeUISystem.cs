@@ -12,6 +12,10 @@ using Gooee.Helpers;
 using System;
 using Colossal.UI.Binding;
 using Newtonsoft.Json;
+using Colossal.UI;
+using static Game.Rendering.Debug.RenderPrefabRenderer;
+using Game.SceneFlow;
+using Colossal.Serialization.Entities;
 
 namespace Gooee.Systems
 {
@@ -31,6 +35,12 @@ namespace Gooee.Systems
         private readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
         private GetterValueBinding<string> _toolbarItemsBinding;
 
+        private bool HasMoveIt
+        {
+            get;
+            set;
+        }
+
         protected override void OnCreate( )
         {
             base.OnCreate( );;
@@ -48,6 +58,8 @@ namespace Gooee.Systems
             {
                 ResourceInjector.Inject( );
                 PluginLoader.Plugins.Values.OrderBy( v => v.Name ).ForEach( ProcessPlugin );
+
+                GameManager.instance.userInterface.view.View.Reload( );
             }
 
             if ( _toolbarChildSubscribers?.Count > 0 )
@@ -59,6 +71,9 @@ namespace Gooee.Systems
                     return _toolbarChildJsonCache;
                 } ) );
             }
+
+            AddUpdateBinding( new GetterValueBinding<bool>( "Gooee", "hasMoveIt", ( ) => HasMoveIt ) );
+
             //AddBinding( new TriggerBinding( "gooee", "onCloseChangeLog", ResourceInjector.WriteChangeLogRead ) );
             //AddBinding( new TriggerBinding( "gooee", "resetChangeLog", ResourceInjector.ResetChangeLog ) );            
 
@@ -66,6 +81,17 @@ namespace Gooee.Systems
             //{
             //    return ResourceInjector.HasChangeLogUpdated( );
             //} ) );
+        }
+
+        protected override void OnGameLoadingComplete( Purpose purpose, GameMode mode )
+        {
+            base.OnGameLoadingComplete( purpose, mode );
+
+            if ( mode == GameMode.MainMenu )
+            {
+                HasMoveIt = AppDomain.CurrentDomain.GetAssemblies( )
+                    .SelectMany( a => a.GetTypes( ) ).Count( t => t.FullName == "MoveIt.Systems.MIT_System" ) > 0;
+            }
         }
 
         public void BuildToolbarChildCache( bool forceUpdate = false )

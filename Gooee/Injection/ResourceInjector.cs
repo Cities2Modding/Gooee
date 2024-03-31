@@ -38,10 +38,10 @@ namespace Gooee.Injection
         static readonly string GAMEUI_INDEX_HTML = Path.Combine( GAMEUI_PATH, "index.html" );
         static readonly string GAMEUI_INDEX_JS = Path.Combine( GAMEUI_PATH, "index.js" );
 
-        static readonly string HOOKUI_INDEX_HTML = Path.Combine( HOOKUI_PATH, "index.html" );
+        public static readonly string HOOKUI_INDEX_HTML = Path.Combine( HOOKUI_PATH, "index.html" );
         static readonly string HOOKUI_INDEX_JS = Path.Combine( HOOKUI_PATH, "index.js" );
 
-        static readonly string NON_HOOKUI_INDEX_HTML = Path.Combine( MOD_PATH, "index.html" );
+        public static readonly string NON_HOOKUI_INDEX_HTML = Path.Combine( MOD_PATH, "index.html" );
         static readonly string NON_HOOKUI_INDEX_JS = Path.Combine( MOD_PATH, "index.js" );
 
         const string CV_JS_FILENAME = "gooee.js";
@@ -497,8 +497,8 @@ namespace Gooee.Injection
             _watcher.EnableRaisingEvents = true;
         }
 
-        static FieldInfo _liveReload = typeof( UIView ).GetField( "m_LiveReload", BindingFlags.NonPublic | BindingFlags.Instance );
-        static MethodInfo _onChanged = typeof( UILiveReload ).GetMethod( "OnChanged", BindingFlags.NonPublic | BindingFlags.Instance );
+        public static FieldInfo _liveReload = typeof( UIView ).GetField( "m_LiveReload", BindingFlags.NonPublic | BindingFlags.Instance );
+        public static MethodInfo _onChanged = typeof( UILiveReload ).GetMethod( "OnChanged", BindingFlags.NonPublic | BindingFlags.Instance );
 
         private static void OnChanged( object source, FileSystemEventArgs e )
         {
@@ -511,9 +511,15 @@ namespace Gooee.Injection
             {
                 var liveReload = ( UILiveReload ) _liveReload.GetValue( GameManager.instance.userInterface.view );
 
-                // Redirect the on changed event to the internal UI so it reloads properly.
-                _onChanged.Invoke( liveReload, e.FullPath );
-
+                if ( liveReload != null )
+                {
+                    // Redirect the on changed event to the internal UI so it reloads properly.
+                    _onChanged.Invoke( liveReload, e.FullPath );
+                }
+                else
+                {
+                    GameManager.instance.userInterface.view.View.Reload( );
+                }
                 _log.Info( "Gooee reloaded the UI view." );
             }
         }
