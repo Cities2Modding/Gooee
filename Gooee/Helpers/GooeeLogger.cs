@@ -1,5 +1,4 @@
-﻿using BepInEx.Logging;
-using Colossal.Logging;
+﻿using Colossal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,6 @@ namespace Gooee.Helpers
         private static Dictionary<string, GooeeLogger> _loggers = new Dictionary<string, GooeeLogger>( );
         
         protected readonly ILog _gameLog;
-        protected readonly ManualLogSource _bepInEx;
 
         public static GooeeLogger Get( string name )
         {
@@ -26,25 +24,21 @@ namespace Gooee.Helpers
         internal GooeeLogger( string name )
         {
             _gameLog = LogManager.GetLogger( name );
-            _bepInEx = ( ManualLogSource ) BepInEx.Logging.Logger.Sources.FirstOrDefault( s => s.SourceName == name );
         }
 
         public void Trace( string message )
         {
             _gameLog.Trace( message );
-            _bepInEx.LogInfo( message ); // No Trace?
         }
 
         public void Info( string message )
         {
             _gameLog.Info( message );
-            _bepInEx.LogInfo( message );
         }
 
         public void Debug( string message )
         {
             _gameLog.Debug( message );
-            _bepInEx.LogDebug( message );
         }
 
         public void Warning( string message )

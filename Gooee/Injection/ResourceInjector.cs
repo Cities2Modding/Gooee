@@ -15,7 +15,6 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Gooee.Plugins.Attributes;
-using System.Reflection.Emit;
 
 namespace Gooee.Injection
 {
@@ -26,7 +25,6 @@ namespace Gooee.Injection
 
         public static bool MakeHookUICompatible = false;
 
-        static readonly string ASSEMBLY_PATH = Path.GetDirectoryName( Assembly.GetExecutingAssembly( ).Location );
         public static readonly string MOD_PATH = Path.Combine( Application.persistentDataPath, "Mods", "Gooee" );
         static readonly string PLUGIN_PATH = Path.Combine( MOD_PATH, "Plugins" );
         static readonly string CHANGELOG_READ_PATH = Path.Combine( MOD_PATH, "changelog.ini" );
@@ -95,7 +93,7 @@ namespace Gooee.Injection
         // qge.lock})})})})]})};const Qge={field:"field_eZ6",header:"header_oa2"
         static readonly (string Search, string Replacement) NON_HOOKUI_INJECTION_POINT = ("ube.lock})})})})]", "ube.lock})})})}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'top-left-toolbar'})]");
 
-        private static readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+        private static readonly GooeeLogger _log = GooeeLogger.Get( "Cities2Modding" );
 
         static bool HasInjected = false;
 
@@ -125,12 +123,8 @@ namespace Gooee.Injection
             if ( MakeHookUICompatible )
                 return true;
 
-            var directory = Path.GetDirectoryName( Assembly.GetExecutingAssembly( ).Location );
-            var parent = Directory.GetParent( directory ).FullName;
-
-            var files = Directory.GetFiles( parent, "*.dll", SearchOption.AllDirectories );
-
-            MakeHookUICompatible = AppDomain.CurrentDomain.GetAssemblies( ).Count( a => !a.IsDynamic && Path.GetFileName( a.Location ).ToLowerInvariant( ) == "hookuimod.dll" ) > 0;
+            MakeHookUICompatible = AppDomain.CurrentDomain.GetAssemblies( )
+                .Count( a => !a.IsDynamic && a.FullName.ToLowerInvariant( ).Contains( "hookuimod" ) ) > 0;
             
             return MakeHookUICompatible;
         }
@@ -297,10 +291,10 @@ namespace Gooee.Injection
                     styleBuilder.AppendLine( newStyle );
                 }
 
-                if ( plugin is IGooeeChangeLog clPlugin && !string.IsNullOrEmpty( clPlugin.ChangeLogResource ) )
-                {
-                    pluginChangeLogs.Add( "{ \"name\": \"" + plugin.Name + "\", \"version\": \"" + clPlugin.Version + "\", \"timestamp\": \"" + GetPluginTimeStamp( plugin.GetType().Assembly ).ToString() + "\" }" );
-                }
+                //if ( plugin is IGooeeChangeLog clPlugin && !string.IsNullOrEmpty( clPlugin.ChangeLogResource ) )
+                //{
+                //    pluginChangeLogs.Add( "{ \"name\": \"" + plugin.Name + "\", \"version\": \"" + clPlugin.Version + "\", \"timestamp\": \"" + GetPluginTimeStamp( plugin.GetType().Assembly ).ToString() + "\" }" );
+                //}
             }
 
             //if ( pluginChangeLogs.Count > 0 )
@@ -395,7 +389,7 @@ namespace Gooee.Injection
         private static void ExtractIcons( )
         {
             var faPath = Path.Combine( MOD_PATH, "FA" );
-            var faZip = Path.Combine( ASSEMBLY_PATH, "FA.zip" );
+            var faZip = Path.Combine( Mod.AssemblyPath, "FA.zip" );
 
             if ( !Directory.Exists( faPath ) && File.Exists( faZip ) )
             {

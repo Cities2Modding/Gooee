@@ -13,7 +13,7 @@ namespace Gooee.Helpers
         static readonly Lazy<LocalizationManager> _localizationManager = new Lazy<LocalizationManager>( () => GameManager.instance.localizationManager );
         static readonly Lazy<string[]> _locales = new Lazy<string[]>( ( ) => _localizationManager.Value.GetSupportedLocales( ) );
 
-        private static readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+        private static readonly GooeeLogger _log = GooeeLogger.Get( "Cities2Modding" );
 
         /// <summary>
         /// Load an embedded resource .yml language and register it with the game.

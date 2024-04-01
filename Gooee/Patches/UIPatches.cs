@@ -9,13 +9,16 @@ using System.Collections.Generic;
 using System.Reflection;
 using System;
 using System.Linq;
+using Game.Modding;
+using Unity.Entities;
+using Gooee.Systems;
 
 namespace Gooee.Patches
 {
     public static class UIPatches
     {
         const string UI_URL = "coui://gooeeui/";
-        const string INDEX_PATH = UI_URL + "index.html";
+        public const string INDEX_PATH = UI_URL + "index.html";
 
         private static void EnsureFolder( )
         {
@@ -54,6 +57,20 @@ namespace Gooee.Patches
                 ResourceInjector.Inject( );
                 UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
                 __instance.m_Url = INDEX_PATH;
+            }
+        }
+
+        [HarmonyPatch( typeof( ModManager ), "InitializeUIModules" )]
+        public static class ModManager_InitializeUIModulesPatch
+        {
+            public static void Postfix( UISystemBootstrapper __instance )
+            {
+                var gooee = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<GooeeUISystem>( );
+
+                if ( gooee == null )
+                    return;
+
+                gooee.LoadGooee( );
             }
         }
 

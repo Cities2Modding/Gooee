@@ -19,7 +19,7 @@ namespace Gooee.Plugins
             private set;
         } = new Dictionary<string, IGooeePlugin>( );
 
-        private static readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+        private static readonly GooeeLogger _log = GooeeLogger.Get( "Cities2Modding" );
 
         public static void Load( )
         {

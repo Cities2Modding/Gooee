@@ -1,11 +1,6 @@
-﻿using cohtml.Net;
-using Colossal.IO.AssetDatabase;
-using Colossal.PSI.Common;
-using Game.Modding;
-using Game.SceneFlow;
+﻿using Colossal.IO.AssetDatabase;
 using Game.Settings;
 using Game.UI.Menu;
-using Game.UI.Widgets;
 using Gooee.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,7 +10,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Unity.Entities;
-using static Game.UI.Menu.AutomaticSettings;
 
 namespace Gooee
 {

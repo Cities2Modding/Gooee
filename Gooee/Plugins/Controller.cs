@@ -1,7 +1,5 @@
-﻿using Colossal.OdinSerializer.Utilities;
-using Colossal.Reflection;
+﻿using Colossal.Reflection;
 using Colossal.UI.Binding;
-using Game.SceneFlow;
 using Game.UI;
 using Gooee.Helpers;
 using Gooee.Injection;
@@ -18,7 +16,7 @@ using BaseModel = Gooee.Plugins.Model;
 
 namespace Gooee.Plugins
 {
-    public abstract class Controller<TModel> : UISystemBase, IController
+    public abstract partial class Controller<TModel> : UISystemBase, IController
         where TModel : class, IModel, IJsonWritable
     {
         public IGooeePlugin Plugin
@@ -88,7 +86,7 @@ namespace Gooee.Plugins
         //}
 
         //static readonly MethodInfo _registerListener = typeof( Model ).GetMethod( "RegisterListener", BindingFlags.Instance | BindingFlags.NonPublic );
-        private readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+        private readonly GooeeLogger _log = GooeeLogger.Get( "Cities2Modding" );
 
         private string _lastModelJson = string.Empty;
         private string _modelJson = string.Empty;
@@ -144,7 +142,7 @@ namespace Gooee.Plugins
 
             if ( TriggerMethods?.Length > 0 )
             {
-                TriggerMethods.ForEach( m =>
+                foreach ( var m in TriggerMethods )
                 {
                     var parameters = m.GetParameters( );
 
@@ -157,7 +155,7 @@ namespace Gooee.Plugins
                     }
                     else
                         AddBinding( new TriggerBinding( ControllerID, m.Name, ( ) => { m.Invoke( this ); } ) );
-                } );
+                }
             }
 
             AddBinding( new TriggerBinding<string>( ControllerID, "updateProperty", OnUpdateProperty ) );

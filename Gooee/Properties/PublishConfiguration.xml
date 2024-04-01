@@ -1,0 +1,63 @@
+﻿<Publish>
+	<!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
+	<ModId Value="" />
+	<!--Name of the mod to display to players-->
+	<DisplayName Value="Gooee" />
+	<!--Short description of the mod-->
+	<ShortDescription Value="A dependency for mods, providing a Bootstrap-like UI framework." />
+	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
+	<!--LongDescription Value="Shared dependency pack for Cities Skylines 2, includes HarmonyX 2.2.2" /-->
+	<LongDescription>
+# Gooee - UI Framework for Cities Skylines 2 Modding
+
+## Introduction
+Welcome to the experimental release of **Gooee**, a UI framework designed for modders of Cities Skylines 2. Gooee aims to streamline the modding experience by providing a bootstrap-like CSS framework with reusable React components. Our goal is to blend the game's native UI with the flexibility and familiarity of the bootstrap methodology, creating an intuitive and efficient modding environment.
+
+## Features
+- **Bootstrap-like CSS Framework:** Easy-to-use and familiar styling options.
+- **Reusable React Components:** Efficiently build complex UIs with minimal code.
+- **Native UI Blending:** Seamlessly integrates with the Cities Skylines 2 native UI for a cohesive experience.
+- **Modular Design:** Import only what you need, keeping your mods light and efficient.
+- **MVC system:** Gooee provides a Model View Controller system and wires up model binding automatically.
+- **Over 1,000 icons:** Font awesome 6 is included by default.
+
+## Documentation
+The documentation is currently a work in progress. As we continue to develop and refine Gooee, comprehensive guides and references will be made available. Stay tuned for updates and detailed instructions on how to leverage Gooee in your mods. Visit the [Wiki](https://github.com/Cities2Modding/Gooee/wiki) for more information.
+
+## Contributing
+Gooee is an open-source project and we welcome contributions from the community. If you're interested in contributing, please visit our [GitHub repository](https://github.com/Cities2Modding/Gooee). Whether it's reporting a bug, proposing new features, or improving documentation, your help is greatly appreciated.
+
+## Feedback and Support
+As this is an experimental release, we are particularly keen on receiving feedback from the modding community. If you encounter any issues or have suggestions for improvements, please open an issue on our GitHub repository.
+
+## Acknowledgements
+Special thanks to the Cities2Modding community and everyone who has contributed to making Gooee a reality.
+
+**Please Note**: Comments on Paradox Mods are not the best place for reporting issues or getting help. Joining our discord will be the best way to get resolve any issues you may encounter.
+
+---
+
+*Gooee - Empowering Modders to Build a More Beautiful Cities Skylines 2*
+</LongDescription>
+	<!--Thumbnail-->
+	<Thumbnail Value="Properties/Thumbnail.png" />
+	<!--Screenshot, can be set multiple times-->
+	<Screenshot Value="" />
+	<!--Tag, can be set multiple times-->
+	<Tag Value="Code Mod" />
+	<!--Link to the forum post where the mod can be discussed-->
+	<ForumLink Value="" />
+	<!--Version of the mod-->
+	<ModVersion Value="1.1.6" />
+	<!--Recommended version of the base game to use the mod-->
+	<GameVersion Value="1.1.*" />
+	<!--Dependency for the mod, can be set multiple times-->
+	<Dependency Id="" />
+	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
+	<ChangeLog Value="Discord link and thumbnail" />
+	<!--ChangeLog>
+	</ChangeLog-->
+	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
+	<ExternalLink Type="discord" Url="https://discord.gg/Fc6KuuBkRr" />
+	<ExternalLink Type="github" Url="https://github.com/Cities2Modding/Gooee" />
+</Publish>

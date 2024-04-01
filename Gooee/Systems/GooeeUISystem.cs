@@ -12,17 +12,18 @@ using Gooee.Helpers;
 using System;
 using Colossal.UI.Binding;
 using Newtonsoft.Json;
-using Colossal.UI;
-using static Game.Rendering.Debug.RenderPrefabRenderer;
 using Game.SceneFlow;
 using Colossal.Serialization.Entities;
+using Colossal.UI;
+using static Game.Rendering.Debug.RenderPrefabRenderer;
+using Gooee.Patches;
 
 namespace Gooee.Systems
 {
     /// <summary>
     /// Main UI system for Gooee, handles data binding, events etc.
     /// </summary>
-    public class GooeeUISystem : UISystemBase
+    public partial class GooeeUISystem : UISystemBase
     {
         //private readonly LibrarySettings _librarySettings = GooeeSettings.Load<LibrarySettings>( );
 
@@ -32,7 +33,7 @@ namespace Gooee.Systems
 
         static MethodInfo updateAt = typeof( UpdateSystem ).GetMethod( "UpdateAt", BindingFlags.Public | BindingFlags.Instance );
         
-        private readonly GooeeLogger _log = GooeeLogger.Get( "Gooee" );
+        private readonly GooeeLogger _log = GooeeLogger.Get( "Cities2Modding" );
         private GetterValueBinding<string> _toolbarItemsBinding;
 
         private bool HasMoveIt
@@ -41,10 +42,8 @@ namespace Gooee.Systems
             set;
         }
 
-        protected override void OnCreate( )
+        internal void LoadGooee( )
         {
-            base.OnCreate( );;
-
             //LocalisationHelper.Load( "Gooee.Resources.lang", typeof( GooeeUISystem ).Assembly, "LibrarySettings" );
 
             //_librarySettings.Register( );
@@ -56,7 +55,17 @@ namespace Gooee.Systems
             }
             else
             {
-                ResourceInjector.Inject( );
+                if ( !ResourceInjector.IsHookUILoaded( ) )
+                {
+                    ResourceInjector.SetupResourceHandler( );
+                    ResourceInjector.Inject( );
+
+                    GameManager.instance.userInterface.view.url = UIPatches.INDEX_PATH;
+                    UIManager.defaultUISystem.defaultUIView.url = UIPatches.INDEX_PATH;
+                }
+                else
+                    ResourceInjector.Inject( );
+
                 PluginLoader.Plugins.Values.OrderBy( v => v.Name ).ForEach( ProcessPlugin );
 
                 GameManager.instance.userInterface.view.View.Reload( );
@@ -82,7 +91,6 @@ namespace Gooee.Systems
             //    return ResourceInjector.HasChangeLogUpdated( );
             //} ) );
         }
-
         protected override void OnGameLoadingComplete( Purpose purpose, GameMode mode )
         {
             base.OnGameLoadingComplete( purpose, mode );
@@ -170,7 +178,8 @@ namespace Gooee.Systems
 
                         if ( toolbarItem.OnGetChildren != null )
                         {
-                            _toolbarChildSubscribers.TryAdd( plugin.Name.ToLowerInvariant(), (controller, toolbarItem.OnGetChildren) );
+                            if ( !_toolbarChildSubscribers.ContainsKey( plugin.Name.ToLowerInvariant( ) ) )
+                                _toolbarChildSubscribers.Add( plugin.Name.ToLowerInvariant(), (controller, toolbarItem.OnGetChildren) );
                         }
                     }
 
