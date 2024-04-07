@@ -160,16 +160,11 @@ const GooeeContainer = ({ pluginType }) => {
                 case "top-right-toolbar":
                 case "bottom-right-toolbar":
                 case "bottom-left-toolbar":
-                /*case "bottom-center-toolbar":*/
                 case "main-container":
                 case "main-container-end":
                 case "photomode-container":
                 case "main-menu":
                 case "bottom-right-container":
-                    return <ComponentInstance key={name} react={react} setupController={setupController} />;
-                    break;
-
-                case "infomode-menu":
                     return <ComponentInstance key={name} react={react} setupController={setupController} />;
                     break;
 

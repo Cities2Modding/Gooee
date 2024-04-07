@@ -27264,9 +27264,6 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         case "bottom-right-container":
           return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(ComponentInstance, { react, setupController }, name);
           break;
-        case "infomode-menu":
-          return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(ComponentInstance, { react, setupController }, name);
-          break;
         default:
         case "default":
           return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("div", { class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100", children: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(ComponentInstance, { react, setupController }) }, name);

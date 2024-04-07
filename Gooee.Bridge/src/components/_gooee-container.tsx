@@ -90,7 +90,7 @@ export const BottomRightContainer = () => {
         }
 
         const GooeeContainer = window.$_gooee.container;
-        return  <GooeeContainer react={window.React} pluginType="info-row-container" />;
+        return  <GooeeContainer react={window.React} pluginType="bottom-right-container" />;
     }, [window.$_gooee ? window.$_gooee.container : undefined]);
 
     return render;
