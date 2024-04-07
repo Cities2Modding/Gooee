@@ -6,6 +6,13 @@
   "author": {
     "name": ""
   },
+  "scripts": {
+    "build": "gulp"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
     "end-of-stream": "^1.4.4",
     "esbuild": "^0.19.8",
@@ -22,10 +29,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reactjs-id": "^1.0.6",
-    "sass": "^1.69.5"
+    "sass": "^1.69.5",
+    "through2": "^4.0.2"
   },
-  "eslintConfig": {},
-  "dependencies": {
-    "hookui-framework": "github:captain-of-coit/hookui-framework"
-  }
+  "eslintConfig": {}
 }

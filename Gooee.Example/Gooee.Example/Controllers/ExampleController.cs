@@ -7,21 +7,10 @@ using Gooee.Example.Models;
 
 namespace Gooee.Example.UI
 {
-    public class ExampleController : Controller<ExampleModel>
+    public partial class ExampleController : Controller<ExampleModel>
     {
         public override ExampleModel Configure( )
         {
-            var toolSystem = World.GetOrCreateSystemManaged<ToolSystem>( );
-
-            toolSystem.EventToolChanged += ( tool =>
-            {
-                if ( Model.IsVisible )
-                {
-                    Model.IsVisible = false;
-                    TriggerUpdate( );
-                }
-            } );
-
             return new ExampleModel( );
         }
 
@@ -29,6 +18,13 @@ namespace Gooee.Example.UI
         private void OnTestClick( )
         {
             Model.Message = "An amended message! " + DateTime.Now;
+            TriggerUpdate( );
+        }
+
+        [OnTrigger]
+        private void OnToggleVisible( )
+        {
+            Model.IsVisible = false;
             TriggerUpdate( );
         }
     }

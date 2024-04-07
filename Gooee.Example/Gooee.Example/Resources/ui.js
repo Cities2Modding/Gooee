@@ -1916,14 +1916,14 @@
     const onMouseEnter = (e) => {
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    return /* @__PURE__ */ import_react.default.createElement("button", { className: "button_ke4 button_ke4 button_H9N ml-3", onMouseEnter }, /* @__PURE__ */ import_react.default.createElement("div", { className: "tinted-icon_iKo icon_be5 icon-close" }));
+    return /* @__PURE__ */ import_react.default.createElement("button", { className: "button_ke4 button_h9N", onMouseEnter }, /* @__PURE__ */ import_react.default.createElement("div", { className: "tinted-icon_iKo icon_be5 icon-close" }));
   };
   window.$_gooee.register("example", "ExampleTopLeftToolbar", ExampleTopLeftToolbar, "top-left-toolbar");
   var ExampleTopRightToolbar = ({ react }) => {
     const onMouseEnter = (e) => {
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    return /* @__PURE__ */ import_react.default.createElement("button", { className: "button_ke4 button_ke4 button_H9N mr-3", onMouseEnter }, /* @__PURE__ */ import_react.default.createElement("div", { className: "tinted-icon_iKo icon_be5 icon-close" }));
+    return /* @__PURE__ */ import_react.default.createElement("button", { className: "button_ke4", onMouseEnter }, /* @__PURE__ */ import_react.default.createElement("div", { className: "tinted-icon_iKo icon_be5 icon-close" }));
   };
   window.$_gooee.register("example", "ExampleTopRightToolbar", ExampleTopRightToolbar, "top-right-toolbar");
   var ExampleBottomRightToolbar = ({ react, setupController }) => {
@@ -1960,7 +1960,7 @@
       setTooltipVisible(false);
     };
     const { ToolTip, ToolTipContent } = window.$_gooee.framework;
-    return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement("div", { className: "spacer_oEi" }), /* @__PURE__ */ import_react.default.createElement("button", { onMouseEnter, onMouseLeave, class: "button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_cBV toggle-states_DTm" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "fa fa-solid-toolbox icon-lg" }), /* @__PURE__ */ import_react.default.createElement(ToolTip, { visible: tooltipVisible, float: "up", align: "center" }, /* @__PURE__ */ import_react.default.createElement(ToolTipContent, { title: "Test", description: "Hello, world!" }))));
+    return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement("button", { onMouseEnter, onMouseLeave, class: "button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_cBV toggle-states_DTm" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "fa fa-solid-toolbox icon-lg" }), /* @__PURE__ */ import_react.default.createElement(ToolTip, { visible: tooltipVisible, float: "up", align: "center" }, /* @__PURE__ */ import_react.default.createElement(ToolTipContent, { title: "Test", description: "Hello, world!" }))));
   };
   window.$_gooee.register("example", "ExampleBottomLeftToolbar", ExampleBottomLeftToolbar, "bottom-left-toolbar");
   var ExampleMainContainer = ({ react, setupController }) => {
@@ -1971,7 +1971,7 @@
       {
         name: "ONE",
         label: /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "fa fa-solid-eye" })),
-        content: /* @__PURE__ */ import_react.default.createElement("div", null, model.Message, " ", model.IsVisible ? "Yes" : "No", " ", /* @__PURE__ */ import_react.default.createElement("button", { className: "btn btn-primary", onClick: () => trigger("OnTestClick") }, "Test"))
+        content: /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h4", { className: "mb-2" }, model.Message, " ", model.IsVisible ? "Yes" : "No"), /* @__PURE__ */ import_react.default.createElement(Button, { color: "primary", onClick: () => trigger("OnTestClick") }, "Test"))
       },
       {
         name: "TWO",
@@ -1988,7 +1988,7 @@
       update("IsVisible", false);
       engine.trigger("audio.playSound", "close-panel", 1);
     };
-    return model.IsVisible ? /* @__PURE__ */ import_react.default.createElement("div", { className: "tool-layout" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "col" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "bg-panel text-light p-4 rounded-sm" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "d-flex flex-row align-items-center justify-content-center mb-2" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "flex-1" }, "Tool Mode"), /* @__PURE__ */ import_react.default.createElement(Button, { className: "mr-1 active", color: "tool", size: "sm", icon: true }, /* @__PURE__ */ import_react.default.createElement(Icon, { icon: "Media/Tools/Net Tool/Grid.svg" })), /* @__PURE__ */ import_react.default.createElement(Button, { className: "mr-1", color: "tool", size: "sm", icon: true }, /* @__PURE__ */ import_react.default.createElement(Icon, { icon: "Media/Tools/Net Tool/Straight.svg" })), /* @__PURE__ */ import_react.default.createElement(Button, { color: "tool", size: "sm", icon: true }, /* @__PURE__ */ import_react.default.createElement(Icon, { icon: "Media/Tools/Net Tool/SimpleCurve.svg" }))), /* @__PURE__ */ import_react.default.createElement(FormGroup, { label: "Some setting", className: "form-group" }, /* @__PURE__ */ import_react.default.createElement(Grid, null, /* @__PURE__ */ import_react.default.createElement("div", { className: "col-10" }, /* @__PURE__ */ import_react.default.createElement(Slider, { onValueChanged: (val) => setSliderValue(val) })), /* @__PURE__ */ import_react.default.createElement("div", { className: "col-2 align-items-center justify-content-center text-muted" }, sliderValue + "%"))), /* @__PURE__ */ import_react.default.createElement(FormGroup, { label: "Some Group", className: "form-group" }, /* @__PURE__ */ import_react.default.createElement(FormCheckBox, { label: "Some setting", checked: model.IsVisible })))), /* @__PURE__ */ import_react.default.createElement("div", { className: "col" }, /* @__PURE__ */ import_react.default.createElement(TabModal, { tabs, bodyClassName: "asset-menu", onClose: closeModal })), /* @__PURE__ */ import_react.default.createElement("div", { className: "col" }, "Test")) : null;
+    return model.IsVisible ? /* @__PURE__ */ import_react.default.createElement(TabModal, { size: "sm", tabs, onClose: closeModal, fixed: true }) : null;
   };
   window.$_gooee.register("example", "ExampleMainContainer", ExampleMainContainer, "main-container", "example");
 })();

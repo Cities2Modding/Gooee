@@ -1,37 +1,37 @@
-﻿using BepInEx;
-using HarmonyLib;
-using System.Reflection;
-using System.Linq;
+﻿using HarmonyLib;
 using Gooee.Plugins.Attributes;
 using Gooee.Plugins;
 using Gooee.Example.UI;
-
-#if BEPINEX_V6
-    using BepInEx.Unity.Mono;
-#endif
+using Colossal.Logging;
+using Game.Modding;
+using Game;
 
 namespace Gooee.Example
 {
-    [BepInPlugin( MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION )]
-    public class Plugin : BaseUnityPlugin
+    public class Mod : IMod
     {
-        private void Awake( )
+        private static ILog _log = LogManager.GetLogger( "Cities2Modding" ).SetShowsErrorsInUI( false );
+        private const string HARMONY_ID = "Cities2Modding_ExampleMod";
+        private static Harmony _harmony;
+
+        public void OnLoad( UpdateSystem updateSystem )
         {
-            var harmony = Harmony.CreateAndPatchAll( Assembly.GetExecutingAssembly( ), MyPluginInfo.PLUGIN_GUID + "_Cities2Harmony" );
+            _harmony = new Harmony( HARMONY_ID );
+            _harmony.PatchAll( );
+            _log.Info( "Loaded Example Mod" );
+        }
 
-            var patchedMethods = harmony.GetPatchedMethods( ).ToArray( );
+        public void OnDispose( )
+        {
+            // DO ANY CLEANUP HERE!
 
-            // Plugin startup logic
-            Logger.LogInfo( $"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded! Patched methods: " + patchedMethods.Length );
-
-            foreach ( var patchedMethod in patchedMethods )
-            {
-                Logger.LogInfo( $"Patched method: {patchedMethod.Module.Name}:{patchedMethod.Name}" );
-            }
+            _harmony?.UnpatchAll( HARMONY_ID );
+            _log.Info( "Unloaded Example Mod" );
         }
     }
 
     [ControllerTypes( typeof( ExampleController ) )]
+    [PluginToolbar( typeof( ExampleController ), "OnToggleVisible", "Example Mod", "Media/Game/Icons/Photomode.svg" )]
     public class ExamplePlugin : IGooeePluginWithControllers
     {
         public string Name => "Example";

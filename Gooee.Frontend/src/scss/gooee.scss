@@ -248,8 +248,9 @@
     position: absolute;
     bottom: calc(10rem);
     right: 10.000000rem;
+    width: auto !important;
 
-    &.modal
+    .modal
     {
         width: calc( var(--rightPanelWidth) * (1 + (var(--fontScale) - 1) / 2));
 
@@ -268,18 +269,4 @@
     height: 100vh !important;
     right: initial !important;
     bottom: initial !important;
-}
-
-// MoveIt compatibility fix
-// -------------------------
-// Due to the mod using an absolute positioned element
-// outside of the toolbar, additional toolbar buttons from
-// Gooee for the game in future updates/DLC can cause issues.
-// We will hide it by default and make a compatible proxy button.
-.MoveItIcon_MzN
-{
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
 }

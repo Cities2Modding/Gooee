@@ -213,7 +213,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     });
     document.dispatchEvent(event);
 }
-
+"use strict";
 (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
@@ -2126,6 +2126,896 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     }
   });
 
+  // node_modules/react/cjs/react-jsx-runtime.development.js
+  var require_react_jsx_runtime_development = __commonJS({
+    "node_modules/react/cjs/react-jsx-runtime.development.js"(exports) {
+      "use strict";
+      if (true) {
+        (function() {
+          "use strict";
+          var React34 = require_react();
+          var REACT_ELEMENT_TYPE = Symbol.for("react.element");
+          var REACT_PORTAL_TYPE = Symbol.for("react.portal");
+          var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
+          var REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode");
+          var REACT_PROFILER_TYPE = Symbol.for("react.profiler");
+          var REACT_PROVIDER_TYPE = Symbol.for("react.provider");
+          var REACT_CONTEXT_TYPE = Symbol.for("react.context");
+          var REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref");
+          var REACT_SUSPENSE_TYPE = Symbol.for("react.suspense");
+          var REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list");
+          var REACT_MEMO_TYPE = Symbol.for("react.memo");
+          var REACT_LAZY_TYPE = Symbol.for("react.lazy");
+          var REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen");
+          var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+          var FAUX_ITERATOR_SYMBOL = "@@iterator";
+          function getIteratorFn(maybeIterable) {
+            if (maybeIterable === null || typeof maybeIterable !== "object") {
+              return null;
+            }
+            var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+            if (typeof maybeIterator === "function") {
+              return maybeIterator;
+            }
+            return null;
+          }
+          var ReactSharedInternals = React34.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          function error(format) {
+            {
+              {
+                for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                  args[_key2 - 1] = arguments[_key2];
+                }
+                printWarning("error", format, args);
+              }
+            }
+          }
+          function printWarning(level, format, args) {
+            {
+              var ReactDebugCurrentFrame2 = ReactSharedInternals.ReactDebugCurrentFrame;
+              var stack = ReactDebugCurrentFrame2.getStackAddendum();
+              if (stack !== "") {
+                format += "%s";
+                args = args.concat([stack]);
+              }
+              var argsWithFormat = args.map(function(item) {
+                return String(item);
+              });
+              argsWithFormat.unshift("Warning: " + format);
+              Function.prototype.apply.call(console[level], console, argsWithFormat);
+            }
+          }
+          var enableScopeAPI = false;
+          var enableCacheElement = false;
+          var enableTransitionTracing = false;
+          var enableLegacyHidden = false;
+          var enableDebugTracing = false;
+          var REACT_MODULE_REFERENCE;
+          {
+            REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
+          }
+          function isValidElementType(type) {
+            if (typeof type === "string" || typeof type === "function") {
+              return true;
+            }
+            if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden || type === REACT_OFFSCREEN_TYPE || enableScopeAPI || enableCacheElement || enableTransitionTracing) {
+              return true;
+            }
+            if (typeof type === "object" && type !== null) {
+              if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+              // types supported by any Flight configuration anywhere since
+              // we don't know which Flight build this will end up being used
+              // with.
+              type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
+                return true;
+              }
+            }
+            return false;
+          }
+          function getWrappedName(outerType, innerType, wrapperName) {
+            var displayName = outerType.displayName;
+            if (displayName) {
+              return displayName;
+            }
+            var functionName = innerType.displayName || innerType.name || "";
+            return functionName !== "" ? wrapperName + "(" + functionName + ")" : wrapperName;
+          }
+          function getContextName(type) {
+            return type.displayName || "Context";
+          }
+          function getComponentNameFromType(type) {
+            if (type == null) {
+              return null;
+            }
+            {
+              if (typeof type.tag === "number") {
+                error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue.");
+              }
+            }
+            if (typeof type === "function") {
+              return type.displayName || type.name || null;
+            }
+            if (typeof type === "string") {
+              return type;
+            }
+            switch (type) {
+              case REACT_FRAGMENT_TYPE:
+                return "Fragment";
+              case REACT_PORTAL_TYPE:
+                return "Portal";
+              case REACT_PROFILER_TYPE:
+                return "Profiler";
+              case REACT_STRICT_MODE_TYPE:
+                return "StrictMode";
+              case REACT_SUSPENSE_TYPE:
+                return "Suspense";
+              case REACT_SUSPENSE_LIST_TYPE:
+                return "SuspenseList";
+            }
+            if (typeof type === "object") {
+              switch (type.$$typeof) {
+                case REACT_CONTEXT_TYPE:
+                  var context = type;
+                  return getContextName(context) + ".Consumer";
+                case REACT_PROVIDER_TYPE:
+                  var provider = type;
+                  return getContextName(provider._context) + ".Provider";
+                case REACT_FORWARD_REF_TYPE:
+                  return getWrappedName(type, type.render, "ForwardRef");
+                case REACT_MEMO_TYPE:
+                  var outerName = type.displayName || null;
+                  if (outerName !== null) {
+                    return outerName;
+                  }
+                  return getComponentNameFromType(type.type) || "Memo";
+                case REACT_LAZY_TYPE: {
+                  var lazyComponent = type;
+                  var payload = lazyComponent._payload;
+                  var init = lazyComponent._init;
+                  try {
+                    return getComponentNameFromType(init(payload));
+                  } catch (x) {
+                    return null;
+                  }
+                }
+              }
+            }
+            return null;
+          }
+          var assign = Object.assign;
+          var disabledDepth = 0;
+          var prevLog;
+          var prevInfo;
+          var prevWarn;
+          var prevError;
+          var prevGroup;
+          var prevGroupCollapsed;
+          var prevGroupEnd;
+          function disabledLog() {
+          }
+          disabledLog.__reactDisabledLog = true;
+          function disableLogs() {
+            {
+              if (disabledDepth === 0) {
+                prevLog = console.log;
+                prevInfo = console.info;
+                prevWarn = console.warn;
+                prevError = console.error;
+                prevGroup = console.group;
+                prevGroupCollapsed = console.groupCollapsed;
+                prevGroupEnd = console.groupEnd;
+                var props = {
+                  configurable: true,
+                  enumerable: true,
+                  value: disabledLog,
+                  writable: true
+                };
+                Object.defineProperties(console, {
+                  info: props,
+                  log: props,
+                  warn: props,
+                  error: props,
+                  group: props,
+                  groupCollapsed: props,
+                  groupEnd: props
+                });
+              }
+              disabledDepth++;
+            }
+          }
+          function reenableLogs() {
+            {
+              disabledDepth--;
+              if (disabledDepth === 0) {
+                var props = {
+                  configurable: true,
+                  enumerable: true,
+                  writable: true
+                };
+                Object.defineProperties(console, {
+                  log: assign({}, props, {
+                    value: prevLog
+                  }),
+                  info: assign({}, props, {
+                    value: prevInfo
+                  }),
+                  warn: assign({}, props, {
+                    value: prevWarn
+                  }),
+                  error: assign({}, props, {
+                    value: prevError
+                  }),
+                  group: assign({}, props, {
+                    value: prevGroup
+                  }),
+                  groupCollapsed: assign({}, props, {
+                    value: prevGroupCollapsed
+                  }),
+                  groupEnd: assign({}, props, {
+                    value: prevGroupEnd
+                  })
+                });
+              }
+              if (disabledDepth < 0) {
+                error("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
+              }
+            }
+          }
+          var ReactCurrentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
+          var prefix;
+          function describeBuiltInComponentFrame(name, source, ownerFn) {
+            {
+              if (prefix === void 0) {
+                try {
+                  throw Error();
+                } catch (x) {
+                  var match = x.stack.trim().match(/\n( *(at )?)/);
+                  prefix = match && match[1] || "";
+                }
+              }
+              return "\n" + prefix + name;
+            }
+          }
+          var reentry = false;
+          var componentFrameCache;
+          {
+            var PossiblyWeakMap = typeof WeakMap === "function" ? WeakMap : Map;
+            componentFrameCache = new PossiblyWeakMap();
+          }
+          function describeNativeComponentFrame(fn, construct) {
+            if (!fn || reentry) {
+              return "";
+            }
+            {
+              var frame = componentFrameCache.get(fn);
+              if (frame !== void 0) {
+                return frame;
+              }
+            }
+            var control;
+            reentry = true;
+            var previousPrepareStackTrace = Error.prepareStackTrace;
+            Error.prepareStackTrace = void 0;
+            var previousDispatcher;
+            {
+              previousDispatcher = ReactCurrentDispatcher.current;
+              ReactCurrentDispatcher.current = null;
+              disableLogs();
+            }
+            try {
+              if (construct) {
+                var Fake = function() {
+                  throw Error();
+                };
+                Object.defineProperty(Fake.prototype, "props", {
+                  set: function() {
+                    throw Error();
+                  }
+                });
+                if (typeof Reflect === "object" && Reflect.construct) {
+                  try {
+                    Reflect.construct(Fake, []);
+                  } catch (x) {
+                    control = x;
+                  }
+                  Reflect.construct(fn, [], Fake);
+                } else {
+                  try {
+                    Fake.call();
+                  } catch (x) {
+                    control = x;
+                  }
+                  fn.call(Fake.prototype);
+                }
+              } else {
+                try {
+                  throw Error();
+                } catch (x) {
+                  control = x;
+                }
+                fn();
+              }
+            } catch (sample) {
+              if (sample && control && typeof sample.stack === "string") {
+                var sampleLines = sample.stack.split("\n");
+                var controlLines = control.stack.split("\n");
+                var s = sampleLines.length - 1;
+                var c = controlLines.length - 1;
+                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+                  c--;
+                }
+                for (; s >= 1 && c >= 0; s--, c--) {
+                  if (sampleLines[s] !== controlLines[c]) {
+                    if (s !== 1 || c !== 1) {
+                      do {
+                        s--;
+                        c--;
+                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
+                          if (fn.displayName && _frame.includes("<anonymous>")) {
+                            _frame = _frame.replace("<anonymous>", fn.displayName);
+                          }
+                          {
+                            if (typeof fn === "function") {
+                              componentFrameCache.set(fn, _frame);
+                            }
+                          }
+                          return _frame;
+                        }
+                      } while (s >= 1 && c >= 0);
+                    }
+                    break;
+                  }
+                }
+              }
+            } finally {
+              reentry = false;
+              {
+                ReactCurrentDispatcher.current = previousDispatcher;
+                reenableLogs();
+              }
+              Error.prepareStackTrace = previousPrepareStackTrace;
+            }
+            var name = fn ? fn.displayName || fn.name : "";
+            var syntheticFrame = name ? describeBuiltInComponentFrame(name) : "";
+            {
+              if (typeof fn === "function") {
+                componentFrameCache.set(fn, syntheticFrame);
+              }
+            }
+            return syntheticFrame;
+          }
+          function describeFunctionComponentFrame(fn, source, ownerFn) {
+            {
+              return describeNativeComponentFrame(fn, false);
+            }
+          }
+          function shouldConstruct(Component) {
+            var prototype = Component.prototype;
+            return !!(prototype && prototype.isReactComponent);
+          }
+          function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
+            if (type == null) {
+              return "";
+            }
+            if (typeof type === "function") {
+              {
+                return describeNativeComponentFrame(type, shouldConstruct(type));
+              }
+            }
+            if (typeof type === "string") {
+              return describeBuiltInComponentFrame(type);
+            }
+            switch (type) {
+              case REACT_SUSPENSE_TYPE:
+                return describeBuiltInComponentFrame("Suspense");
+              case REACT_SUSPENSE_LIST_TYPE:
+                return describeBuiltInComponentFrame("SuspenseList");
+            }
+            if (typeof type === "object") {
+              switch (type.$$typeof) {
+                case REACT_FORWARD_REF_TYPE:
+                  return describeFunctionComponentFrame(type.render);
+                case REACT_MEMO_TYPE:
+                  return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
+                case REACT_LAZY_TYPE: {
+                  var lazyComponent = type;
+                  var payload = lazyComponent._payload;
+                  var init = lazyComponent._init;
+                  try {
+                    return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
+                  } catch (x) {
+                  }
+                }
+              }
+            }
+            return "";
+          }
+          var hasOwnProperty = Object.prototype.hasOwnProperty;
+          var loggedTypeFailures = {};
+          var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+          function setCurrentlyValidatingElement(element) {
+            {
+              if (element) {
+                var owner = element._owner;
+                var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+                ReactDebugCurrentFrame.setExtraStackFrame(stack);
+              } else {
+                ReactDebugCurrentFrame.setExtraStackFrame(null);
+              }
+            }
+          }
+          function checkPropTypes(typeSpecs, values, location, componentName, element) {
+            {
+              var has = Function.call.bind(hasOwnProperty);
+              for (var typeSpecName in typeSpecs) {
+                if (has(typeSpecs, typeSpecName)) {
+                  var error$1 = void 0;
+                  try {
+                    if (typeof typeSpecs[typeSpecName] !== "function") {
+                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      err.name = "Invariant Violation";
+                      throw err;
+                    }
+                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                  } catch (ex) {
+                    error$1 = ex;
+                  }
+                  if (error$1 && !(error$1 instanceof Error)) {
+                    setCurrentlyValidatingElement(element);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                    setCurrentlyValidatingElement(null);
+                  }
+                  if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
+                    loggedTypeFailures[error$1.message] = true;
+                    setCurrentlyValidatingElement(element);
+                    error("Failed %s type: %s", location, error$1.message);
+                    setCurrentlyValidatingElement(null);
+                  }
+                }
+              }
+            }
+          }
+          var isArrayImpl = Array.isArray;
+          function isArray(a) {
+            return isArrayImpl(a);
+          }
+          function typeName(value) {
+            {
+              var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
+              var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+              return type;
+            }
+          }
+          function willCoercionThrow(value) {
+            {
+              try {
+                testStringCoercion(value);
+                return false;
+              } catch (e) {
+                return true;
+              }
+            }
+          }
+          function testStringCoercion(value) {
+            return "" + value;
+          }
+          function checkKeyStringCoercion(value) {
+            {
+              if (willCoercionThrow(value)) {
+                error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
+                return testStringCoercion(value);
+              }
+            }
+          }
+          var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
+          var RESERVED_PROPS = {
+            key: true,
+            ref: true,
+            __self: true,
+            __source: true
+          };
+          var specialPropKeyWarningShown;
+          var specialPropRefWarningShown;
+          var didWarnAboutStringRefs;
+          {
+            didWarnAboutStringRefs = {};
+          }
+          function hasValidRef(config) {
+            {
+              if (hasOwnProperty.call(config, "ref")) {
+                var getter = Object.getOwnPropertyDescriptor(config, "ref").get;
+                if (getter && getter.isReactWarning) {
+                  return false;
+                }
+              }
+            }
+            return config.ref !== void 0;
+          }
+          function hasValidKey(config) {
+            {
+              if (hasOwnProperty.call(config, "key")) {
+                var getter = Object.getOwnPropertyDescriptor(config, "key").get;
+                if (getter && getter.isReactWarning) {
+                  return false;
+                }
+              }
+            }
+            return config.key !== void 0;
+          }
+          function warnIfStringRefCannotBeAutoConverted(config, self) {
+            {
+              if (typeof config.ref === "string" && ReactCurrentOwner.current && self && ReactCurrentOwner.current.stateNode !== self) {
+                var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
+                if (!didWarnAboutStringRefs[componentName]) {
+                  error('Component "%s" contains the string ref "%s". Support for string refs will be removed in a future major release. This case cannot be automatically converted to an arrow function. We ask you to manually fix this case by using useRef() or createRef() instead. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-string-ref', getComponentNameFromType(ReactCurrentOwner.current.type), config.ref);
+                  didWarnAboutStringRefs[componentName] = true;
+                }
+              }
+            }
+          }
+          function defineKeyPropWarningGetter(props, displayName) {
+            {
+              var warnAboutAccessingKey = function() {
+                if (!specialPropKeyWarningShown) {
+                  specialPropKeyWarningShown = true;
+                  error("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+                }
+              };
+              warnAboutAccessingKey.isReactWarning = true;
+              Object.defineProperty(props, "key", {
+                get: warnAboutAccessingKey,
+                configurable: true
+              });
+            }
+          }
+          function defineRefPropWarningGetter(props, displayName) {
+            {
+              var warnAboutAccessingRef = function() {
+                if (!specialPropRefWarningShown) {
+                  specialPropRefWarningShown = true;
+                  error("%s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+                }
+              };
+              warnAboutAccessingRef.isReactWarning = true;
+              Object.defineProperty(props, "ref", {
+                get: warnAboutAccessingRef,
+                configurable: true
+              });
+            }
+          }
+          var ReactElement = function(type, key, ref, self, source, owner, props) {
+            var element = {
+              // This tag allows us to uniquely identify this as a React Element
+              $$typeof: REACT_ELEMENT_TYPE,
+              // Built-in properties that belong on the element
+              type,
+              key,
+              ref,
+              props,
+              // Record the component responsible for creating this element.
+              _owner: owner
+            };
+            {
+              element._store = {};
+              Object.defineProperty(element._store, "validated", {
+                configurable: false,
+                enumerable: false,
+                writable: true,
+                value: false
+              });
+              Object.defineProperty(element, "_self", {
+                configurable: false,
+                enumerable: false,
+                writable: false,
+                value: self
+              });
+              Object.defineProperty(element, "_source", {
+                configurable: false,
+                enumerable: false,
+                writable: false,
+                value: source
+              });
+              if (Object.freeze) {
+                Object.freeze(element.props);
+                Object.freeze(element);
+              }
+            }
+            return element;
+          };
+          function jsxDEV(type, config, maybeKey, source, self) {
+            {
+              var propName;
+              var props = {};
+              var key = null;
+              var ref = null;
+              if (maybeKey !== void 0) {
+                {
+                  checkKeyStringCoercion(maybeKey);
+                }
+                key = "" + maybeKey;
+              }
+              if (hasValidKey(config)) {
+                {
+                  checkKeyStringCoercion(config.key);
+                }
+                key = "" + config.key;
+              }
+              if (hasValidRef(config)) {
+                ref = config.ref;
+                warnIfStringRefCannotBeAutoConverted(config, self);
+              }
+              for (propName in config) {
+                if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+                  props[propName] = config[propName];
+                }
+              }
+              if (type && type.defaultProps) {
+                var defaultProps = type.defaultProps;
+                for (propName in defaultProps) {
+                  if (props[propName] === void 0) {
+                    props[propName] = defaultProps[propName];
+                  }
+                }
+              }
+              if (key || ref) {
+                var displayName = typeof type === "function" ? type.displayName || type.name || "Unknown" : type;
+                if (key) {
+                  defineKeyPropWarningGetter(props, displayName);
+                }
+                if (ref) {
+                  defineRefPropWarningGetter(props, displayName);
+                }
+              }
+              return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
+            }
+          }
+          var ReactCurrentOwner$1 = ReactSharedInternals.ReactCurrentOwner;
+          var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
+          function setCurrentlyValidatingElement$1(element) {
+            {
+              if (element) {
+                var owner = element._owner;
+                var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+                ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
+              } else {
+                ReactDebugCurrentFrame$1.setExtraStackFrame(null);
+              }
+            }
+          }
+          var propTypesMisspellWarningShown;
+          {
+            propTypesMisspellWarningShown = false;
+          }
+          function isValidElement(object) {
+            {
+              return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+            }
+          }
+          function getDeclarationErrorAddendum() {
+            {
+              if (ReactCurrentOwner$1.current) {
+                var name = getComponentNameFromType(ReactCurrentOwner$1.current.type);
+                if (name) {
+                  return "\n\nCheck the render method of `" + name + "`.";
+                }
+              }
+              return "";
+            }
+          }
+          function getSourceInfoErrorAddendum(source) {
+            {
+              if (source !== void 0) {
+                var fileName = source.fileName.replace(/^.*[\\\/]/, "");
+                var lineNumber = source.lineNumber;
+                return "\n\nCheck your code at " + fileName + ":" + lineNumber + ".";
+              }
+              return "";
+            }
+          }
+          var ownerHasKeyUseWarning = {};
+          function getCurrentComponentErrorInfo(parentType) {
+            {
+              var info = getDeclarationErrorAddendum();
+              if (!info) {
+                var parentName = typeof parentType === "string" ? parentType : parentType.displayName || parentType.name;
+                if (parentName) {
+                  info = "\n\nCheck the top-level render call using <" + parentName + ">.";
+                }
+              }
+              return info;
+            }
+          }
+          function validateExplicitKey(element, parentType) {
+            {
+              if (!element._store || element._store.validated || element.key != null) {
+                return;
+              }
+              element._store.validated = true;
+              var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
+              if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
+                return;
+              }
+              ownerHasKeyUseWarning[currentComponentErrorInfo] = true;
+              var childOwner = "";
+              if (element && element._owner && element._owner !== ReactCurrentOwner$1.current) {
+                childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
+              }
+              setCurrentlyValidatingElement$1(element);
+              error('Each child in a list should have a unique "key" prop.%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
+              setCurrentlyValidatingElement$1(null);
+            }
+          }
+          function validateChildKeys(node, parentType) {
+            {
+              if (typeof node !== "object") {
+                return;
+              }
+              if (isArray(node)) {
+                for (var i = 0; i < node.length; i++) {
+                  var child = node[i];
+                  if (isValidElement(child)) {
+                    validateExplicitKey(child, parentType);
+                  }
+                }
+              } else if (isValidElement(node)) {
+                if (node._store) {
+                  node._store.validated = true;
+                }
+              } else if (node) {
+                var iteratorFn = getIteratorFn(node);
+                if (typeof iteratorFn === "function") {
+                  if (iteratorFn !== node.entries) {
+                    var iterator = iteratorFn.call(node);
+                    var step;
+                    while (!(step = iterator.next()).done) {
+                      if (isValidElement(step.value)) {
+                        validateExplicitKey(step.value, parentType);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          function validatePropTypes(element) {
+            {
+              var type = element.type;
+              if (type === null || type === void 0 || typeof type === "string") {
+                return;
+              }
+              var propTypes;
+              if (typeof type === "function") {
+                propTypes = type.propTypes;
+              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+              // Inner props are checked in the reconciler.
+              type.$$typeof === REACT_MEMO_TYPE)) {
+                propTypes = type.propTypes;
+              } else {
+                return;
+              }
+              if (propTypes) {
+                var name = getComponentNameFromType(type);
+                checkPropTypes(propTypes, element.props, "prop", name, element);
+              } else if (type.PropTypes !== void 0 && !propTypesMisspellWarningShown) {
+                propTypesMisspellWarningShown = true;
+                var _name = getComponentNameFromType(type);
+                error("Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?", _name || "Unknown");
+              }
+              if (typeof type.getDefaultProps === "function" && !type.getDefaultProps.isReactClassApproved) {
+                error("getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead.");
+              }
+            }
+          }
+          function validateFragmentProps(fragment) {
+            {
+              var keys = Object.keys(fragment.props);
+              for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                if (key !== "children" && key !== "key") {
+                  setCurrentlyValidatingElement$1(fragment);
+                  error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
+                  setCurrentlyValidatingElement$1(null);
+                  break;
+                }
+              }
+              if (fragment.ref !== null) {
+                setCurrentlyValidatingElement$1(fragment);
+                error("Invalid attribute `ref` supplied to `React.Fragment`.");
+                setCurrentlyValidatingElement$1(null);
+              }
+            }
+          }
+          function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
+            {
+              var validType = isValidElementType(type);
+              if (!validType) {
+                var info = "";
+                if (type === void 0 || typeof type === "object" && type !== null && Object.keys(type).length === 0) {
+                  info += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.";
+                }
+                var sourceInfo = getSourceInfoErrorAddendum(source);
+                if (sourceInfo) {
+                  info += sourceInfo;
+                } else {
+                  info += getDeclarationErrorAddendum();
+                }
+                var typeString;
+                if (type === null) {
+                  typeString = "null";
+                } else if (isArray(type)) {
+                  typeString = "array";
+                } else if (type !== void 0 && type.$$typeof === REACT_ELEMENT_TYPE) {
+                  typeString = "<" + (getComponentNameFromType(type.type) || "Unknown") + " />";
+                  info = " Did you accidentally export a JSX literal instead of a component?";
+                } else {
+                  typeString = typeof type;
+                }
+                error("React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
+              }
+              var element = jsxDEV(type, props, key, source, self);
+              if (element == null) {
+                return element;
+              }
+              if (validType) {
+                var children = props.children;
+                if (children !== void 0) {
+                  if (isStaticChildren) {
+                    if (isArray(children)) {
+                      for (var i = 0; i < children.length; i++) {
+                        validateChildKeys(children[i], type);
+                      }
+                      if (Object.freeze) {
+                        Object.freeze(children);
+                      }
+                    } else {
+                      error("React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead.");
+                    }
+                  } else {
+                    validateChildKeys(children, type);
+                  }
+                }
+              }
+              if (type === REACT_FRAGMENT_TYPE) {
+                validateFragmentProps(element);
+              } else {
+                validatePropTypes(element);
+              }
+              return element;
+            }
+          }
+          function jsxWithValidationStatic(type, props, key) {
+            {
+              return jsxWithValidation(type, props, key, true);
+            }
+          }
+          function jsxWithValidationDynamic(type, props, key) {
+            {
+              return jsxWithValidation(type, props, key, false);
+            }
+          }
+          var jsx35 = jsxWithValidationDynamic;
+          var jsxs23 = jsxWithValidationStatic;
+          exports.Fragment = REACT_FRAGMENT_TYPE;
+          exports.jsx = jsx35;
+          exports.jsxs = jsxs23;
+        })();
+      }
+    }
+  });
+
+  // node_modules/react/jsx-runtime.js
+  var require_jsx_runtime = __commonJS({
+    "node_modules/react/jsx-runtime.js"(exports, module) {
+      "use strict";
+      if (false) {
+        module.exports = null;
+      } else {
+        module.exports = require_react_jsx_runtime_development();
+      }
+    }
+  });
+
   // node_modules/scheduler/cjs/scheduler.development.js
   var require_scheduler_development = __commonJS({
     "node_modules/scheduler/cjs/scheduler.development.js"(exports) {
@@ -2598,9 +3488,9 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React35 = require_react();
+          var React34 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React35.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React34.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -2649,7 +3539,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment = 7;
+          var Fragment16 = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -3805,7 +4695,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
                 return "DehydratedFragment";
               case ForwardRef:
                 return getWrappedName$1(type, type.render, "ForwardRef");
-              case Fragment:
+              case Fragment16:
                 return "Fragment";
               case HostComponent:
                 return type;
@@ -4205,7 +5095,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React35.Children.forEach(props.children, function(child) {
+                  React34.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12652,7 +13542,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React35.Component().refs;
+          var emptyRefsObject = new React34.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -13476,7 +14366,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
               }
             }
             function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment) {
+              if (current2 === null || current2.tag !== Fragment16) {
                 var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -13879,7 +14769,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
                 if (child.key === key) {
                   var elementType = element.type;
                   if (elementType === REACT_FRAGMENT_TYPE) {
-                    if (child.tag === Fragment) {
+                    if (child.tag === Fragment16) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var existing = useFiber(child, element.props.children);
                       existing.return = returnFiber;
@@ -18054,7 +18944,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment:
+              case Fragment16:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -18327,7 +19217,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef:
-              case Fragment:
+              case Fragment16:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -22586,7 +23476,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
             return fiber;
           }
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment, elements, key, mode);
+            var fiber = createFiber(Fragment16, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -23692,11 +24582,9 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     }
   });
 
-  // src/jsx/gooee.jsx
-  var import_react35 = __toESM(require_react());
-
   // src/jsx/components/_button.jsx
   var import_react = __toESM(require_react());
+  var import_jsx_runtime = __toESM(require_jsx_runtime());
   var Button = ({
     children,
     onClick,
@@ -23791,26 +24679,31 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const getDropdownRef = (ref) => {
       dropdownRef.current = ref.current;
     };
-    return /* @__PURE__ */ import_react.default.createElement("div", { ref: buttonRef, className: btnClass + (hasToolTip ? " p-relative" : ""), onMouseEnter: internalOnMouseEnter, onMouseLeave: internalOnMouseLeave, onClick: handleClick, style: elementStyle }, children, hasToolTip ? /* @__PURE__ */ import_react.default.createElement(AutoToolTip2, { targetRef: buttonRef, float: toolTipFloat, align: toolTipAlign }, /* @__PURE__ */ import_react.default.createElement(ToolTipContent2, { title, description })) : null, dropdownMenu ? /* @__PURE__ */ import_react.default.createElement(
-      FloatingElement2,
-      {
-        getRef: getDropdownRef,
-        typeKey: "ButtonDropdownMenu",
-        visible: dropdownVisible,
-        float: dropdownFloat,
-        align: dropdownAlign,
-        onHidden: onDropdownClosed,
-        targetRef: buttonRef,
-        closeOnClickOutside: true,
-        closeOnClickInside: dropdownCloseOnClick
-      },
-      dropdownMenu
-    ) : null);
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { ref: buttonRef, className: btnClass + (hasToolTip ? " p-relative" : ""), onMouseEnter: internalOnMouseEnter, onMouseLeave: internalOnMouseLeave, onClick: handleClick, style: elementStyle, children: [
+      children,
+      hasToolTip ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AutoToolTip2, { targetRef: buttonRef, float: toolTipFloat, align: toolTipAlign, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ToolTipContent2, { title, description }) }) : null,
+      dropdownMenu ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        FloatingElement2,
+        {
+          getRef: getDropdownRef,
+          typeKey: "ButtonDropdownMenu",
+          visible: dropdownVisible,
+          float: dropdownFloat,
+          align: dropdownAlign,
+          onHidden: onDropdownClosed,
+          targetRef: buttonRef,
+          closeOnClickOutside: true,
+          closeOnClickInside: dropdownCloseOnClick,
+          children: dropdownMenu
+        }
+      ) : null
+    ] });
   };
   var button_default = Button;
 
   // src/jsx/components/_grid.jsx
   var import_react2 = __toESM(require_react());
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime());
   var Grid = ({ children, noGutter = false, className, auto = null }) => {
     const maxRowSize = 12;
     const getColumnClass = (totalChildren) => {
@@ -23829,7 +24722,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         });
       });
       const rowClassName = `row ${noGutter ? "no-gutter" : ""} ${className}`;
-      return /* @__PURE__ */ import_react2.default.createElement("div", { className: rowClassName }, row);
+      return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: rowClassName, children: row });
     };
     const renderManualRow = () => {
       const row = import_react2.default.Children.map(children, (child, index) => {
@@ -23837,14 +24730,15 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         return import_react2.default.cloneElement(child, { key });
       });
       const rowClassName = `row ${noGutter ? "no-gutter" : ""} ${className}`;
-      return /* @__PURE__ */ import_react2.default.createElement("div", { className: rowClassName }, row);
+      return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: rowClassName, children: row });
     };
-    return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, auto ? renderAutoRows() : renderManualRow());
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: auto ? renderAutoRows() : renderManualRow() });
   };
   var grid_default = Grid;
 
   // src/jsx/components/_tooltip.jsx
   var import_react3 = __toESM(require_react());
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime());
   var ToolTip = import_react3.default.forwardRef(({ style, children, visible, containerStyle, clickable, float, align, inline }, ref) => {
     const react = window.$_gooee.react;
     const tooltipStyle = visible ? { opacity: 1, pointerEvents: clickable ? "auto" : "none" } : { opacity: 0, pointerEvents: "none" };
@@ -23903,7 +24797,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const arrowClassNames = "arrow_R9U arrow_SVb " + (align === " right" ? "" : " arrow_Xfn");
     const inlineStyle = !inline ? { minWidth: "150rem" } : {};
     const inlineSubStyle = !inline ? { flex: 1 } : { width: "auto" };
-    return /* @__PURE__ */ import_react3.default.createElement("div", { className: tooltipClassNames, style: {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: tooltipClassNames, style: {
       position: "absolute",
       ...positionStyle,
       width: "auto",
@@ -23914,19 +24808,23 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       zIndex: 999,
       ...tooltipStyle,
       ...style
-    } }, /* @__PURE__ */ import_react3.default.createElement("div", { ref, className: "bounds__AO", style: {
+    }, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { ref, className: "bounds__AO", style: {
       ...inlineSubStyle,
       display: "flex",
       transition: "opacity 0.2s easeOut",
       transitionDelay: "0.2s",
       ...containerStyle
-    } }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "container_eNL container_zgM container_jfe" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: arrowClassNames })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "content_wfU content_A82 content_JQV" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "main_F2U" }, children))));
+    }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "container_eNL container_zgM container_jfe", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: arrowClassNames }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "content_wfU content_A82 content_JQV", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "main_F2U", children }) })
+    ] }) });
   });
   var tooltip_default = ToolTip;
 
   // src/jsx/components/_auto-tooltip.jsx
   var import_react4 = __toESM(require_react());
   var import_react_dom = __toESM(require_react_dom());
+  var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var AutoToolTip = ({ targetRef, children, target, float = "up", align = "center", ...props }) => {
     const react = window.$_gooee.react;
     const [visible, setVisible] = react.useState(false);
@@ -24102,21 +25000,26 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const curTooltipPosition = react.useMemo(() => {
       return getToolTipPosition();
     }, [tooltipRef.current, targetRef.current, targetPosition]);
-    const toolTipContents = /* @__PURE__ */ import_react4.default.createElement(ToolTip2, { ref: tooltipRef, className: "p-fixed", visible, float: float === "left" && shiftedX == 1 ? "right" : float == "right" && shiftedX == -1 ? "left" : float, align: float === "left" || float == "right" ? align : shiftedX === -1 ? "right" : shiftedX === 1 ? "left" : align, ...props, style: curTooltipPosition }, children);
-    return /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, portalContainer && toolTipContents && import_react_dom.default.createPortal(toolTipContents, portalContainer));
+    const toolTipContents = /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(ToolTip2, { ref: tooltipRef, className: "p-fixed", visible, float: float === "left" && shiftedX == 1 ? "right" : float == "right" && shiftedX == -1 ? "left" : float, align: float === "left" || float == "right" ? align : shiftedX === -1 ? "right" : shiftedX === 1 ? "left" : align, ...props, style: curTooltipPosition, children });
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: portalContainer && toolTipContents && import_react_dom.default.createPortal(toolTipContents, portalContainer) });
   };
   var auto_tooltip_default = AutoToolTip;
 
   // src/jsx/components/_tooltip-content.jsx
   var import_react5 = __toESM(require_react());
+  var import_jsx_runtime5 = __toESM(require_jsx_runtime());
   var ToolTipContent = ({ title, description, align = "left" }) => {
-    const additionalContent = description && description.length > 0 ? /* @__PURE__ */ import_react5.default.createElement("div", { className: "paragraphs_nbD description_dNa", style: { textAlign: align, width: "100%", color: "var(--menuText1Normal)" } }, /* @__PURE__ */ import_react5.default.createElement("p", { cohinline: "cohinline" }, description)) : /* @__PURE__ */ import_react5.default.createElement(import_react5.default.Fragment, null);
-    return /* @__PURE__ */ import_react5.default.createElement(import_react5.default.Fragment, null, /* @__PURE__ */ import_react5.default.createElement("div", { className: "title_lCJ", style: { textAlign: align, color: "var(--menuText1Normal)" } }, title), additionalContent);
+    const additionalContent = description && description.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "paragraphs_nbD description_dNa", style: { textAlign: align, width: "100%", color: "var(--menuText1Normal)" }, children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("p", { cohinline: "cohinline", children: description }) }) : /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_jsx_runtime5.Fragment, {});
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_jsx_runtime5.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "title_lCJ", style: { textAlign: align, color: "var(--menuText1Normal)" }, children: title }),
+      additionalContent
+    ] });
   };
   var tooltip_content_default = ToolTipContent;
 
   // src/jsx/components/_scrollable.jsx
   var import_react6 = __toESM(require_react());
+  var import_jsx_runtime6 = __toESM(require_jsx_runtime());
   var Scrollable = ({ className, children, size = null, style, startBottom = null }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
@@ -24203,7 +25106,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         setMouseDown(true);
       }
     };
-    const thumbContent = thumbHeight > 0 ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "track", onMouseDown: onTrackMouseDown }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } })) : /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null);
+    const thumbContent = thumbHeight > 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "track", onMouseDown: onTrackMouseDown, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } }) }) : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_jsx_runtime6.Fragment, {});
     react.useEffect(() => {
       calculateThumbSizeAndPosition();
       window.addEventListener("mousemove", onMouseMove);
@@ -24224,12 +25127,16 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       tryUpdate();
     }, [children]);
     const classNames = "scrollable vertical" + (thumbHeight <= 0 || !canScroll ? " no-overflow" : "") + sizeClass + (className ? " " + className : "");
-    return /* @__PURE__ */ import_react6.default.createElement("div", { className: classNames, onMouseOver: calculateThumbSizeAndPosition, style }, /* @__PURE__ */ import_react6.default.createElement("div", { ref: scrollRef, onScroll: calculateThumbSizeAndPosition, className: "content" }, /* @__PURE__ */ import_react6.default.createElement("div", { ref: contentRef }, children)), thumbContent);
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: classNames, onMouseOver: calculateThumbSizeAndPosition, style, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { ref: scrollRef, onScroll: calculateThumbSizeAndPosition, className: "content", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { ref: contentRef, children }) }),
+      thumbContent
+    ] });
   };
   var scrollable_default = Scrollable;
 
   // src/jsx/components/_modal.jsx
   var import_react7 = __toESM(require_react());
+  var import_jsx_runtime7 = __toESM(require_jsx_runtime());
   var Modal = ({ className, children, style, size = null, onClose, title, icon, fixed = null, bodyClassName = null, contentClassName = null, headerClassName = null, hidden = null, noClose = null, onMouseEnter, onMouseLeave }) => {
     const react = window.$_gooee.react;
     const { Button: Button2 } = window.$_gooee.framework;
@@ -24237,12 +25144,20 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const fixedClass = fixed ? ` modal-fixed` : "";
     const classNames = sizeClass + fixedClass;
     const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
-    return /* @__PURE__ */ import_react7.default.createElement("div", { className: classNames, style, onMouseEnter, onMouseLeave }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-content" + (contentClassName ? ` ${contentClassName}` : "") }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-header" + (headerClassName ? ` ${headerClassName}` : "") }, icon, /* @__PURE__ */ import_react7.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, "\xA0")), !noClose ? /* @__PURE__ */ import_react7.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "icon mask-icon icon-close" })) : null), /* @__PURE__ */ import_react7.default.createElement("div", { className: bodyClassNames }, children))));
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: classNames, style, onMouseEnter, onMouseLeave, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "modal-dialog", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "modal-content" + (contentClassName ? ` ${contentClassName}` : ""), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "modal-header" + (headerClassName ? ` ${headerClassName}` : ""), children: [
+        icon,
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "modal-title", children: title ? title : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_jsx_runtime7.Fragment, { children: "\xA0" }) }),
+        !noClose ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "icon mask-icon icon-close" }) }) : null
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: bodyClassNames, children })
+    ] }) }) });
   };
   var modal_default = Modal;
 
   // src/jsx/components/_tab-modal.jsx
   var import_react8 = __toESM(require_react());
+  var import_jsx_runtime8 = __toESM(require_jsx_runtime());
   var TabModal = ({ tabs, className, style, size = null, selected, onClose, title, icon, fixed = null, bodyClassName = null, hidden = null, watch = [] }) => {
     const react = window.$_gooee.react;
     const [activeTab, setActiveTab] = react.useState(selected ? selected : tabs.length > 0 ? tabs[0].name : "");
@@ -24264,16 +25179,24 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const tabsClass = title ? "modal-tabs tabs-center" : "modal-tabs mt-1";
     const bodyClassNames = "modal-body" + (bodyClassName ? " " + bodyClassName : "");
     const render = react.useMemo(() => {
-      return /* @__PURE__ */ import_react8.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-dialog" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-content" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-header" }, icon ? icon : null, title ? /* @__PURE__ */ import_react8.default.createElement("div", { className: "modal-title" }, title) : null, /* @__PURE__ */ import_react8.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "icon mask-icon icon-close" })), /* @__PURE__ */ import_react8.default.createElement("div", { className: tabsClass }, tabs.map((tab) => /* @__PURE__ */ import_react8.default.createElement(
-        "div",
-        {
-          key: tab.name,
-          className: `tab ${activeTab === tab.name ? "active" : ""}`,
-          onClick: () => onTabClick(tab),
-          onMouseEnter: () => onTabHover()
-        },
-        tab.label
-      )))), tabs.map((tab) => /* @__PURE__ */ import_react8.default.createElement("div", { key: tab.name, className: bodyClassNames, style: activeTab !== tab.name ? { display: "none" } : null }, tab.content)))));
+      return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: classNames, style, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "modal-dialog", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "modal-content", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "modal-header", children: [
+          icon ? icon : null,
+          title ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "modal-title", children: title }) : null,
+          /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "icon mask-icon icon-close" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: tabsClass, children: tabs.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+            "div",
+            {
+              className: `tab ${activeTab === tab.name ? "active" : ""}`,
+              onClick: () => onTabClick(tab),
+              onMouseEnter: () => onTabHover(),
+              children: tab.label
+            },
+            tab.name
+          )) })
+        ] }),
+        tabs.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: bodyClassNames, style: activeTab !== tab.name ? { display: "none" } : null, children: tab.content }, tab.name))
+      ] }) }) });
     }, [tabs, activeTab, ...watch]);
     return render;
   };
@@ -24281,6 +25204,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
 
   // src/jsx/components/_moveable-modal.jsx
   var import_react9 = __toESM(require_react());
+  var import_jsx_runtime9 = __toESM(require_jsx_runtime());
   var MoveableModal = ({
     className,
     children,
@@ -24382,13 +25306,21 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         window.removeEventListener("mouseup", onMouseUp);
       };
     }, [isDragging]);
-    return /* @__PURE__ */ import_react9.default.createElement("div", { className: classNames, style: { ...style, left: `${position.x}px`, top: `${position.y}px` }, onMouseEnter, onMouseLeave }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "modal-dialog w-x" }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "modal-content w-x" + (contentClassName ? ` ${contentClassName}` : "") }, /* @__PURE__ */ import_react9.default.createElement("div", { ref: headerRef, onMouseDown: onHeaderMouseDown, className: "modal-header" + (headerClassName ? ` ${headerClassName}` : "") }, icon, /* @__PURE__ */ import_react9.default.createElement("div", { className: "modal-title" }, title ? title : /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null, "\xA0")), !noClose ? /* @__PURE__ */ import_react9.default.createElement(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "icon mask-icon icon-close" })) : null), /* @__PURE__ */ import_react9.default.createElement("div", { className: bodyClassNames }, children))));
+    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { className: classNames, style: { ...style, left: `${position.x}px`, top: `${position.y}px` }, onMouseEnter, onMouseLeave, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { className: "modal-dialog w-x", children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { className: "modal-content w-x" + (contentClassName ? ` ${contentClassName}` : ""), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { ref: headerRef, onMouseDown: onHeaderMouseDown, className: "modal-header" + (headerClassName ? ` ${headerClassName}` : ""), children: [
+        icon,
+        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { className: "modal-title", children: title ? title : /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_jsx_runtime9.Fragment, { children: "\xA0" }) }),
+        !noClose ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Button2, { className: "close", size: "sm", onClick: onClose, icon: true, circular: true, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { className: "icon mask-icon icon-close" }) }) : null
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { className: bodyClassNames, children })
+    ] }) }) });
   };
   var moveable_modal_default = MoveableModal;
 
   // src/jsx/components/_dropdown.jsx
   var import_react10 = __toESM(require_react());
   var import_react_dom2 = __toESM(require_react_dom());
+  var import_jsx_runtime10 = __toESM(require_jsx_runtime());
   var Dropdown = ({ style, className, toggleClassName, size, onSelectionChanged, selected, options, float = "down", scrollable = null }) => {
     const react = window.$_gooee.react;
     const [active, setActive] = react.useState(false);
@@ -24469,16 +25401,23 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       return options;
     }, [options, options.length, float]);
     const selectedIndex = !getOptions ? -1 : getOptions.findIndex((o) => o.value === internalValue);
-    const getOptionsMap = getOptions ? getOptions.map((option) => /* @__PURE__ */ import_react10.default.createElement("button", { key: option.value, className: "dropdown-item", onMouseEnter, onClick: () => changeSelection(option.value) }, option.label)) : null;
-    const dropdownContent = /* @__PURE__ */ import_react10.default.createElement("div", { className: dropdownMenuClass, ref: menuRef, style: getDropdownPosition() }, scrollable ? /* @__PURE__ */ import_react10.default.createElement(Scrollable2, { className: "vh-40", startBottom: float === "up", size: "sm" }, getOptionsMap) : getOptionsMap);
+    const getOptionsMap = getOptions ? getOptions.map((option) => /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("button", { className: "dropdown-item", onMouseEnter, onClick: () => changeSelection(option.value), children: option.label }, option.value)) : null;
+    const dropdownContent = /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: dropdownMenuClass, ref: menuRef, style: getDropdownPosition(), children: scrollable ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Scrollable2, { className: "vh-40", startBottom: float === "up", size: "sm", children: getOptionsMap }) : getOptionsMap });
     const classNames = (className ? `dropdown ${className}` : "dropdown") + (size ? ` dropdown-${size}` : "") + (scrollable ? " dropdown-menu-scrollable" : "");
     const toggleClassNames = toggleClassName ? "dropdown-toggle " + toggleClassName : "dropdown-toggle";
-    return /* @__PURE__ */ import_react10.default.createElement("div", { className: classNames, style: { ...style } }, /* @__PURE__ */ import_react10.default.createElement("button", { ref: dropdownRef, onMouseEnter, className: toggleClassNames, onClick: onToggle }, /* @__PURE__ */ import_react10.default.createElement("div", { className: "caption" }, selectedIndex >= 0 ? options[selectedIndex].label : null), /* @__PURE__ */ import_react10.default.createElement(Icon2, { icon: float === "down" ? "stroke-arrow-down" : "stroke-arrow-up", mask: true, size })), portalContainer && dropdownContent && import_react_dom2.default.createPortal(dropdownContent, portalContainer));
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: classNames, style: { ...style }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("button", { ref: dropdownRef, onMouseEnter, className: toggleClassNames, onClick: onToggle, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: "caption", children: selectedIndex >= 0 ? options[selectedIndex].label : null }),
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Icon2, { icon: float === "down" ? "stroke-arrow-down" : "stroke-arrow-up", mask: true, size })
+      ] }),
+      portalContainer && dropdownContent && import_react_dom2.default.createPortal(dropdownContent, portalContainer)
+    ] });
   };
   var dropdown_default = Dropdown;
 
   // src/jsx/components/_dropdown-menu.jsx
   var import_react11 = __toESM(require_react());
+  var import_jsx_runtime11 = __toESM(require_jsx_runtime());
   var DropdownMenu = ({
     className,
     buttonRef,
@@ -24498,52 +25437,60 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         onHidden();
       engine.trigger("audio.playSound", "close-panel", 1);
     };
-    return /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
       FloatingElement2,
       {
         typeKey: "DropdownMenu",
         visible,
         onHidden: onInternalHidden,
         targetRef: buttonRef,
-        closeOnClickOutside: "true"
-      },
-      /* @__PURE__ */ import_react11.default.createElement("div", { style, className: "bg-panel text-light rounded d-flex flex-column align-items-stretch" + (className ? " " + className : "") }, items.map((item, index) => /* @__PURE__ */ import_react11.default.createElement(
-        Button2,
-        {
-          color: "light",
-          onClick: () => onItemClick(item.key),
-          className: "text-light btn-transparent flex-1 text-left",
-          style: "trans-faded",
-          key: index,
-          dropdownFloat: "right",
-          dropdownAlign: "left",
-          dropdownCloseOnClick: "true",
-          ignoreBubblingClick: "true",
-          dropdownMenu: item.children ? /* @__PURE__ */ import_react11.default.createElement("div", { className: "bg-panel-dark rounded d-flex flex-column align-items-stretch" }, item.children.map((childItem, childIndex) => /* @__PURE__ */ import_react11.default.createElement(
-            Button2,
-            {
-              ignoreBubblingClick: "true",
-              key: childIndex,
-              stopClickPropagation: false,
-              onClick: () => onChildItemClick(item.key, childItem),
-              color: "light",
-              style: "trans-faded",
-              className: "btn-transparent flex-1 text-left"
-            },
-            /* @__PURE__ */ import_react11.default.createElement(Icon2, { className: "mr-2" + (childItem.iconClassName ? " " + childItem.iconClassName : item.fa ? " bg-light" : ""), icon: childItem.icon, fa: childItem.fa ? true : null }),
-            /* @__PURE__ */ import_react11.default.createElement("span", { className: "text-light" }, engine.translate(childItem.label))
-          ))) : null
-        },
-        /* @__PURE__ */ import_react11.default.createElement("span", null, /* @__PURE__ */ import_react11.default.createElement(Icon2, { className: "mr-2" + (item.iconClassName ? " " + item.iconClassName : item.fa ? " bg-light" : ""), icon: item.icon, fa: item.fa ? true : null })),
-        /* @__PURE__ */ import_react11.default.createElement("span", { className: "text-light" }, engine.translate(item.label)),
-        item.children ? /* @__PURE__ */ import_react11.default.createElement(import_react11.default.Fragment, null, /* @__PURE__ */ import_react11.default.createElement("div", { className: "ml-2 flex-1" }), /* @__PURE__ */ import_react11.default.createElement(Icon2, { className: "ml-x", style: { marginTop: "2.5rem" }, icon: "solid-caret-right", size: "xs", fa: true })) : null
-      )))
+        closeOnClickOutside: "true",
+        children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { style, className: "bg-panel text-light rounded d-flex flex-column align-items-stretch" + (className ? " " + className : ""), children: items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+          Button2,
+          {
+            color: "light",
+            onClick: () => onItemClick(item.key),
+            className: "text-light btn-transparent flex-1 text-left",
+            style: "trans-faded",
+            dropdownFloat: "right",
+            dropdownAlign: "left",
+            dropdownCloseOnClick: "true",
+            ignoreBubblingClick: "true",
+            dropdownMenu: item.children ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "bg-panel-dark rounded d-flex flex-column align-items-stretch", children: item.children.map((childItem, childIndex) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+              Button2,
+              {
+                ignoreBubblingClick: "true",
+                stopClickPropagation: false,
+                onClick: () => onChildItemClick(item.key, childItem),
+                color: "light",
+                style: "trans-faded",
+                className: "btn-transparent flex-1 text-left",
+                children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Icon2, { className: "mr-2" + (childItem.iconClassName ? " " + childItem.iconClassName : item.fa ? " bg-light" : ""), icon: childItem.icon, fa: childItem.fa ? true : null }),
+                  /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "text-light", children: engine.translate(childItem.label) })
+                ]
+              },
+              childIndex
+            )) }) : null,
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Icon2, { className: "mr-2" + (item.iconClassName ? " " + item.iconClassName : item.fa ? " bg-light" : ""), icon: item.icon, fa: item.fa ? true : null }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "text-light", children: engine.translate(item.label) }),
+              item.children ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_jsx_runtime11.Fragment, { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "ml-2 flex-1" }),
+                /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Icon2, { className: "ml-x", style: { marginTop: "2.5rem" }, icon: "solid-caret-right", size: "xs", fa: true })
+              ] }) : null
+            ]
+          },
+          index
+        )) })
+      }
     );
   };
   var dropdown_menu_default = DropdownMenu;
 
   // src/jsx/components/_checkbox.jsx
   var import_react12 = __toESM(require_react());
+  var import_jsx_runtime12 = __toESM(require_jsx_runtime());
   var CheckBox = ({ className, style, checked, onToggle }) => {
     const react = window.$_gooee.react;
     const [isChecked, setIsChecked] = react.useState(checked);
@@ -24562,21 +25509,22 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    return /* @__PURE__ */ import_react12.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
       "div",
       {
         className: classNames,
         onMouseEnter,
         style,
-        onClick: handleClick
-      },
-      /* @__PURE__ */ import_react12.default.createElement("div", { className: "icon mask-icon icon-check" })
+        onClick: handleClick,
+        children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "icon mask-icon icon-check" })
+      }
     );
   };
   var checkbox_default = CheckBox;
 
   // src/jsx/components/_checkbox-group.jsx
   var import_react13 = __toESM(require_react());
+  var import_jsx_runtime13 = __toESM(require_jsx_runtime());
   var CheckBoxGroup = ({ style, onChecked, selected, options }) => {
     const react = window.$_gooee.react;
     const [internalValue, setInternalValue] = react.useState([]);
@@ -24601,12 +25549,16 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         return;
       return internalValue.filter((e) => e.value === value).length > 0;
     };
-    return /* @__PURE__ */ import_react13.default.createElement("div", { className: "form-check-group", style }, options.map((option, index) => /* @__PURE__ */ import_react13.default.createElement("div", { key: option.value, className: "form-check" }, /* @__PURE__ */ import_react13.default.createElement(CheckBox2, { checked: contains(option.value), onToggle: (val) => onCheck(option.value, val) }), /* @__PURE__ */ import_react13.default.createElement("label", { className: "form-check-label" }, option.label))));
+    return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "form-check-group", style, children: options.map((option, index) => /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "form-check", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(CheckBox2, { checked: contains(option.value), onToggle: (val) => onCheck(option.value, val) }),
+      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("label", { className: "form-check-label", children: option.label })
+    ] }, option.value)) });
   };
   var checkbox_group_default = CheckBoxGroup;
 
   // src/jsx/components/_textbox.jsx
   var import_react14 = __toESM(require_react());
+  var import_jsx_runtime14 = __toESM(require_jsx_runtime());
   var TextBox = ({ className, style, text, onClick, onChange, onBlur, type = "text", size = null, disabled = null, rows = 1, maxLength = null, selectOnFocus = null, minValue = null, maxValue = null, onSanitize = null }) => {
     const react = window.$_gooee.react;
     const [value, setValue] = react.useState(text);
@@ -24659,7 +25611,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         elementRef.current.setSelectionRange(0, elementRef.current.value.length);
       }
     };
-    return rows === 1 ? /* @__PURE__ */ import_react14.default.createElement(
+    return rows === 1 ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
       "input",
       {
         ref: elementRef,
@@ -24673,7 +25625,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         style,
         value
       }
-    ) : /* @__PURE__ */ import_react14.default.createElement(
+    ) : /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
       "textarea",
       {
         ref: elementRef,
@@ -24684,15 +25636,16 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         onBlur,
         onMouseEnter,
         onChange: (e) => onValueChange(e.target.value),
-        style
-      },
-      value
+        style,
+        children: value
+      }
     );
   };
   var textbox_default = TextBox;
 
   // src/jsx/components/_radio-item.jsx
   var import_react15 = __toESM(require_react());
+  var import_jsx_runtime15 = __toESM(require_jsx_runtime());
   var RadioItem = ({ className, style, checked, onToggle }) => {
     const react = window.$_gooee.react;
     const [isChecked, setIsChecked] = react.useState(checked);
@@ -24711,12 +25664,13 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         return;
       engine.trigger("audio.playSound", "hover-item", 1);
     };
-    return /* @__PURE__ */ import_react15.default.createElement("div", { className: classNames, onMouseEnter, style, onClick: handleClick }, /* @__PURE__ */ import_react15.default.createElement("div", { class: "dot-container" }, /* @__PURE__ */ import_react15.default.createElement("div", { className: "dot" })));
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: classNames, onMouseEnter, style, onClick: handleClick, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { class: "dot-container", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "dot" }) }) });
   };
   var radio_item_default = RadioItem;
 
   // src/jsx/components/_radio-group.jsx
   var import_react16 = __toESM(require_react());
+  var import_jsx_runtime16 = __toESM(require_jsx_runtime());
   var RadioGroup = ({ style, onSelectionChanged, selected, options }) => {
     const react = window.$_gooee.react;
     const [internalValue, setInternalValue] = react.useState(selected);
@@ -24729,7 +25683,10 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       if (onSelectionChanged)
         onSelectionChanged(value);
     };
-    return /* @__PURE__ */ import_react16.default.createElement("div", { className: "form-radio-group", style }, options.map((option, index) => /* @__PURE__ */ import_react16.default.createElement("div", { key: option.value, className: "form-radio" }, /* @__PURE__ */ import_react16.default.createElement(RadioItem2, { checked: internalValue === option.value, onToggle: () => changeSelection(option.value) }), /* @__PURE__ */ import_react16.default.createElement("label", { className: "form-radio-label" }, option.label))));
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("div", { className: "form-radio-group", style, children: options.map((option, index) => /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("div", { className: "form-radio", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RadioItem2, { checked: internalValue === option.value, onToggle: () => changeSelection(option.value) }),
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("label", { className: "form-radio-label", children: option.label })
+    ] }, option.value)) });
   };
   var radio_group_default = RadioGroup;
 
@@ -24745,6 +25702,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
   }
 
   // src/jsx/components/_slider.jsx
+  var import_jsx_runtime17 = __toESM(require_jsx_runtime());
   var Slider = ({ className, value, onValueChanged, style, orientation = "horizontal", basic = null }) => {
     const react = window.$_gooee.react;
     const { Icon: Icon2 } = window.$_gooee.framework;
@@ -24806,20 +25764,24 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     }, [mouseDown, sliderRef.current]);
     const classNames = (basic ? "form-slider-basic" : "form-slider") + (orientation === "vertical" ? " form-slider-vertical" : "") + (className ? " " + className : "");
     const valuePercent = internalValue + "%";
-    return /* @__PURE__ */ import_react17.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
       "div",
       {
         className: classNames,
         ref: sliderRef,
-        onMouseDown
-      },
-      /* @__PURE__ */ import_react17.default.createElement("div", { className: "form-slider-grip", style: orientation === "horizontal" ? { width: valuePercent } : { position: "absolute", top: `${internalValue}%`, height: valuePercent } }, basic ? /* @__PURE__ */ import_react17.default.createElement("div", { className: "form-slider-grip-handle" }, /* @__PURE__ */ import_react17.default.createElement(Icon2, { icon: "solid-caret-right", fa: true }), /* @__PURE__ */ import_react17.default.createElement(Icon2, { icon: "solid-caret-left", fa: true })) : null)
+        onMouseDown,
+        children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "form-slider-grip", style: orientation === "horizontal" ? { width: valuePercent } : { position: "absolute", top: `${internalValue}%`, height: valuePercent }, children: basic ? /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "form-slider-grip-handle", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Icon2, { icon: "solid-caret-right", fa: true }),
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Icon2, { icon: "solid-caret-left", fa: true })
+        ] }) : null })
+      }
     );
   };
   var slider_default = Slider;
 
   // src/jsx/components/_grid-slider.jsx
   var import_react18 = __toESM(require_react());
+  var import_jsx_runtime18 = __toESM(require_jsx_runtime());
   var GridSlider = ({ className, value, onValueChanged, style }) => {
     const react = window.$_gooee.react;
     const { Icon: Icon2 } = window.$_gooee.framework;
@@ -24869,20 +25831,21 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const classNames = "form-grid-slider" + (className ? " " + className : "");
     const valuePercentX = internalValue.x + "%";
     const valuePercentY = internalValue.y + "%";
-    return /* @__PURE__ */ import_react18.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
       "div",
       {
         className: classNames,
         ref: sliderRef,
-        onMouseDown
-      },
-      /* @__PURE__ */ import_react18.default.createElement("div", { className: "form-grid-slider-thumb", style: { left: valuePercentX, top: valuePercentY } }, /* @__PURE__ */ import_react18.default.createElement(Icon2, { icon: "circle", size: "sm", fa: true }))
+        onMouseDown,
+        children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "form-grid-slider-thumb", style: { left: valuePercentX, top: valuePercentY }, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Icon2, { icon: "circle", size: "sm", fa: true }) })
+      }
     );
   };
   var grid_slider_default = GridSlider;
 
   // src/jsx/components/_gradient-slider.jsx
   var import_react19 = __toESM(require_react());
+  var import_jsx_runtime19 = __toESM(require_jsx_runtime());
   var GradientSlider = ({ className, value, onValueChanged, style, from, to, spectrum = null }) => {
     const react = window.$_gooee.react;
     const sliderRef = react.useRef(null);
@@ -24925,28 +25888,30 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const spectrumClass = spectrum ? " bg-spectrum" : "";
     const classNames = "form-gradient-slider" + (className ? " " + className : "") + spectrumClass;
     const valuePercent = internalValue + "%";
-    return /* @__PURE__ */ import_react19.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
       "div",
       {
         className: classNames,
-        onMouseDown
-      },
-      /* @__PURE__ */ import_react19.default.createElement("div", { ref: sliderRef, className: "form-gradient-slider-container" }, /* @__PURE__ */ import_react19.default.createElement("div", { className: "form-slider-grip", style: { left: valuePercent } }, /* @__PURE__ */ import_react19.default.createElement("div", { className: "form-slider-thumb" })))
+        onMouseDown,
+        children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { ref: sliderRef, className: "form-gradient-slider-container", children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "form-slider-grip", style: { left: valuePercent }, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "form-slider-thumb" }) }) })
+      }
     );
   };
   var gradient_slider_default = GradientSlider;
 
   // src/jsx/components/_icon.jsx
   var import_react20 = __toESM(require_react());
+  var import_jsx_runtime20 = __toESM(require_jsx_runtime());
   var Icon = ({ className, style, icon, mask = null, fa = null, size = null }) => {
     const iconClassName = (mask ? `icon mask-icon icon-${icon} ${className}` : fa ? `fa fa-${icon} ${className}` : `icon ${className}`) + (size ? ` icon-${size}` : "");
-    const iconMarkup = mask || fa ? /* @__PURE__ */ import_react20.default.createElement("div", { className: iconClassName, style }) : /* @__PURE__ */ import_react20.default.createElement("img", { className: iconClassName, style, src: icon });
+    const iconMarkup = mask || fa ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: iconClassName, style }) : /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("img", { className: iconClassName, style, src: icon });
     return iconMarkup;
   };
   var icon_default = Icon;
 
   // src/jsx/components/_code.jsx
   var import_react21 = __toESM(require_react());
+  var import_jsx_runtime21 = __toESM(require_jsx_runtime());
   var Code = ({ htmlString }) => {
     const encodeHtml = (str) => {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/ /g, "&nbsp;").replace(/"/g, "&quot;").replace(/=/g, "&equals;");
@@ -24962,23 +25927,29 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       const coloredHtml = addSyntaxColoring(encodedHtml);
       return { __html: coloredHtml };
     };
-    return /* @__PURE__ */ import_react21.default.createElement("code", { className: "d-flex flex-wrap flex-row", dangerouslySetInnerHTML: renderHtml() });
+    return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("code", { className: "d-flex flex-wrap flex-row", dangerouslySetInnerHTML: renderHtml() });
   };
   var code_default = Code;
 
   // src/jsx/components/_form-group.jsx
   var import_react22 = __toESM(require_react());
+  var import_jsx_runtime22 = __toESM(require_jsx_runtime());
   var FormGroup = ({ children, className, style, label = null, labelClassName = null, description = null }) => {
     const classNames = "form-group" + (className ? " " + className : "");
     const labelClassNames = (description ? "mb-0" : "") + (labelClassName ? " " + labelClassName : "");
-    const labelMarkup = label ? /* @__PURE__ */ import_react22.default.createElement("label", { className: labelClassNames }, label) : null;
-    const descriptionMarkup = description ? /* @__PURE__ */ import_react22.default.createElement("p", { className: "text-muted mb-2", cohinline: "cohinline" }, description) : null;
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: classNames, style }, labelMarkup, descriptionMarkup, children);
+    const labelMarkup = label ? /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("label", { className: labelClassNames, children: label }) : null;
+    const descriptionMarkup = description ? /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("p", { className: "text-muted mb-2", cohinline: "cohinline", children: description }) : null;
+    return /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: classNames, style, children: [
+      labelMarkup,
+      descriptionMarkup,
+      children
+    ] });
   };
   var form_group_default = FormGroup;
 
   // src/jsx/components/_form-checkbox.jsx
   var import_react23 = __toESM(require_react());
+  var import_jsx_runtime23 = __toESM(require_jsx_runtime());
   var FormCheckBox = ({ className, label, checkClassName, style, checked, onToggle, reverseOrder = null }) => {
     const classNames = "form-check" + (className ? " " + className : "") + (reverseOrder ? " form-check-reverse" : "");
     const { CheckBox: CheckBox2 } = window.$_gooee.framework;
@@ -24987,12 +25958,19 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         onToggle(!checked);
       engine.trigger("audio.playSound", "select-toggle", 1);
     };
-    return /* @__PURE__ */ import_react23.default.createElement("div", { className: classNames, style }, reverseOrder ? /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null, label ? /* @__PURE__ */ import_react23.default.createElement("label", { className: "form-check-label", onClick: handleLabelClick }, label) : null, /* @__PURE__ */ import_react23.default.createElement(CheckBox2, { className: checkClassName, checked, onToggle })) : /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null, /* @__PURE__ */ import_react23.default.createElement(CheckBox2, { className: checkClassName, checked, onToggle }), label ? /* @__PURE__ */ import_react23.default.createElement("label", { className: "form-check-label", onClick: handleLabelClick }, label) : null));
+    return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: classNames, style, children: reverseOrder ? /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(import_jsx_runtime23.Fragment, { children: [
+      label ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("label", { className: "form-check-label", onClick: handleLabelClick, children: label }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(CheckBox2, { className: checkClassName, checked, onToggle })
+    ] }) : /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(import_jsx_runtime23.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(CheckBox2, { className: checkClassName, checked, onToggle }),
+      label ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("label", { className: "form-check-label", onClick: handleLabelClick, children: label }) : null
+    ] }) });
   };
   var form_checkbox_default = FormCheckBox;
 
   // src/jsx/components/_markdown.jsx
   var import_react24 = __toESM(require_react());
+  var import_jsx_runtime24 = __toESM(require_jsx_runtime());
   var MarkDown = ({ contents, url = null, className, style }) => {
     const react = window.$_gooee.react;
     const [cache, setCache] = react.useState({});
@@ -25097,12 +26075,13 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const markdownHtml = content && content.length > 0 ? processMarkdown(content) : "";
     const md = content && content.length > 0 ? markdownHtml : null;
     const classNames = `markdown${className ? " " + className : ""}`;
-    return /* @__PURE__ */ import_react24.default.createElement("div", { className: classNames, style, dangerouslySetInnerHTML: { __html: md } });
+    return /* @__PURE__ */ (0, import_jsx_runtime24.jsx)("div", { className: classNames, style, dangerouslySetInnerHTML: { __html: md } });
   };
   var markdown_default = MarkDown;
 
   // src/jsx/components/_container.jsx
   var import_react25 = __toESM(require_react());
+  var import_jsx_runtime25 = __toESM(require_jsx_runtime());
   var Container = ({
     children,
     onClick,
@@ -25183,7 +26162,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const getDropdownRef = (ref) => {
       dropdownRef.current = ref.current;
     };
-    return /* @__PURE__ */ import_react25.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(
       "div",
       {
         ref: buttonRef,
@@ -25191,46 +26170,56 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         style,
         onMouseEnter: internalOnMouseEnter,
         onMouseLeave: internalOnMouseLeave,
-        onClick: handleClick
-      },
-      children,
-      hasToolTip ? /* @__PURE__ */ import_react25.default.createElement(AutoToolTip2, { targetRef: buttonRef, float: toolTipFloat, align: toolTipAlign }, /* @__PURE__ */ import_react25.default.createElement(ToolTipContent2, { title, description })) : null,
-      dropdownMenu ? /* @__PURE__ */ import_react25.default.createElement(
-        FloatingElement2,
-        {
-          getRef: getDropdownRef,
-          typeKey: "ContainerDropdownMenu",
-          visible: dropdownVisible,
-          float: dropdownFloat,
-          align: dropdownAlign,
-          onHidden: onDropdownClosed,
-          targetRef: buttonRef,
-          closeOnClickOutside: dropdownCloseOnClickOutside,
-          closeOnClickInside: dropdownCloseOnClick
-        },
-        dropdownMenu
-      ) : null
+        onClick: handleClick,
+        children: [
+          children,
+          hasToolTip ? /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(AutoToolTip2, { targetRef: buttonRef, float: toolTipFloat, align: toolTipAlign, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ToolTipContent2, { title, description }) }) : null,
+          dropdownMenu ? /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+            FloatingElement2,
+            {
+              getRef: getDropdownRef,
+              typeKey: "ContainerDropdownMenu",
+              visible: dropdownVisible,
+              float: dropdownFloat,
+              align: dropdownAlign,
+              onHidden: onDropdownClosed,
+              targetRef: buttonRef,
+              closeOnClickOutside: dropdownCloseOnClickOutside,
+              closeOnClickInside: dropdownCloseOnClick,
+              children: dropdownMenu
+            }
+          ) : null
+        ]
+      }
     );
   };
   var container_default = Container;
 
   // src/jsx/components/_list.jsx
   var import_react26 = __toESM(require_react());
+  var import_jsx_runtime26 = __toESM(require_jsx_runtime());
   var List = ({ children, className, ordered = null }) => {
     const renderItems = () => {
       return import_react26.default.Children.map(children, (child, index) => {
         const key = `list-item-${index}`;
         const innerContent = child.props.children;
-        return /* @__PURE__ */ import_react26.default.createElement("div", { className: "list-item", key, cohinline: "cohinline" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "list-item-prepend" }, ordered ? /* @__PURE__ */ import_react26.default.createElement(import_react26.default.Fragment, null, `${index + 1}`, ".") : /* @__PURE__ */ import_react26.default.createElement(import_react26.default.Fragment, null, "\u2022")), /* @__PURE__ */ import_react26.default.createElement("p", { cohinline: "cohinline", class: "flex-1" }, innerContent));
+        return /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)("div", { className: "list-item", cohinline: "cohinline", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: "list-item-prepend", children: ordered ? /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_jsx_runtime26.Fragment, { children: [
+            `${index + 1}`,
+            "."
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_jsx_runtime26.Fragment, { children: "\u2022" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("p", { cohinline: "cohinline", class: "flex-1", children: innerContent })
+        ] }, key);
       });
     };
     const classNames = "list" + (className ? " " + className : "") + (ordered ? " list-ordered" : "");
-    return /* @__PURE__ */ import_react26.default.createElement("div", { className: classNames }, renderItems());
+    return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: classNames, children: renderItems() });
   };
   var list_default = List;
 
   // src/jsx/components/_virtual-list.jsx
   var import_react27 = __toESM(require_react());
+  var import_jsx_runtime27 = __toESM(require_jsx_runtime());
   var VirtualList = ({ className, contentClassName, border = null, data, onRenderItem, columns = 1, rows = 4, size = null, watch = [] }) => {
     const react = window.$_gooee.react;
     const scrollRef = react.useRef(null);
@@ -25412,7 +26401,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         window.removeEventListener("mouseup", onMouseUp);
       };
     }, [data, columns, rows, visibleStartIndex, itemCount, mouseDown, thumbTop]);
-    const thumbContent = react.useMemo(() => thumbHeight > 0 ? /* @__PURE__ */ import_react27.default.createElement("div", { className: "track", onMouseDown: onTrackMouseDown }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } })) : null, [thumbHeight, thumbTop, onMouseDown, onMouseEnter, onTrackMouseDown, ...watch]);
+    const thumbContent = react.useMemo(() => thumbHeight > 0 ? /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "track", onMouseDown: onTrackMouseDown, children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "thumb", onMouseEnter, onMouseDown, style: { height: `${thumbHeight}px`, top: `${thumbTop}px` } }) }) : null, [thumbHeight, thumbTop, onMouseDown, onMouseEnter, onTrackMouseDown, ...watch]);
     const visibleChildren = data ? data.slice(visibleStartIndex, visibleStartIndex + visibleItemCount) : [];
     const classNames = "scrollable vertical no-overflow" + (thumbHeight <= 0 + sizeClass + (className ? " " + className : ""));
     const getCellClassName = (index) => {
@@ -25429,17 +26418,24 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     };
     const dummies = react.useMemo(() => {
       const dummyCount = Math.max(0, rows * columns - visibleChildren.length);
-      return Array.from({ length: dummyCount }, (_, index) => /* @__PURE__ */ import_react27.default.createElement("div", { key: index, style: { width: itemWidth, height: itemHeight } }));
+      return Array.from({ length: dummyCount }, (_, index) => /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { style: { width: itemWidth, height: itemHeight } }, index));
     }, [visibleChildren.length, rows, columns, itemWidth, itemHeight]);
     const renderChild = react.useCallback((child, index) => {
-      return /* @__PURE__ */ import_react27.default.createElement("div", { key: index, className: getCellClassName(index), style: { width: itemWidth, height: itemHeight } }, onRenderItem(child, index));
+      return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: getCellClassName(index), style: { width: itemWidth, height: itemHeight }, children: onRenderItem(child, index) }, index);
     }, [itemWidth, itemHeight, rows, columns, ...watch]);
-    return /* @__PURE__ */ import_react27.default.createElement("div", { className: classNames, style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react27.default.createElement("div", { ref: scrollRef, className: "content", style: { overflowY: "hidden" } }, /* @__PURE__ */ import_react27.default.createElement("div", { ref: contentRef, className: (contentClassName ? contentClassName : "") + " h-x flex-1", style: { overflowY: "hidden" } }, visibleChildren.map((child, index) => renderChild(child, index)), dummies)), thumbContent);
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { className: classNames, style: { overflowY: "hidden" }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { ref: scrollRef, className: "content", style: { overflowY: "hidden" }, children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)("div", { ref: contentRef, className: (contentClassName ? contentClassName : "") + " h-x flex-1", style: { overflowY: "hidden" }, children: [
+        visibleChildren.map((child, index) => renderChild(child, index)),
+        dummies
+      ] }) }),
+      thumbContent
+    ] });
   };
   var virtual_list_default = VirtualList;
 
   // src/jsx/components/_toggle-button-group.jsx
   var import_react28 = __toESM(require_react());
+  var import_jsx_runtime28 = __toESM(require_jsx_runtime());
   var ToggleButton = ({ children, selectedIndex = 0, onSelectionChanged }) => {
     const react = window.$_gooee.react;
     const [internalValue, setInternalValue] = react.useState(selectedIndex);
@@ -25464,15 +26460,16 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         const shade = isSelected ? "" : "trans-faded";
         const isLast = thisIndex === import_react28.default.Children.toArray(children).filter((c) => c.type === "button").length - 1;
         const classNames = (!isSelected ? "text-light" : "text-dark") + (isLast ? "" : " mb-1");
-        return /* @__PURE__ */ import_react28.default.createElement(Button2, { key, className: classNames, isBlock: true, color, style: shade, onClick: () => changeSelection(thisIndex) }, innerContent);
+        return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(Button2, { className: classNames, isBlock: true, color, style: shade, onClick: () => changeSelection(thisIndex), children: innerContent }, key);
       });
     };
-    return /* @__PURE__ */ import_react28.default.createElement(import_react28.default.Fragment, null, children ? renderItems() : null);
+    return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(import_jsx_runtime28.Fragment, { children: children ? renderItems() : null });
   };
   var toggle_button_group_default = ToggleButton;
 
   // src/jsx/components/_progress-bar.jsx
   var import_react29 = __toESM(require_react());
+  var import_jsx_runtime29 = __toESM(require_jsx_runtime());
   var ProgressBar = ({ style, className, containerClassName, value = 0.5, min = 0, max = 1, orientation = "horizontal", color = null, showLabel = false, label = null, onMouseEnter, onMouseLeave }) => {
     const react = window.$_gooee.react;
     const coreClassNames = "progress-bar";
@@ -25501,21 +26498,31 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       if (onMouseLeave)
         onMouseLeave();
     }, [onMouseLeave, showLabel, label]);
-    return /* @__PURE__ */ import_react29.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(
       "div",
       {
         style: { ...style, ...styles },
         className: `${coreClassNames} ${orientation}${className ? " " + className : ""}`,
         onMouseEnter: onMouseEnterInternal,
-        onMouseLeave: onMouseLeaveInternal
-      },
-      /* @__PURE__ */ import_react29.default.createElement("div", { className: "progress-container" + (containerClassName ? " " + containerClassName : "") }, /* @__PURE__ */ import_react29.default.createElement("div", { className: "progress", style: orientation === "horizontal" ? { width: `${percentage}%` } : { height: `${percentage}%` } }), /* @__PURE__ */ import_react29.default.createElement("div", { className: "progress-label" }, orientation === "horizontal" ? showLabel && label ? /* @__PURE__ */ import_react29.default.createElement("span", null, label.toUpperCase()) : /* @__PURE__ */ import_react29.default.createElement("span", null, percentageString, "%") : /* @__PURE__ */ import_react29.default.createElement(import_react29.default.Fragment, null, /* @__PURE__ */ import_react29.default.createElement("span", null, percentageString), /* @__PURE__ */ import_react29.default.createElement("span", null, "%"))))
+        onMouseLeave: onMouseLeaveInternal,
+        children: /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)("div", { className: "progress-container" + (containerClassName ? " " + containerClassName : ""), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("div", { className: "progress", style: orientation === "horizontal" ? { width: `${percentage}%` } : { height: `${percentage}%` } }),
+          /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("div", { className: "progress-label", children: orientation === "horizontal" ? showLabel && label ? /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("span", { children: label.toUpperCase() }) : /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)("span", { children: [
+            percentageString,
+            "%"
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)(import_jsx_runtime29.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("span", { children: percentageString }),
+            /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("span", { children: "%" })
+          ] }) })
+        ] })
+      }
     );
   };
   var progress_bar_default = ProgressBar;
 
   // src/jsx/components/_pie-chart.jsx
   var import_react30 = __toESM(require_react());
+  var import_jsx_runtime30 = __toESM(require_jsx_runtime());
   var PieChart = ({ data }) => {
     const total = data.reduce((accu, { value }) => accu + value, 0);
     let endAngle = 0;
@@ -25527,18 +26534,22 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       const d = `M200,200 L${x1},${y1} A195,195 0 ${angle > 180 ? 1 : 0},1 ${x2},${y2} z`;
       return { d };
     };
-    return /* @__PURE__ */ import_react30.default.createElement("div", { id: "con", style: { resize: "both", overflow: "hidden", display: "inline-block", width: "10em", height: "10em", padding: "0.5em" } }, /* @__PURE__ */ import_react30.default.createElement("svg", { width: "100%", height: "100%", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 400 400" }, /* @__PURE__ */ import_react30.default.createElement("style", null, `path:hover { opacity: 0.8; }`), data.map((option, index) => {
-      const startAngle = endAngle;
-      const angle = option.value / total * 360;
-      endAngle += angle;
-      const { d } = calculatePath(startAngle, angle, index);
-      return /* @__PURE__ */ import_react30.default.createElement("path", { key: index, d, fill: option.color });
-    })));
+    return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { id: "con", style: { resize: "both", overflow: "hidden", display: "inline-block", width: "10em", height: "10em", padding: "0.5em" }, children: /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("svg", { width: "100%", height: "100%", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 400 400", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("style", { children: `path:hover { opacity: 0.8; }` }),
+      data.map((option, index) => {
+        const startAngle = endAngle;
+        const angle = option.value / total * 360;
+        endAngle += angle;
+        const { d } = calculatePath(startAngle, angle, index);
+        return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d, fill: option.color }, index);
+      })
+    ] }) });
   };
   var pie_chart_default = PieChart;
 
   // src/jsx/components/_color-picker.jsx
   var import_react31 = __toESM(require_react());
+  var import_jsx_runtime31 = __toESM(require_jsx_runtime());
   var ColorPicker = ({ className, toggleClassName, value, size = null, disabled = null, label = null, onSelectionChanged, onMouseEnter, onMouseLeave }) => {
     const react = window.$_gooee.react;
     const { Button: Button2, TextBox: TextBox2, FormGroup: FormGroup2, Slider: Slider2, GridSlider: GridSlider2, FloatingElement: FloatingElement2 } = window.$_gooee.framework;
@@ -25726,21 +26737,58 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
           break;
       }
     };
-    return /* @__PURE__ */ import_react31.default.createElement(import_react31.default.Fragment, null, /* @__PURE__ */ import_react31.default.createElement("div", { ref: dropdownRef, className: "color-picker-toggle d-flex flex-row align-items-center" + (toggleClassName ? " " + toggleClassName : "") }, /* @__PURE__ */ import_react31.default.createElement(
-      "div",
-      {
-        style: { backgroundColor: isRgba || hasHash ? value : `#${value}` },
-        onMouseEnter: internalOnMouseEnter,
-        onMouseLeave: internalOnMouseLeave,
-        onClick: handleClick
-      }
-    ), label ? /* @__PURE__ */ import_react31.default.createElement("label", { className: "ml-2", onClick: handleClick }, label) : null), /* @__PURE__ */ import_react31.default.createElement(FloatingElement2, { typeKey: "ColorPicker", className: !dropdownVisible ? "pointer-events-none" : null, visible: dropdownVisible, onHidden: onDropdownHidden, targetRef: dropdownRef }, /* @__PURE__ */ import_react31.default.createElement("div", { className: classNames, style: { "--gColorPickerColor": `#${hueHex}` } }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-area-container" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-area-content" }, /* @__PURE__ */ import_react31.default.createElement(GridSlider2, { value: { x: saturation, y: 100 - lightness }, className: "color-picker-area", onValueChanged: onSaturationBrightnessUpdated }))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-hue-container" }, /* @__PURE__ */ import_react31.default.createElement(Slider2, { value: 100 - Math.min(100, Math.max(0, parseInt(hue / 360 * 100))), className: "color-picker-hue", basic: true, orientation: "vertical", onValueChanged: onHueUpdated }))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-settings" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-preview" }, /* @__PURE__ */ import_react31.default.createElement("label", null, "New"), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-block-container" }, /* @__PURE__ */ import_react31.default.createElement("div", { style: { backgroundColor: `#${hex}`, width: "75rem", height: "45rem" } }), /* @__PURE__ */ import_react31.default.createElement("div", { style: { backgroundColor: isRgba || hasHash ? value : `#${value}`, width: "75rem", height: "45rem" } })), /* @__PURE__ */ import_react31.default.createElement("label", null, "Current")), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "mt-4 form-group-inline mb-1", label: "R", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: red, onChange: (val) => onUpdateTextBox("red", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "G", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: green, onChange: (val) => onUpdateTextBox("green", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "B", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: blue, onChange: (val) => onUpdateTextBox("blue", val) }))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-extras" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "color-picker-buttons" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "btn-group-vertical" }, /* @__PURE__ */ import_react31.default.createElement(Button2, { onClick: onClickOkay, className: "px-6", color: "success", size: "sm", style: "trans" }, "OK"), /* @__PURE__ */ import_react31.default.createElement(Button2, { onClick: onDropdownHidden, className: "px-6", color: "danger", size: "sm", style: "trans" }, "Cancel"))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "d-flex align-items-start flex-cplumn justify-content-center w-x mt-x align-self-end" }, /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline ml-x", label: "#", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { onSanitize: onSanitizeHex, maxLength: 6, selectOnFocus: true, style: { width: "95rem" }, size: "sm", text: hex, onChange: (val) => onUpdateTextBox("hex", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "mt-4 form-group-inline mb-1", label: "H", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 360, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: hue, onChange: (val) => onUpdateTextBox("hue", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "S", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 100, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: saturation, onChange: (val) => onUpdateTextBox("saturation", val) })), /* @__PURE__ */ import_react31.default.createElement(FormGroup2, { className: "form-group-inline mb-1", label: "L", labelClassName: "color-picker-form-label" }, /* @__PURE__ */ import_react31.default.createElement(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 100, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: lightness, onChange: (val) => onUpdateTextBox("lightness", val) })))))));
+    return /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(import_jsx_runtime31.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { ref: dropdownRef, className: "color-picker-toggle d-flex flex-row align-items-center" + (toggleClassName ? " " + toggleClassName : ""), children: [
+        /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+          "div",
+          {
+            style: { backgroundColor: isRgba || hasHash ? value : `#${value}` },
+            onMouseEnter: internalOnMouseEnter,
+            onMouseLeave: internalOnMouseLeave,
+            onClick: handleClick
+          }
+        ),
+        label ? /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("label", { className: "ml-2", onClick: handleClick, children: label }) : null
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FloatingElement2, { typeKey: "ColorPicker", className: !dropdownVisible ? "pointer-events-none" : null, visible: dropdownVisible, onHidden: onDropdownHidden, targetRef: dropdownRef, children: /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: classNames, style: { "--gColorPickerColor": `#${hueHex}` }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "color-picker", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "color-picker-area-container", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "color-picker-area-content", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(GridSlider2, { value: { x: saturation, y: 100 - lightness }, className: "color-picker-area", onValueChanged: onSaturationBrightnessUpdated }) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "color-picker-hue-container", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(Slider2, { value: 100 - Math.min(100, Math.max(0, parseInt(hue / 360 * 100))), className: "color-picker-hue", basic: true, orientation: "vertical", onValueChanged: onHueUpdated }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "color-picker-settings", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "color-picker-preview", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("label", { children: "New" }),
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "color-picker-block-container", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { style: { backgroundColor: `#${hex}`, width: "75rem", height: "45rem" } }),
+              /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { style: { backgroundColor: isRgba || hasHash ? value : `#${value}`, width: "75rem", height: "45rem" } })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("label", { children: "Current" })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FormGroup2, { className: "mt-4 form-group-inline mb-1", label: "R", labelClassName: "color-picker-form-label", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: red, onChange: (val) => onUpdateTextBox("red", val) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FormGroup2, { className: "form-group-inline mb-1", label: "G", labelClassName: "color-picker-form-label", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: green, onChange: (val) => onUpdateTextBox("green", val) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FormGroup2, { className: "form-group-inline mb-1", label: "B", labelClassName: "color-picker-form-label", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 255, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: blue, onChange: (val) => onUpdateTextBox("blue", val) }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "color-picker-extras", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "color-picker-buttons", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "btn-group-vertical", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(Button2, { onClick: onClickOkay, className: "px-6", color: "success", size: "sm", style: "trans", children: "OK" }),
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(Button2, { onClick: onDropdownHidden, className: "px-6", color: "danger", size: "sm", style: "trans", children: "Cancel" })
+          ] }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "d-flex align-items-start flex-cplumn justify-content-center w-x mt-x align-self-end", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FormGroup2, { className: "form-group-inline ml-x", label: "#", labelClassName: "color-picker-form-label", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(TextBox2, { onSanitize: onSanitizeHex, maxLength: 6, selectOnFocus: true, style: { width: "95rem" }, size: "sm", text: hex, onChange: (val) => onUpdateTextBox("hex", val) }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FormGroup2, { className: "mt-4 form-group-inline mb-1", label: "H", labelClassName: "color-picker-form-label", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 360, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: hue, onChange: (val) => onUpdateTextBox("hue", val) }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FormGroup2, { className: "form-group-inline mb-1", label: "S", labelClassName: "color-picker-form-label", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 100, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: saturation, onChange: (val) => onUpdateTextBox("saturation", val) }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FormGroup2, { className: "form-group-inline mb-1", label: "L", labelClassName: "color-picker-form-label", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(TextBox2, { type: "number", maxLength: 3, minValue: 0, maxValue: 100, selectOnFocus: true, style: { width: "45rem" }, size: "sm", text: lightness, onChange: (val) => onUpdateTextBox("lightness", val) }) })
+          ] })
+        ] })
+      ] }) })
+    ] });
   };
   var color_picker_default = ColorPicker;
 
   // src/jsx/components/_floating-element.jsx
   var import_react32 = __toESM(require_react());
   var import_react_dom3 = __toESM(require_react_dom());
+  var import_jsx_runtime32 = __toESM(require_jsx_runtime());
   var FloatingElement = ({
     getRef,
     typeKey,
@@ -25938,13 +26986,14 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       if (closeOnClickInside && onHidden)
         onHidden();
     }, [closeOnClickInside]);
-    const elementContents = targetRef.current ? /* @__PURE__ */ import_react32.default.createElement("div", { ref: elementRef, className: "p-fixed", style: elementPos, onClick }, /* @__PURE__ */ import_react32.default.createElement("div", { className: visible ? "" : "d-none" }, children)) : null;
-    return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null, portalContainer && elementContents && import_react_dom3.default.createPortal(elementContents, portalContainer));
+    const elementContents = targetRef.current ? /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("div", { ref: elementRef, className: "p-fixed", style: elementPos, onClick, children: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("div", { className: visible ? "" : "d-none", children }) }) : null;
+    return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_jsx_runtime32.Fragment, { children: portalContainer && elementContents && import_react_dom3.default.createPortal(elementContents, portalContainer) });
   };
   var floating_element_default = FloatingElement;
 
   // src/jsx/components/_tab-control.jsx
   var import_react33 = __toESM(require_react());
+  var import_jsx_runtime33 = __toESM(require_jsx_runtime());
   var TabControl = ({ tabs, className, style, selected, bodyClassName = null, watch = [] }) => {
     const react = window.$_gooee.react;
     const [activeTab, setActiveTab] = react.useState(selected ? selected : tabs.length > 0 ? tabs[0].name : "");
@@ -25963,16 +27012,19 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     const tabsClass = "tab-control";
     const bodyClassNames = "tab-control-body" + (bodyClassName ? " " + bodyClassName : "");
     const render = react.useMemo(() => {
-      return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null, /* @__PURE__ */ import_react33.default.createElement("div", { className: classNames, style }, /* @__PURE__ */ import_react33.default.createElement("div", { className: tabsClass }, tabs.map((tab) => /* @__PURE__ */ import_react33.default.createElement(
-        "div",
-        {
-          key: tab.name,
-          className: `tab ${activeTab === tab.name ? "active" : ""}`,
-          onClick: () => onTabClick(tab),
-          onMouseEnter: () => onTabHover()
-        },
-        tab.label
-      )))), tabs.map((tab) => /* @__PURE__ */ import_react33.default.createElement("div", { key: tab.name, className: bodyClassNames, style: activeTab !== tab.name ? { display: "none" } : null }, tab.content)));
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(import_jsx_runtime33.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime33.jsx)("div", { className: classNames, style, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)("div", { className: tabsClass, children: tabs.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+          "div",
+          {
+            className: `tab ${activeTab === tab.name ? "active" : ""}`,
+            onClick: () => onTabClick(tab),
+            onMouseEnter: () => onTabHover(),
+            children: tab.label
+          },
+          tab.name
+        )) }) }),
+        tabs.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime33.jsx)("div", { className: bodyClassNames, style: activeTab !== tab.name ? { display: "none" } : null, children: tab.content }, tab.name))
+      ] });
     }, [tabs, activeTab, ...watch]);
     return render;
   };
@@ -26095,10 +27147,12 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
   }
 
   // src/jsx/gooee.jsx
-  var GooeeContainer = ({ react, pluginType, photoMode }) => {
+  var import_jsx_runtime34 = __toESM(require_jsx_runtime());
+  var GooeeContainer = ({ pluginType }) => {
+    var react = window.React;
     window.$_gooee.react = react;
     const [plugins, setPlugins] = react.useState([]);
-    const wrapWithGooee = pluginType === "default" || pluginType === "main-container" || pluginType === "main-container-end" || pluginType === "photomode-container";
+    const wrapWithGooee = pluginType === "default" || pluginType === "photomode-container";
     const getColours = react.useCallback(() => {
       const rootStyle = getComputedStyle(document.documentElement);
       return {
@@ -26203,59 +27257,22 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
         case "top-right-toolbar":
         case "bottom-right-toolbar":
         case "bottom-left-toolbar":
-        case "bottom-center-toolbar":
         case "main-container":
         case "main-container-end":
         case "photomode-container":
-          return /* @__PURE__ */ import_react35.default.createElement(ComponentInstance, { key: name, react, setupController });
+        case "main-menu":
+        case "bottom-right-container":
+          return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(ComponentInstance, { react, setupController }, name);
           break;
         case "infomode-menu":
-          return /* @__PURE__ */ import_react35.default.createElement(ComponentInstance, { key: name, react, setupController });
+          return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(ComponentInstance, { react, setupController }, name);
           break;
         default:
         case "default":
-          return /* @__PURE__ */ import_react35.default.createElement("div", { key: name, class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100" }, /* @__PURE__ */ import_react35.default.createElement(ComponentInstance, { react, setupController }));
+          return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("div", { class: "d-flex align-items-center justify-content-center position-fixed w-100 h-100", children: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(ComponentInstance, { react, setupController }) }, name);
           break;
       }
     });
-    const bottomRightToolbar = () => {
-      const [hasMoveIt, setHasMoveIt] = react.useState(null);
-      const [moveItActive, setMoveItActive] = react.useState(null);
-      react.useEffect(() => {
-        const hasMoveItSub = window.engine.on("Gooee.hasMoveIt.update", (isPresent) => {
-          setHasMoveIt(isPresent);
-        });
-        window.engine.trigger("Gooee.hasMoveIt.subscribe");
-        return () => {
-          window.engine.trigger("Gooee.hasMoveIt.unsubscribe");
-          hasMoveItSub.clear();
-        };
-      }, []);
-      react.useEffect(() => {
-        if (!hasMoveIt)
-          return;
-        const onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
-          setMoveItActive(isEnabled);
-        });
-        window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
-        return () => {
-          window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
-          onToolEnabled.clear();
-        };
-      }, [hasMoveIt]);
-      const onMoveItClick = () => {
-        if (!hasMoveIt)
-          return;
-        engine.trigger("MoveIt.MIT_EnableToggle");
-        engine.trigger("MoveIt.MIT_ToolEnabled", true);
-        engine.trigger("audio.playSound", "select-item", 1);
-      };
-      const onMoveItHover = () => {
-        engine.trigger("audio.playSound", "hover-item", 1);
-      };
-      const btnClassNames = "button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT toggle-states_X82 toggle-states_DTm" + (moveItActive ? " border-success" : "");
-      return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, hasMoveIt ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "divider_GaZ" }), /* @__PURE__ */ import_react35.default.createElement("button", { onClick: onMoveItClick, className: btnClassNames, onMouseEnter: onMoveItHover }, /* @__PURE__ */ import_react35.default.createElement("img", { src: "coui://ui-mods/images/MoveIt_Off.png", style: { width: "40rem", height: "40rem" } }))) : null);
-    };
     const topLeftToolbar = () => {
       const pluginIds = Object.keys(window.$_gooee_toolbar);
       const [toolbarVisible, setToolbarVisible] = react.useState(false);
@@ -26342,10 +27359,12 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
       };
       const dropdownMenuItems = react.useMemo(() => {
         let items = [];
+        let hasPlugins = false;
         pluginIds.forEach((pluginId) => {
           const toolbarItem = window.$_gooee_toolbar[pluginId];
           if (!toolbarItem)
             return;
+          hasPlugins = true;
           let childItems = [];
           if (toolbarItem.Children && toolbarItem.Children.length > 0) {
             toolbarItem.Children.forEach((childItem, index) => {
@@ -26380,36 +27399,38 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
             fa: toolbarItem.IsFAIcon,
             children: childItems.length == 0 ? null : childItems
           });
-          if (!hasPluginsToShow)
-            setHasPluginsToShow(childItems.length >= 1);
         });
+        setHasPluginsToShow(hasPlugins);
         return items;
       }, [toolbarDynamicChildren]);
-      return hasPluginsToShow ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(
-        "button",
-        {
-          ref: buttonRef,
-          className: "button_ke4 button_ke4 button_H9N",
-          onMouseEnter: onMouseOverToolbar,
-          onClick: onMouseClickToolbar
-        },
-        /* @__PURE__ */ import_react35.default.createElement(icon_default, { icon: "solid-briefcase", className: "icon_be5", size: "lg", fa: true })
-      ), /* @__PURE__ */ import_react35.default.createElement(
-        dropdown_menu_default,
-        {
-          buttonRef,
-          visible: toolbarVisible,
-          items: dropdownMenuItems,
-          onItemClick: onDropDownItemClick,
-          onChildItemClick: onDropDownChildItemClick,
-          onHidden: onDropdownHidden
-        }
-      )) : null;
+      return hasPluginsToShow ? /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)(import_jsx_runtime34.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+          "button",
+          {
+            ref: buttonRef,
+            className: "button_ke4 button_h9N",
+            onMouseEnter: onMouseOverToolbar,
+            onClick: onMouseClickToolbar,
+            children: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(icon_default, { icon: "solid-briefcase", className: "icon_be5", size: "lg", fa: true })
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+          dropdown_menu_default,
+          {
+            buttonRef,
+            visible: toolbarVisible,
+            items: dropdownMenuItems,
+            onItemClick: onDropDownItemClick,
+            onChildItemClick: onDropDownChildItemClick,
+            onHidden: onDropdownHidden
+          }
+        )
+      ] }) : null;
     };
-    const render = /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, wrapWithGooee ? /* @__PURE__ */ import_react35.default.createElement("div", { class: "gooee" }, renderPlugins) : /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, pluginType === "top-left-toolbar" ? topLeftToolbar() : null, renderPlugins, pluginType === "bottom-right-toolbar" ? bottomRightToolbar() : null));
-    if (pluginType === "photomode-container") {
-      return /* @__PURE__ */ import_react35.default.createElement("div", { className: photoMode.className }, /* @__PURE__ */ import_react35.default.createElement("div", { className: "photomode-wrapper" }, photoMode.children), render);
-    }
+    const render = /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(import_jsx_runtime34.Fragment, { children: wrapWithGooee ? /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("div", { class: "gooee", children: renderPlugins }) : /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)(import_jsx_runtime34.Fragment, { children: [
+      pluginType === "top-left-toolbar" ? topLeftToolbar() : null,
+      renderPlugins
+    ] }) });
     return render;
   };
   window.$_gooee.react = null;
@@ -26450,6 +27471,7 @@ function _gBroadcastVisibilityChange(typeKey, guid) {
     FloatingElement: floating_element_default,
     useDebouncedCallback
   };
+  console.log("dasdasdasd");
 })();
 /*! Bundled license information:
 
@@ -26457,6 +27479,17 @@ react/cjs/react.development.js:
   (**
    * @license React
    * react.development.js
+   *
+   * Copyright (c) Facebook, Inc. and its affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
+
+react/cjs/react-jsx-runtime.development.js:
+  (**
+   * @license React
+   * react-jsx-runtime.development.js
    *
    * Copyright (c) Facebook, Inc. and its affiliates.
    *

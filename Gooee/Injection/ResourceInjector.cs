@@ -3,7 +3,6 @@ using Gooee.Plugins;
 using Colossal.Reflection;
 using Colossal.UI;
 using Game.SceneFlow;
-using Game.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,85 +22,30 @@ namespace Gooee.Injection
         const string UI_IDENTIFIER = "gooeeui";
         const string URL_PREFIX = $"coui://{UI_IDENTIFIER}/";
 
-        public static bool MakeHookUICompatible = false;
-
         public static readonly string MOD_PATH = Path.Combine( Application.persistentDataPath, "Mods", "Gooee" );
         static readonly string PLUGIN_PATH = Path.Combine( MOD_PATH, "Plugins" );
         static readonly string CHANGELOG_READ_PATH = Path.Combine( MOD_PATH, "changelog.ini" );
 
         static readonly string UI_PATH = Path.Combine( Application.streamingAssetsPath, "~UI~" );
         static readonly string GAMEUI_PATH = Path.Combine( UI_PATH, "GameUI" );
-        static readonly string HOOKUI_PATH = Path.Combine( UI_PATH, "HookUI" );
 
         static readonly string GAMEUI_INDEX_HTML = Path.Combine( GAMEUI_PATH, "index.html" );
-        static readonly string GAMEUI_INDEX_JS = Path.Combine( GAMEUI_PATH, "index.js" );
-
-        public static readonly string HOOKUI_INDEX_HTML = Path.Combine( HOOKUI_PATH, "index.html" );
-        static readonly string HOOKUI_INDEX_JS = Path.Combine( HOOKUI_PATH, "index.js" );
 
         public static readonly string NON_HOOKUI_INDEX_HTML = Path.Combine( MOD_PATH, "index.html" );
-        static readonly string NON_HOOKUI_INDEX_JS = Path.Combine( MOD_PATH, "index.js" );
 
-        const string CV_JS_FILENAME = "gooee.js";
+        const string CV_JS_FILENAME = "Gooee.Core.js";
         const string CV_CSS_FILENAME = "gooee.css";
 
         const string SCRIPT_ELEMENT = "<script src=\"index.js\"></script>";
-        const string NON_HOOKUI_SCRIPT_ELEMENT = $"<script src=\"{URL_PREFIX}index.js\"></script>";
-        const string STYLE_ELEMENT = "<link href=\"index.css\" rel=\"stylesheet\"/>";
+        const string NON_HOOKUI_SCRIPT_ELEMENT = $"<script src=\"coui://GameUI/index.js\"></script>";
         const string NON_HOOKUI_STYLE_ELEMENT = "<link href=\"index.css\" rel=\"stylesheet\">";
         const string GOOEE_STYLE_ELEMENT = "<link href=\"coui://GameUI/index.css\" rel=\"stylesheet\"/>";
         const string CV_SCRIPT_ELEMENT = $"<script src=\"{URL_PREFIX}{CV_JS_FILENAME}\"></script>";
         const string CV_STYLE_ELEMENT = $"    <link href=\"{URL_PREFIX}{CV_CSS_FILENAME}\" rel=\"stylesheet\"/>";
 
-        static readonly (string Search, string Replacement)[] INJECTION_POINTS = new[]
-        {
-            // Use this as a guide to find when patch changes the names!!
-            // Look for 'Continue Tutorial'
-            // (0,z.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,z.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,z.jsx)("div",{className:zTe,children:(0,z.jsxs)(Fn,{focusKey:tIe,children:[(0,z.jsx)(Ok,{}),(0,z.jsx)(qG,{}),(0,z.jsx)(jOe,{}),(0,z.jsx)(VOe,{}),(0,z.jsx)(UOe,{}),(0,z.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}})
-            ("(0,z.jsx)(BSe,{})]", "(0,z.jsx)(BSe,{}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'bottom-right-toolbar'})]"),
-            //Y
-            // This one tends to be quite reliable due to pauseMenuLayout
-            // but the xxx. will vary between patches
-            // className:Bge.pauseMenuLayout,children:[R&&(0,z.jsx)
-            ("className:nbe.pauseMenuLayout,children:[", "className:nbe.pauseMenuLayout,children:[(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'top-right-toolbar'}),"),
-            
-            // This one is a bit of a pain in the arse so you still have
-            // to use 'Continue Tutorial' and this structure to find it
-            // (0,z.jsx)(JOe,{})]}),(0,z.jsx)(ATe,{focusKey:nIe}),(0,z.jsxs)("div",{className:qTe,children:[aIe,(0,z.jsx)(jTe,{}),oIe,(0,z.jsx)(ETe,{}),oIe,(0,z.jsx)(OTe,{}),oIe,(0,z.jsx)(DTe,{}),aIe,(0,z.jsx)(ITe,{})]})]})})})},sIe=function(){var t=C(Kp);return(0,z.jsx)("div",{className:Oe()(HTe,t&&KTe),children:(0,z.jsx)("div",{className:zTe,children:(0,z.jsxs)(Fn,{focusKey:tIe,children:[(0,z.jsx)(Ok,{}),(0,z.jsx)(qG,{}),(0,z.jsx)(jOe,{}),(0,z.jsx)(VOe,{}),(0,z.jsx)(UOe,{}),(0,z.jsx)(MOe,{})]})})})},cIe=function(t){var n=t.children,r=C(Yc),o=C(Xc),a=C(Gc),l=aS(),s=(0,i.useMemo)((function(){return{"Continue Tutorial":tu}}),[]),c=(0,i.useMemo)((function(){return{"Previous Tutorial Phase":iS}})
-            ("(0,z.jsx)(vSe,{})]", "(0,z.jsx)(vSe,{}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'bottom-left-toolbar'})]"),
-
-            // This one is quite easy to find as .toolbar is a constant
-            // but xxx. and the (xxx, will vary between patches
-            // (0,z.jsx)(rIe,{focusKey:MSe.toolbar})
-            ("(0,z.jsx)(rTe,{focusKey:pIe.toolbar})", "(0,z.jsx)(rTe,{focusKey:pIe.toolbar}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'default'})"),
-            
-            // This is similar to the above, so follow the same procedure
-            // ]}),(0,z.jsx)(rIe,{focusKey:MSe.toolbar})
-            ("]}),(0,z.jsx)(rTe,{focusKey:pIe.toolbar})", ",(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'main-container'}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'main-container-end'})]}),(0,z.jsx)(rTe,{focusKey:pIe.toolbar})"),
-
-            // This is again fairly easy due to the photoModeLayout
-            // but xxx. will vary etc between patches
-            // var n=t.children;return(0,z.jsx)(\"div\",{className:Oe()(Bge.photoModePanelLayout),children:n})
-            ("var t=e.children;return(0,z.jsx)(\"div\",{className:_d()(nbe.photoModePanelLayout),children:t})", "var t=e.children;return(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'photomode-container',photoMode:{className:_d()(nbe.photoModePanelLayout),children:t}})"),
-           // 
-        };
-
-        // This one is quite static as it relies simply on HookUI
-        static readonly (string Search, string Replacement) HOOKUI_INJECTION_POINT = ("(0,z.jsx)(window._$hookui_menu,{react:Y})]", "(0,z.jsx)(window._$hookui_menu,{react:Y}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'top-left-toolbar'})]");
-
-        // This one is quite easy, you can look for .lock or the class names like so:
-        // qge.lock})})})})]})};const Qge={field:"field_eZ6",header:"header_oa2"
-        static readonly (string Search, string Replacement) NON_HOOKUI_INJECTION_POINT = ("ube.lock})})})})]", "ube.lock})})})}),(0,z.jsx)(window.$_gooee.container,{react:Y,pluginType:'top-left-toolbar'})]");
-
         private static readonly GooeeLogger _log = GooeeLogger.Get( "Cities2Modding" );
 
         static bool HasInjected = false;
-
-        public static bool InvalidVersion
-        {
-            get;
-            private set;
-        }
 
         public static JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
         {
@@ -113,33 +57,15 @@ namespace Gooee.Injection
             }
         };
 
-        static ResourceInjector( )
-        {
-            InvalidVersion = !ValidateVersion( );
-        }
-
-        public static bool IsHookUILoaded( )
-        {
-            if ( MakeHookUICompatible )
-                return true;
-
-            MakeHookUICompatible = AppDomain.CurrentDomain.GetAssemblies( )
-                .Count( a => !a.IsDynamic && a.FullName.ToLowerInvariant( ).Contains( "hookuimod" ) ) > 0;
-            
-            return MakeHookUICompatible;
-        }
-
         /// <summary>
         /// Inject Gooee into the HookUI index.html and index.js.
         /// </summary>
         public static void Inject( )
         {
-            if ( HasInjected || InvalidVersion )
+            if ( HasInjected )
                 return;
 
-            MakeHookUICompatible = IsHookUILoaded( );
-
-            if ( !Directory.Exists( MakeHookUICompatible ? HOOKUI_PATH : GAMEUI_PATH ) )
+            if ( !Directory.Exists( GAMEUI_PATH ) )
             {
                 _log.Error( "No UI folder found!" );
                 return;
@@ -148,47 +74,21 @@ namespace Gooee.Injection
             SaveResources( );
 
             PluginLoader.Load( );
-
-            InjectJS( );
+          
+            //InjectJS( );
             InjectHTML( );
 
             SetupFileWatcher( );
-            _log.Info( $"Installed Gooee ({(MakeHookUICompatible ? "HOOKUI-INJECTION" : "DEFAULT-INJECTION" )})." );
+            _log.Info( $"Installed Gooee (NEW-INJECTION)." );
             HasInjected = true;
-        }
-
-        private static void InjectJS( )
-        {
-            var js = File.ReadAllText( MakeHookUICompatible ? HOOKUI_INDEX_JS : GAMEUI_INDEX_JS );
-
-            if ( MakeHookUICompatible )
-            {
-                js = js.Replace( HOOKUI_INJECTION_POINT.Search, HOOKUI_INJECTION_POINT.Replacement );
-            }
-            else
-                js = js.Replace( NON_HOOKUI_INJECTION_POINT.Search, NON_HOOKUI_INJECTION_POINT.Replacement );
-
-            foreach ( var injectionPoint in INJECTION_POINTS )
-            {
-                js = js.Replace( injectionPoint.Search, injectionPoint.Replacement );
-            }
-
-            File.WriteAllText( MakeHookUICompatible ? HOOKUI_INDEX_JS : NON_HOOKUI_INDEX_JS, js );
-        }
-
-        private static bool ValidateVersion( )
-        {
-            var js = File.ReadAllText( GAMEUI_INDEX_JS );
-
-            return js.Contains( NON_HOOKUI_INJECTION_POINT.Search );
         }
 
         private static void InjectHTML( )
         {
-            var html = File.ReadAllText( MakeHookUICompatible ? HOOKUI_INDEX_HTML : GAMEUI_INDEX_HTML );
+            var html = File.ReadAllText( GAMEUI_INDEX_HTML );
             html = TransformHTML( html );
 
-            File.WriteAllText( MakeHookUICompatible ? HOOKUI_INDEX_HTML : NON_HOOKUI_INDEX_HTML, html );
+            File.WriteAllText( NON_HOOKUI_INDEX_HTML, html );
         }
 
         /// <summary>
@@ -207,10 +107,10 @@ namespace Gooee.Injection
 
             IncludePlugins( scriptBuilder, styleBuilder );
 
-            scriptBuilder.AppendLine( "    " + ( MakeHookUICompatible ? SCRIPT_ELEMENT : NON_HOOKUI_SCRIPT_ELEMENT ) );
+            scriptBuilder.AppendLine( "    " + NON_HOOKUI_SCRIPT_ELEMENT );
 
             html = html.Replace( SCRIPT_ELEMENT, scriptBuilder.ToString( ) );
-            html = html.Replace( MakeHookUICompatible ? STYLE_ELEMENT : NON_HOOKUI_STYLE_ELEMENT, styleBuilder.ToString( ) );
+            html = html.Replace( NON_HOOKUI_STYLE_ELEMENT, styleBuilder.ToString( ) );
             return html;
         }
 
@@ -282,6 +182,11 @@ namespace Gooee.Injection
                     var scriptFileName = plugin.Name.Replace( " ", "_" ) + Path.GetExtension( plugin.ScriptResource );
                     var newScript = $"    <script src=\"{URL_PREFIX}Plugins/{scriptFileName}\"></script>";
                     scriptBuilder.AppendLine( newScript );
+                    // Can't use this because trying to use React JSX encounters a missing runtime
+                    //GameManager.instance.userInterface.appBindings.AddActiveUIModLocation(
+                    //[
+                    //    $"{URL_PREFIX}Plugins/{scriptFileName}"
+                    //] );
                 }
 
                 if ( plugin is IGooeeStyleSheet stPlugin && !string.IsNullOrEmpty( stPlugin.StyleResource ) )
@@ -290,7 +195,7 @@ namespace Gooee.Injection
                     var newStyle = $"    <link href=\"{URL_PREFIX}Plugins/{styleFileName}\" rel=\"stylesheet\"/>";
                     styleBuilder.AppendLine( newStyle );
                 }
-
+                // TODO - Complete changelog stuff
                 //if ( plugin is IGooeeChangeLog clPlugin && !string.IsNullOrEmpty( clPlugin.ChangeLogResource ) )
                 //{
                 //    pluginChangeLogs.Add( "{ \"name\": \"" + plugin.Name + "\", \"version\": \"" + clPlugin.Version + "\", \"timestamp\": \"" + GetPluginTimeStamp( plugin.GetType().Assembly ).ToString() + "\" }" );
@@ -381,7 +286,7 @@ namespace Gooee.Injection
         /// </summary>
         private static void SaveResources( )
         {
-            SaveResource( "Gooee.Resources", CV_JS_FILENAME );
+            //SaveResource( "Gooee.Resources", CV_JS_FILENAME );
             SaveResource( "Gooee.Resources", CV_CSS_FILENAME );
             ExtractIcons( );
         }

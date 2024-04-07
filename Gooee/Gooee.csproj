@@ -22,7 +22,7 @@
 		<!--The file should contain 2 lines:-->
 		<!--Your.PDX@Account.login-->
 		<!--Your-PDX-Account-Pa$$word-->
-		<PDXAccountDataPath>$(USERPROFILE)\COasdas\d33asdasdasd.txt</PDXAccountDataPath>
+		<PDXAccountDataPath>$(USERPROFILE)\SomeSecretFolder\Somewhere.txt</PDXAccountDataPath>
 
 		<!--The file where mod information which is required for publishing mod on PDX mods are stored-->
 		<PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
@@ -32,8 +32,8 @@
 		<Copyright>Cities2Modding</Copyright>
 		<PackageProjectUrl>https://github.com/Cities2Modding/Gooee</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Cities2Modding/Gooee</RepositoryUrl>
-		<AssemblyVersion>1.1.6</AssemblyVersion>
-		<Version>1.1.6</Version>
+		<AssemblyVersion>1.1.8</AssemblyVersion>
+		<Version>1.1.8</Version>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -45,13 +45,12 @@
 	
 	<ItemGroup>
 	  <EmbeddedResource Include="Resources\gooee.css" />
-	  <EmbeddedResource Include="Resources\gooee.js" />
 	  <EmbeddedResource Include="Resources\lang\en-US.yml" />
 	  <EmbeddedResource Include="Resources\settings.xml" />
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <PackageReference Include="Lib.Harmony" Version="2.2.2" Exclude="runtime" />
+	  <PackageReference Include="Lib.Harmony" Version="2.2.2" ExcludeAssets="runtime" />
 	</ItemGroup>
 
 	<!--Imports must be after PropertyGroup block-->
@@ -143,6 +142,12 @@
 
 	<ItemGroup>
 	  <None Update="FA.zip">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Gooee.Core.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Gooee.mjs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

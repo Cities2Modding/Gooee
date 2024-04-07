@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "./components/_button";
 import Grid from "./components/_grid";
 import ToolTip from "./components/_tooltip";
@@ -36,13 +35,12 @@ import useDebouncedCallback from "./_debouncer";
 
 //import ChangeLog from "./modules/_changelog";
 
-const GooeeContainer = ({ react, pluginType, photoMode }) => {
+const GooeeContainer = ({ pluginType }) => {
+    var react = window.React;
     window.$_gooee.react = react;
     const [plugins, setPlugins] = react.useState([]);
 
     const wrapWithGooee = pluginType === "default"
-        || pluginType === "main-container"
-        || pluginType === "main-container-end"
         || pluginType === "photomode-container";
 
     const getColours = react.useCallback(() => {
@@ -105,13 +103,13 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                     if (!window.$_gooee.bindings[Controller]) {
                         window.$_gooee.bindings[Controller] = () => {
                             const [model, setModel] = react.useState(window.$_gooee_defaultModel[`${PluginName}.${Controller}`] ?? {});
-                            
+
                             react.useEffect(() => {
                                 const eventName = `${PluginName}.${Controller}.model`;
                                 const updateEvent = eventName + ".update";
                                 const subscribeEvent = eventName + ".subscribe";
                                 const unsubscribeEvent = eventName + ".unsubscribe";
-                                
+
                                 var sub = engine.on(updateEvent, (data) => {
                                     setModel(data ? JSON.parse(data) : {});
                                 })
@@ -162,10 +160,12 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                 case "top-right-toolbar":
                 case "bottom-right-toolbar":
                 case "bottom-left-toolbar":
-                case "bottom-center-toolbar":
+                /*case "bottom-center-toolbar":*/
                 case "main-container":
                 case "main-container-end":
                 case "photomode-container":
+                case "main-menu":
+                case "bottom-right-container":
                     return <ComponentInstance key={name} react={react} setupController={setupController} />;
                     break;
 
@@ -178,66 +178,8 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                     return <div key={name} class="d-flex align-items-center justify-content-center position-fixed w-100 h-100"><ComponentInstance react={react} setupController={setupController} /></div>;
                     break;
             }
-        });      
-
-    // Add a stub button for MoveIt compatibility!
-    const bottomRightToolbar = () => {
-        const [hasMoveIt, setHasMoveIt] = react.useState(null);
-        const [moveItActive, setMoveItActive] = react.useState(null);
-
-        react.useEffect(() => {
-            const hasMoveItSub = window.engine.on("Gooee.hasMoveIt.update", (isPresent) => {
-                setHasMoveIt(isPresent);
-            });
-
-            window.engine.trigger("Gooee.hasMoveIt.subscribe");
-            
-            return () => {
-                window.engine.trigger("Gooee.hasMoveIt.unsubscribe");
-                hasMoveItSub.clear();
-            };
-        }, []);
-
-        react.useEffect(() => {
-            if (!hasMoveIt)
-                return;
-
-            const onToolEnabled = window.engine.on("MoveIt.MIT_ToolEnabled.update", (isEnabled) => {
-                setMoveItActive(isEnabled);
-            });
-
-            window.engine.trigger("MoveIt.MIT_ToolEnabled.subscribe");
-
-            return () => {
-                window.engine.trigger("MoveIt.MIT_ToolEnabled.unsubscribe");
-                onToolEnabled.clear();
-            };
-        }, [hasMoveIt]);
-
-        const onMoveItClick = () => {
-            if (!hasMoveIt)
-                return;           
-            engine.trigger("MoveIt.MIT_EnableToggle");
-            engine.trigger("MoveIt.MIT_ToolEnabled", true);
-            engine.trigger("audio.playSound", "select-item", 1);
-        };
-
-        const onMoveItHover = () => {
-            engine.trigger("audio.playSound", "hover-item", 1);
-        };
-
-        const btnClassNames = "button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT button_s2g button_ECf item_It6 item-mouse-states_Fmi item-selected_tAM item-focused_FuT toggle-states_X82 toggle-states_DTm" + (moveItActive ? " border-success" : "");
-
-        return <>
-            {hasMoveIt ? <>
-                <div className="divider_GaZ"></div>
-                <button onClick={onMoveItClick} className={btnClassNames} onMouseEnter={onMoveItHover}>
-                    <img src="coui://ui-mods/images/MoveIt_Off.png" style={{ width: "40rem", height: "40rem" }} />
-                </button>
-            </> : null}
-        </>;
-    };
-
+        });
+           
     const topLeftToolbar = () => {
         const pluginIds = Object.keys(window.$_gooee_toolbar);
         const [toolbarVisible, setToolbarVisible] = react.useState(false);
@@ -311,7 +253,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
         const onDropdownHidden = () => {
             if (!toolbarVisible)
                 return;
-                
+
             setToolbarVisible(false);
             engine.trigger("audio.playSound", "close-panel", 1);
         };
@@ -357,7 +299,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
 
             if (!isNaN(childIndex) && childIndex >= 0) {
                 const childToolbarItem = childItem.isDynamic ? toolbarDynamicChildren[key.toLowerCase()][childIndex] : toolbarItem.Children[childIndex];
-               
+
                 if (childToolbarItem) {
                     const method = childToolbarItem.OnClick ? childToolbarItem.OnClick : childToolbarItem.Method;
                     const triggerKey = `${toolbarItem.Name.toLowerCase()}.${toolbarItem.Controller}.${method}`;
@@ -373,12 +315,15 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
 
         const dropdownMenuItems = react.useMemo(() => {
             let items = [];
+            let hasPlugins = false;
 
             pluginIds.forEach(pluginId => {
                 const toolbarItem = window.$_gooee_toolbar[pluginId];
 
                 if (!toolbarItem)
                     return;
+
+                hasPlugins = true;
 
                 let childItems = [];
 
@@ -394,7 +339,7 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                         });
                     });
                 }
-                
+
                 if (toolbarDynamicChildren && toolbarDynamicChildren[pluginId]) {
                     const dynamicChildren = toolbarDynamicChildren[pluginId];
                     dynamicChildren.forEach((childItem, index) => {
@@ -416,15 +361,13 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
                     fa: toolbarItem.IsFAIcon,
                     children: childItems.length == 0 ? null : childItems
                 });
-                if (!hasPluginsToShow)
-                    setHasPluginsToShow(childItems.length >= 1);
             });
-
+            setHasPluginsToShow(hasPlugins);
             return items;
         }, [toolbarDynamicChildren]);
 
         return hasPluginsToShow ? <>
-            <button ref={buttonRef} className="button_ke4 button_ke4 button_H9N"
+            <button ref={buttonRef} className="button_ke4 button_h9N"
                 onMouseEnter={onMouseOverToolbar} onClick={onMouseClickToolbar}>
                 <Icon icon="solid-briefcase" className="icon_be5" size="lg" fa />
             </button>
@@ -437,23 +380,8 @@ const GooeeContainer = ({ react, pluginType, photoMode }) => {
     const render = <>
         {wrapWithGooee ? <div class="gooee">
         {renderPlugins}
-        </div> : <>{pluginType === "top-left-toolbar" ? topLeftToolbar() : null}{renderPlugins}{pluginType === "bottom-right-toolbar" ? bottomRightToolbar() : null}</>}
+        </div> : <>{pluginType === "top-left-toolbar" ? topLeftToolbar() : null}{renderPlugins}</>}
     </>;
-
-    if (pluginType === "photomode-container") {
-        return <div className={photoMode.className}>
-            <div className="photomode-wrapper">{photoMode.children}</div>
-            {render}
-            {/*<div className="gooee">
-                <Modal title="Test" className="photomode-wrapper">
-                    <div>
-                        Hello, world!
-                    </div>
-                </Modal>
-            </div>*/}
-        </div>;
-    }
-
     return render;
 };
 
@@ -495,3 +423,5 @@ window.$_gooee.framework = {
     FloatingElement,
     useDebouncedCallback
 };
+
+console.log("dasdasdasd");

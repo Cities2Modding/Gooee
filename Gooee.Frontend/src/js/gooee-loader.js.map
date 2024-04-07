@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../ts/gooee-container.tsx", "../ts/gooee-loader.tsx"],
+  "sourcesContent": ["export const HelloWorldComponent = () => {\r\n    // This is a void component that does not output anynthing.\r\n    // Cities: Skylines 2 UI is built with React and mods support outputting standard\r\n    // React JSX elements!\r\n    console.log(\"Hello world!\");\r\n\r\n    return <div>Hello, world!</div>;\r\n}", "import { ModRegistrar } from \"cs2/modding\";\r\nimport { HelloWorldComponent } from \"./gooee-container\";\r\n\r\nconst register: ModRegistrar = (moduleRegistry) => {\r\n\r\n    moduleRegistry.append('Menu', HelloWorldComponent);\r\n}\r\n\r\nexport default register;\r\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;AAMW;AANJ,MAAM,sBAAsB,MAAM;AAIrC,YAAQ,IAAI,cAAc;AAE1B,WAAO,4CAAC,SAAI,2BAAa;AAAA,EAC7B;;;ACJA,MAAM,WAAyB,CAAC,mBAAmB;AAE/C,mBAAe,OAAO,QAAQ,mBAAmB;AAAA,EACrD;AAEA,MAAO,uBAAQ;",
+  "names": []
+}

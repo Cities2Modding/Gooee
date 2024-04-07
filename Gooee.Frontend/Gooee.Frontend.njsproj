@@ -4,6 +4,9 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>LegacyFlavour.Frontend</Name>
     <RootNamespace>LegacyFlavour.Frontend</RootNamespace>
+    <EnableTypeScript>true</EnableTypeScript>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -29,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="gulpfile.js" />
+    <Content Include="mod.json" />
     <Content Include="package.json" />
     <Content Include="src\jsx\components\_container.jsx" />
     <Content Include="src\jsx\components\_dropdown-menu.jsx" />
@@ -39,6 +43,7 @@
     <Content Include="src\jsx\components\_moveable-modal.jsx" />
     <Content Include="src\jsx\components\_tab-control.jsx" />
     <Content Include="src\jsx\_debouncer.jsx" />
+    <Content Include="src\js\gooee.bridge.js" />
     <Content Include="src\scss\components\_colour-picker.scss" />
     <Content Include="src\jsx\components\_pie-chart.jsx" />
     <Content Include="src\jsx\components\_progress-bar.jsx" />
@@ -106,6 +111,7 @@
     <Content Include="src\scss\_font-awesome.scss" />
     <Content Include="src\scss\_mixins.scss" />
     <Content Include="src\scss\_variables.scss" />
+    <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />

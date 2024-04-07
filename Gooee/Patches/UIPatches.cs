@@ -25,40 +25,40 @@ namespace Gooee.Patches
             ResourceInjector.SetupResourceHandler( );
         }
 
-        [HarmonyPatch( typeof( GameManager ), "InitializeUI" )]
-        public static class GameManager_InitializeUIPatch
-        {
-            public static void Postfix( GameManager __instance )
-            {
-                if ( ResourceInjector.IsHookUILoaded( ) )
-                {
-                    return;
-                }
+        //[HarmonyPatch( typeof( GameManager ), "InitializeUI" )]
+        //public static class GameManager_InitializeUIPatch
+        //{
+        //    public static void Postfix( GameManager __instance )
+        //    {
+        //        if ( ResourceInjector.IsHookUILoaded( ) )
+        //        {
+        //            return;
+        //        }
 
-                UnityEngine.Debug.Log( "Using non-HookUI injection!" );
-                EnsureFolder( );
-                ResourceInjector.Inject( );
-                __instance.userInterface.view.url = INDEX_PATH;
-                UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
-            }
-        }
+        //        UnityEngine.Debug.Log( "Using non-HookUI injection!" );
+        //        EnsureFolder( );
+        //        ResourceInjector.Inject( );
+        //        __instance.userInterface.view.url = INDEX_PATH;
+        //        UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
+        //    }
+        //}
 
-        [HarmonyPatch( typeof( UISystemBootstrapper ), "Awake" )]
-        public static class UISystemBootstrapper_AwakePatch
-        {
-            public static void Postfix( UISystemBootstrapper __instance )
-            {
-                if ( ResourceInjector.IsHookUILoaded( ) )
-                {
-                   return;
-                }
+        //[HarmonyPatch( typeof( UISystemBootstrapper ), "Awake" )]
+        //public static class UISystemBootstrapper_AwakePatch
+        //{
+        //    public static void Postfix( UISystemBootstrapper __instance )
+        //    {
+        //        if ( ResourceInjector.IsHookUILoaded( ) )
+        //        {
+        //           return;
+        //        }
 
-                EnsureFolder( );
-                ResourceInjector.Inject( );
-                UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
-                __instance.m_Url = INDEX_PATH;
-            }
-        }
+        //        EnsureFolder( );
+        //        ResourceInjector.Inject( );
+        //        UIManager.defaultUISystem.defaultUIView.url = INDEX_PATH;
+        //        __instance.m_Url = INDEX_PATH;
+        //    }
+        //}
 
         [HarmonyPatch( typeof( ModManager ), "InitializeUIModules" )]
         public static class ModManager_InitializeUIModulesPatch
@@ -95,9 +95,6 @@ namespace Gooee.Patches
         /// <param name="response"></param>
         static void GameResourceRequestDataPrefix( ref uint id, ref string uri, ref IResourceResponse response )
         {
-            if ( ResourceInjector.IsHookUILoaded( ) )
-                return;
-
             var lowerUrl = uri.ToLowerInvariant( );
 
             if ( lowerUrl.StartsWith( "coui://gooeeui/media/" ) )

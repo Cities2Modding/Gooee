@@ -13,9 +13,7 @@ using System;
 using Colossal.UI.Binding;
 using Newtonsoft.Json;
 using Game.SceneFlow;
-using Colossal.Serialization.Entities;
 using Colossal.UI;
-using static Game.Rendering.Debug.RenderPrefabRenderer;
 using Gooee.Patches;
 
 namespace Gooee.Systems
@@ -36,40 +34,21 @@ namespace Gooee.Systems
         private readonly GooeeLogger _log = GooeeLogger.Get( "Cities2Modding" );
         private GetterValueBinding<string> _toolbarItemsBinding;
 
-        private bool HasMoveIt
-        {
-            get;
-            set;
-        }
-
         internal void LoadGooee( )
         {
             //LocalisationHelper.Load( "Gooee.Resources.lang", typeof( GooeeUISystem ).Assembly, "LibrarySettings" );
 
             //_librarySettings.Register( );
+           
+            ResourceInjector.SetupResourceHandler( );
+            ResourceInjector.Inject( );
 
-            if ( ResourceInjector.InvalidVersion )
-            {
-                _log.Error( "Critical error, mods using Gooee cannot be loaded because the game version has changed. Please ensure you are using the latest version of Gooee and if no new version is out yet please be aware it takes a bit of time to adjust to patch updates. Thank you." );
+            GameManager.instance.userInterface.view.url = UIPatches.INDEX_PATH;
+            UIManager.defaultUISystem.defaultUIView.url = UIPatches.INDEX_PATH;
 
-            }
-            else
-            {
-                if ( !ResourceInjector.IsHookUILoaded( ) )
-                {
-                    ResourceInjector.SetupResourceHandler( );
-                    ResourceInjector.Inject( );
+            PluginLoader.Plugins.Values.OrderBy( v => v.Name ).ForEach( ProcessPlugin );
 
-                    GameManager.instance.userInterface.view.url = UIPatches.INDEX_PATH;
-                    UIManager.defaultUISystem.defaultUIView.url = UIPatches.INDEX_PATH;
-                }
-                else
-                    ResourceInjector.Inject( );
-
-                PluginLoader.Plugins.Values.OrderBy( v => v.Name ).ForEach( ProcessPlugin );
-
-                GameManager.instance.userInterface.view.View.Reload( );
-            }
+            GameManager.instance.userInterface.view.View.Reload( );           
 
             if ( _toolbarChildSubscribers?.Count > 0 )
             {
@@ -80,9 +59,7 @@ namespace Gooee.Systems
                     return _toolbarChildJsonCache;
                 } ) );
             }
-
-            AddUpdateBinding( new GetterValueBinding<bool>( "Gooee", "hasMoveIt", ( ) => HasMoveIt ) );
-
+                        
             //AddBinding( new TriggerBinding( "gooee", "onCloseChangeLog", ResourceInjector.WriteChangeLogRead ) );
             //AddBinding( new TriggerBinding( "gooee", "resetChangeLog", ResourceInjector.ResetChangeLog ) );            
 
@@ -90,16 +67,6 @@ namespace Gooee.Systems
             //{
             //    return ResourceInjector.HasChangeLogUpdated( );
             //} ) );
-        }
-        protected override void OnGameLoadingComplete( Purpose purpose, GameMode mode )
-        {
-            base.OnGameLoadingComplete( purpose, mode );
-
-            if ( mode == GameMode.MainMenu )
-            {
-                HasMoveIt = AppDomain.CurrentDomain.GetAssemblies( )
-                    .SelectMany( a => a.GetTypes( ) ).Count( t => t.FullName == "MoveIt.Systems.MIT_System" ) > 0;
-            }
         }
 
         public void BuildToolbarChildCache( bool forceUpdate = false )

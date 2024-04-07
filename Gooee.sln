@@ -4,8 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gooee", "Gooee\Gooee.csproj", "{BDDA1309-0639-4D7E-9CA5-E1CADB4D1D51}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0181C160-850A-4E11-97C5-C5A2D26EC3B5} = {0181C160-850A-4E11-97C5-C5A2D26EC3B5}
+		{312F1C9C-620E-438B-BC33-ECE87ABEB7E0} = {312F1C9C-620E-438B-BC33-ECE87ABEB7E0}
+	EndProjectSection
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Gooee.Frontend", "Gooee.Frontend\Gooee.Frontend.njsproj", "{0181C160-850A-4E11-97C5-C5A2D26EC3B5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{312F1C9C-620E-438B-BC33-ECE87ABEB7E0} = {312F1C9C-620E-438B-BC33-ECE87ABEB7E0}
+	EndProjectSection
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Gooee.Bridge", "Gooee.Bridge\Gooee.Bridge.njsproj", "{312F1C9C-620E-438B-BC33-ECE87ABEB7E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +30,10 @@ Global
 		{0181C160-850A-4E11-97C5-C5A2D26EC3B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0181C160-850A-4E11-97C5-C5A2D26EC3B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0181C160-850A-4E11-97C5-C5A2D26EC3B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{312F1C9C-620E-438B-BC33-ECE87ABEB7E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{312F1C9C-620E-438B-BC33-ECE87ABEB7E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{312F1C9C-620E-438B-BC33-ECE87ABEB7E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{312F1C9C-620E-438B-BC33-ECE87ABEB7E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 ﻿using Colossal.Reflection;
 using Colossal.UI.Binding;
+using Game.SceneFlow;
 using Game.UI;
 using Gooee.Helpers;
 using Gooee.Injection;
@@ -95,6 +96,7 @@ namespace Gooee.Plugins
         private static ConcurrentDictionary<string, string> _closeRequests = [];
         private GooeeUISystem _gooeeUISystem;
 
+        
         /// <summary>
         /// Occurs when Gooee has fully loaded in a controller and its dependencies.
         /// </summary>

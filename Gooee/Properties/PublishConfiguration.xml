@@ -1,14 +1,15 @@
 ﻿<Publish>
 	<!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
-	<ModId Value="" />
+	<ModId Value="77225" />
 	<!--Name of the mod to display to players-->
 	<DisplayName Value="Gooee" />
 	<!--Short description of the mod-->
-	<ShortDescription Value="A dependency for mods, providing a Bootstrap-like UI framework." />
+	<ShortDescription Value="A dependency for mods, providing a Bootstrap-like UI framework. (TESTING)" />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
 	<!--LongDescription Value="Shared dependency pack for Cities Skylines 2, includes HarmonyX 2.2.2" /-->
 	<LongDescription>
-# Gooee - UI Framework for Cities Skylines 2 Modding
+# Gooee - UI Framework for Modders (CURRENTLY IN TESTING)
+(Note: Whilst we are converting mods that use Gooee on Thunderstore please avoid using this version IF you are using Thunderstore mods that rely on that version of Gooee. Mixing and matching will currently cause issues until mods are all ported to PDX Mods.
 
 ## Introduction
 Welcome to the experimental release of **Gooee**, a UI framework designed for modders of Cities Skylines 2. Gooee aims to streamline the modding experience by providing a bootstrap-like CSS framework with reusable React components. Our goal is to blend the game's native UI with the flexibility and familiarity of the bootstrap methodology, creating an intuitive and efficient modding environment.
@@ -20,6 +21,9 @@ Welcome to the experimental release of **Gooee**, a UI framework designed for mo
 - **Modular Design:** Import only what you need, keeping your mods light and efficient.
 - **MVC system:** Gooee provides a Model View Controller system and wires up model binding automatically.
 - **Over 1,000 icons:** Font awesome 6 is included by default.
+
+## Playlist
+Please ensure `Dependency Pack` and `Gooee` are placed near the top of your playlists to ensure maximum compatibility.
 
 ## Documentation
 The documentation is currently a work in progress. As we continue to develop and refine Gooee, comprehensive guides and references will be made available. Stay tuned for updates and detailed instructions on how to leverage Gooee in your mods. Visit the [Wiki](https://github.com/Cities2Modding/Gooee/wiki) for more information.
@@ -48,13 +52,15 @@ Special thanks to the Cities2Modding community and everyone who has contributed 
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.1.6" />
+	<ModVersion Value="1.1.9.0" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.1.*" />
+	
 	<!--Dependency for the mod, can be set multiple times-->
-	<Dependency Id="" />
+	<Dependency Id="77209" /> <!-- Dependency Pack -->
+	
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-	<ChangeLog Value="Discord link and thumbnail" />
+	<ChangeLog Value="Removal of script injection points, reducing the potential greatly for breaking changes in a patch." />
 	<!--ChangeLog>
 	</ChangeLog-->
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gooee.Example", "Gooee.Example\Gooee.Example.csproj", "{BDDA1309-0639-4D7E-9CA5-E1CADB4D1D51}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F51497D-F52C-4BAC-AA1B-D38779F7B5DB} = {4F51497D-F52C-4BAC-AA1B-D38779F7B5DB}
+	EndProjectSection
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Gooee.Example.Frontend", "Gooee.Example.Frontend\Gooee.Example.Frontend.njsproj", "{4F51497D-F52C-4BAC-AA1B-D38779F7B5DB}"
 EndProject

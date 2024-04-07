@@ -11,6 +11,7 @@ using Gooee.Systems;
 using Game.SceneFlow;
 using System.IO;
 using Game.UI;
+using Unity.Entities;
 
 namespace Gooee
 {
@@ -22,11 +23,15 @@ namespace Gooee
             private set;
         }
 
-        private Harmony _harmony;
         private static ILog _log = LogManager.GetLogger( "Cities2Modding" ).SetShowsErrorsInUI( false );
+
+        private Harmony _harmony;
+        private World _world;
 
         public void OnLoad( UpdateSystem updateSystem )
         {
+            _world = updateSystem.World;
+
             if ( GameManager.instance.modManager.TryGetExecutableAsset( this, out var asset ) )
             {
                 AssemblyPath = Path.GetDirectoryName( asset.path.Replace( '/', Path.DirectorySeparatorChar ) );
@@ -51,6 +56,15 @@ namespace Gooee
                                                    " );
 
             updateSystem.UpdateAt<GooeeUISystem>( SystemUpdatePhase.UIUpdate );
+        }
+
+        private void SafelyRemove<T>( )
+            where T : GameSystemBase
+        {
+            var system = _world.GetExistingSystemManaged<T>( );
+
+            if ( system != null )
+                _world.DestroySystemManaged( system );
         }
 
         public void OnDispose( )
