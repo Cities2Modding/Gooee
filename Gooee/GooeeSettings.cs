@@ -121,22 +121,24 @@ namespace Gooee
             {
                 if ( !string.IsNullOrEmpty( group.Description ) )
                 {
-                    AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.StringField )
-                    {
-                        setting = this,
-                        property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), group.Description )
+                    AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData(
+                        AutomaticSettings.WidgetType.StringField, this,
+                        new AutomaticSettings.ManualProperty(GetType(), typeof(string), group.Description)
                         {
                             canRead = true,
                             canWrite = false,
-                            attributes = {
-                                        //new SettingsUISectionAttribute( group.Title )
-                                        //new SettingsUIDisplayNameAttribute(group.Title)
-                                    },
-                            getter = ( instance ) =>
+                            attributes =
+                            {
+                                //new SettingsUISectionAttribute( group.Title )
+                                //new SettingsUIDisplayNameAttribute(group.Title)
+                            },
+                            getter = (instance) =>
                             {
                                 return group.Description;
                             },
-                        },
+                        })
+                    {
+
                         simpleGroup = group.Title,
                         advancedGroup = group.Title,
                     };
@@ -151,10 +153,9 @@ namespace Gooee
                     {
                         if ( element is GooeeSettingButton button )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.BoolButton )
-                            {
-                                setting = this,
-                                property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), button.Content )
+                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData(
+                                    AutomaticSettings.WidgetType.BoolButton, this,
+                                new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), button.Content)
                                 {
                                     canRead = false,
                                     canWrite = true,
@@ -168,7 +169,8 @@ namespace Gooee
                                         var method = settings.GetType( ).GetMethod( button.Content, BindingFlags.Instance | BindingFlags.Public );
                                         method?.Invoke( instance, null );
                                     },
-                                },
+                                })
+                            {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title,
                             };
@@ -182,10 +184,9 @@ namespace Gooee
                         }
                         else if ( element is GooeeSettingCheckBox checkbox )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.BoolToggle )
-                            {
-                                setting = this,
-                                property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), checkbox.IsChecked )
+                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData(
+                                AutomaticSettings.WidgetType.BoolToggle, this,
+                                new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), checkbox.IsChecked )
                                 {
                                     canRead = true,
                                     canWrite = true,
@@ -207,7 +208,8 @@ namespace Gooee
 
                                         property.SetValue( settings, value );
                                     },
-                                },
+                                })
+                            {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title
                             };
@@ -217,10 +219,8 @@ namespace Gooee
                         }
                         else if ( element is GooeeSettingDropdown dropDown )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.StringDropdown )
-                            {
-                                setting = this,
-                                property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), dropDown.Selected )
+                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.StringDropdown, this,
+                                new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), dropDown.Selected)
                                 {
                                     canRead = true,
                                     canWrite = true,
@@ -242,7 +242,8 @@ namespace Gooee
 
                                         property.SetValue( settings, value );
                                     },
-                                },
+                                })
+                            {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title
                             };
