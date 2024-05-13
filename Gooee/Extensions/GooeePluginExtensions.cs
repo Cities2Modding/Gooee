@@ -13,7 +13,7 @@ namespace Gooee.Extensions
         /// <returns></returns>
         public static string GetPath( this IGooeePlugin plugin )
         {
-            return Path.Combine( Application.persistentDataPath, "Mods", plugin.Name );
+            return Path.Combine( Application.persistentDataPath, "ModsData", plugin.Name );
         }
     }
 }

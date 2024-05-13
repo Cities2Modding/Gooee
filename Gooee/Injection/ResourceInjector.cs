@@ -22,7 +22,7 @@ namespace Gooee.Injection
         const string UI_IDENTIFIER = "gooeeui";
         const string URL_PREFIX = $"coui://{UI_IDENTIFIER}/";
 
-        public static readonly string MOD_PATH = Path.Combine( Application.persistentDataPath, "Mods", "Gooee" );
+        public static readonly string MOD_PATH = Path.Combine( Application.persistentDataPath, "ModsData", "Gooee" );
         static readonly string PLUGIN_PATH = Path.Combine( MOD_PATH, "Plugins" );
         static readonly string CHANGELOG_READ_PATH = Path.Combine( MOD_PATH, "changelog.ini" );
 
