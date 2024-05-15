@@ -36,7 +36,7 @@ Gooee is an open-source project and we welcome contributions from the community.
 As this is an experimental release, we are particularly keen on receiving feedback from the modding community. If you encounter any issues or have suggestions for improvements, please open an issue on our GitHub repository.
 
 ## Acknowledgements
-Special thanks to the Cities2Modding community and everyone who has contributed to making Gooee a reality.
+Special thanks to 89Pleasure, Konsi and the Cities2Modding community and everyone who has contributed to making Gooee a reality.
 
 **Please Note**: Comments on Paradox Mods are not the best place for reporting issues or getting help. Joining our discord will be the best way to get resolve any issues you may encounter.
 
@@ -53,7 +53,7 @@ Special thanks to the Cities2Modding community and everyone who has contributed 
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.1.9.3" />
+	<ModVersion Value="1.1.9.4" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.1.*" />
 	
@@ -61,7 +61,7 @@ Special thanks to the Cities2Modding community and everyone who has contributed 
 	<Dependency Id="77209" /> <!-- Dependency Pack -->
 	
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-	<ChangeLog Value="Latest patch breaking changes fix" />
+	<ChangeLog Value="Implement changes by Konsi." />
 	<!--ChangeLog>
 	</ChangeLog-->
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
