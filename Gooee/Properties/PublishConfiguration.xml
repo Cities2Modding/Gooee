@@ -53,7 +53,7 @@ Special thanks to 89Pleasure, Konsi and the Cities2Modding community and everyon
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.1.9.4" />
+	<ModVersion Value="1.1.9.5" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.1.*" />
 	
