@@ -302,14 +302,21 @@ namespace Gooee.Plugins
                 if ( TryConvertValue( property.PropertyType, val, out var convertedValue ) )
                 {
                     property.SetValue( Model, convertedValue );
+                    OnModelPropertyUpdated( property.Name );
                 }
             }
             else
             {
                 property.SetValue( Model, val );
+                OnModelPropertyUpdated( property.Name );
             }
 
             TriggerUpdate( );
+        }
+
+        protected virtual void OnModelPropertyUpdated( string propertyName )
+        {
+        
         }
 
         /// <summary>

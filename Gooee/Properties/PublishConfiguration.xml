@@ -8,8 +8,7 @@
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
 	<!--LongDescription Value="Shared dependency pack for Cities Skylines 2, includes HarmonyX 2.2.2" /-->
 	<LongDescription>
-# Gooee - UI Framework for Modders (CURRENTLY IN TESTING)
-(Note: Whilst we are converting mods that use Gooee on Thunderstore please avoid using this version IF you are using Thunderstore mods that rely on that version of Gooee. Mixing and matching will currently cause issues until mods are all ported to PDX Mods.
+# Gooee - UI Framework for Modders
 
 ## Introduction
 Welcome to the experimental release of **Gooee**, a UI framework designed for modders of Cities Skylines 2. Gooee aims to streamline the modding experience by providing a bootstrap-like CSS framework with reusable React components. Our goal is to blend the game's native UI with the flexibility and familiarity of the bootstrap methodology, creating an intuitive and efficient modding environment.
@@ -25,6 +24,8 @@ Welcome to the experimental release of **Gooee**, a UI framework designed for mo
 ## Playlist
 Please ensure `Dependency Pack` and `Gooee` are placed near the top of your playlists to ensure maximum compatibility.
 
+## Load Order
+The game seems to have sporadic issues with load order so it often beneficial to ensure you click 'Reset load order' when adding lots of mods in general to a playset.
 ## Documentation
 The documentation is currently a work in progress. As we continue to develop and refine Gooee, comprehensive guides and references will be made available. Stay tuned for updates and detailed instructions on how to leverage Gooee in your mods. Visit the [Wiki](https://github.com/Cities2Modding/Gooee/wiki) for more information.
 
@@ -52,7 +53,7 @@ Special thanks to the Cities2Modding community and everyone who has contributed 
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.1.9.0" />
+	<ModVersion Value="1.1.9.3" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.1.*" />
 	
@@ -60,7 +61,7 @@ Special thanks to the Cities2Modding community and everyone who has contributed 
 	<Dependency Id="77209" /> <!-- Dependency Pack -->
 	
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-	<ChangeLog Value="Removal of script injection points, reducing the potential greatly for breaking changes in a patch." />
+	<ChangeLog Value="Latest patch breaking changes fix" />
 	<!--ChangeLog>
 	</ChangeLog-->
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->

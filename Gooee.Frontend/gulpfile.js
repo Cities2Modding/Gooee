@@ -57,7 +57,7 @@ gulp.task("build-jsx", function (done) {
 gulp.task("build-js", function (done) {
     gulp.src(["src/js/gooee.core.js", "../Gooee/Resources/temp_gooee.js"])
         .pipe(concat("Gooee.Core.js"))
-        .pipe(gulp.dest("../Gooee"))
+        .pipe(gulp.dest("../Gooee/Resources"))
         .on("end", () => {
             fs.removeSync("../Gooee/Resources/temp_gooee.js");
 
@@ -65,8 +65,8 @@ gulp.task("build-js", function (done) {
             const gooeePath = path.join(localLowPath, "Colossal Order", "Cities Skylines II", "Mods", "Gooee");
             const jsPath = path.join(gooeePath, "Gooee.Core.js");
             const mjsPath = path.join(gooeePath, "Gooee.mjs");
-            fs.copySync("../Gooee/Gooee.Core.js", jsPath, { overwrite: true });
-            fs.copySync("../Gooee.Bridge/dist/Gooee.mjs", "../Gooee/Gooee.mjs", { overwrite: true });
+            fs.copySync("../Gooee/Resources/Gooee.Core.js", jsPath, { overwrite: true });
+            fs.copySync("../Gooee.Bridge/dist/Gooee.mjs", "../Gooee/Resources/Gooee.mjs", { overwrite: true });
             fs.copySync("../Gooee.Bridge/dist/Gooee.mjs", mjsPath, { overwrite: true });
             done();
         });

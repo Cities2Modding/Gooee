@@ -22,7 +22,7 @@
 		<!--The file should contain 2 lines:-->
 		<!--Your.PDX@Account.login-->
 		<!--Your-PDX-Account-Pa$$word-->
-		<PDXAccountDataPath>$(USERPROFILE)\SomeSecretFolder\Somewhere.txt</PDXAccountDataPath>
+		<PDXAccountDataPath>$(USERPROFILE)\SomePath\Somewhere.txt</PDXAccountDataPath>
 
 		<!--The file where mod information which is required for publishing mod on PDX mods are stored-->
 		<PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
@@ -37,14 +37,22 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
+	  <None Remove="Resources\Gooee.Core.js" />
 	  <None Remove="Resources\gooee.css" />
 	  <None Remove="Resources\gooee.js" />
+	  <None Remove="Resources\Gooee.mjs" />
 	  <None Remove="Resources\lang\en-US.yml" />
 	  <None Remove="Resources\settings.xml" />
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Gooee.Core.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	  <EmbeddedResource Include="Resources\gooee.css" />
+	  <EmbeddedResource Include="Resources\Gooee.mjs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	  <EmbeddedResource Include="Resources\lang\en-US.yml" />
 	  <EmbeddedResource Include="Resources\settings.xml" />
 	</ItemGroup>
@@ -142,12 +150,6 @@
 
 	<ItemGroup>
 	  <None Update="FA.zip">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Gooee.Core.js">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Gooee.mjs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

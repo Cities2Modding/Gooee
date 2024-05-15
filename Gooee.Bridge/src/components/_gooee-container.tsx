@@ -2,15 +2,6 @@ import { ModuleRegistryExtend } from "cs2/modding";
 import { useMemo, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 
-// Extend the Window interface to include custom property types
-declare global {
-    interface Window {
-        $_gooee: {
-            container?: any; // Use a more specific type if known
-        };
-    }
-}
-
 export const TopLeftToolBar = () => {
     const render = useMemo(() => {
         if (!window.$_gooee || typeof window.$_gooee.container === 'undefined') {

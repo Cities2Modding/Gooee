@@ -34,6 +34,7 @@ namespace Gooee.Injection
         public static readonly string NON_HOOKUI_INDEX_HTML = Path.Combine( MOD_PATH, "index.html" );
 
         const string CV_JS_FILENAME = "Gooee.Core.js";
+        const string CV_MJS_FILENAME = "Gooee.mjs";
         const string CV_CSS_FILENAME = "gooee.css";
 
         const string SCRIPT_ELEMENT = "<script src=\"index.js\"></script>";
@@ -286,7 +287,8 @@ namespace Gooee.Injection
         /// </summary>
         private static void SaveResources( )
         {
-            //SaveResource( "Gooee.Resources", CV_JS_FILENAME );
+            SaveResource( "Gooee.Resources", CV_JS_FILENAME );
+            SaveResource( "Gooee.Resources", CV_MJS_FILENAME );
             SaveResource( "Gooee.Resources", CV_CSS_FILENAME );
             ExtractIcons( );
         }

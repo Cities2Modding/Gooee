@@ -10,6 +10,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Unity.Entities;
+using static Game.UI.Menu.AutomaticSettings;
 
 namespace Gooee
 {
@@ -121,22 +122,20 @@ namespace Gooee
             {
                 if ( !string.IsNullOrEmpty( group.Description ) )
                 {
-                    AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.StringField )
+                    AutomaticSettings.SettingItemData settingItemData = new SettingItemData( WidgetType.StringField, this, new ManualProperty( GetType( ), typeof( string ), group.Description )
                     {
-                        setting = this,
-                        property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), group.Description )
-                        {
-                            canRead = true,
-                            canWrite = false,
-                            attributes = {
+                        canRead = true,
+                        canWrite = false,
+                        attributes = {
                                         //new SettingsUISectionAttribute( group.Title )
                                         //new SettingsUIDisplayNameAttribute(group.Title)
                                     },
-                            getter = ( instance ) =>
-                            {
-                                return group.Description;
-                            },
+                        getter = ( instance ) =>
+                        {
+                            return group.Description;
                         },
+                    } )
+                    {
                         simpleGroup = group.Title,
                         advancedGroup = group.Title,
                     };
@@ -151,24 +150,22 @@ namespace Gooee
                     {
                         if ( element is GooeeSettingButton button )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.BoolButton )
+                            SettingItemData settingItemData = new SettingItemData(WidgetType.BoolButton, this, new ManualProperty( GetType( ), typeof( string ), button.Content )
                             {
-                                setting = this,
-                                property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), button.Content )
+                                canRead = false,
+                                canWrite = true,
+                                attributes =
                                 {
-                                    canRead = false,
-                                    canWrite = true,
-                                    attributes = 
-                                    {
-                                        new SettingsUIButtonAttribute()
-                                    },
-                                    setter = ( instance, value ) =>
-                                    {
-                                        var settings = ( GooeeSettings ) instance;
-                                        var method = settings.GetType( ).GetMethod( button.Content, BindingFlags.Instance | BindingFlags.Public );
-                                        method?.Invoke( instance, null );
-                                    },
+                                    new SettingsUIButtonAttribute()
                                 },
+                                setter = ( instance, value ) =>
+                                {
+                                    var settings = ( GooeeSettings ) instance;
+                                    var method = settings.GetType( ).GetMethod( button.Content, BindingFlags.Instance | BindingFlags.Public );
+                                    method?.Invoke( instance, null );
+                                },
+                            } )
+                            {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title,
                             };
@@ -182,32 +179,30 @@ namespace Gooee
                         }
                         else if ( element is GooeeSettingCheckBox checkbox )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.BoolToggle )
+                            SettingItemData settingItemData = new SettingItemData( WidgetType.BoolToggle, this, new ManualProperty( GetType( ), typeof( string ), checkbox.IsChecked )
                             {
-                                setting = this,
-                                property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), checkbox.IsChecked )
-                                {
-                                    canRead = true,
-                                    canWrite = true,
-                                    attributes = {
+                                canRead = true,
+                                canWrite = true,
+                                attributes = {
                                                 //new SettingsUISectionAttribute( group.Title, field.Title ),
                                                 //new SettingsUIDisplayNameAttribute(group.Title)
                                             },
-                                    getter = ( instance ) =>
-                                    {
-                                        var settings = ( GooeeSettings ) instance;
-                                        var property = settings.GetType( ).GetProperty( checkbox.IsChecked, BindingFlags.Instance | BindingFlags.Public );
+                                getter = ( instance ) =>
+                                {
+                                    var settings = ( GooeeSettings ) instance;
+                                    var property = settings.GetType( ).GetProperty( checkbox.IsChecked, BindingFlags.Instance | BindingFlags.Public );
 
-                                        return ( bool ) property.GetValue( settings );
-                                    },
-                                    setter = ( instance, value ) =>
-                                    {
-                                        var settings = ( GooeeSettings ) instance;
-                                        var property = settings.GetType( ).GetProperty( checkbox.IsChecked, BindingFlags.Instance | BindingFlags.Public );
-
-                                        property.SetValue( settings, value );
-                                    },
+                                    return ( bool ) property.GetValue( settings );
                                 },
+                                setter = ( instance, value ) =>
+                                {
+                                    var settings = ( GooeeSettings ) instance;
+                                    var property = settings.GetType( ).GetProperty( checkbox.IsChecked, BindingFlags.Instance | BindingFlags.Public );
+
+                                    property.SetValue( settings, value );
+                                },
+                            } )
+                            {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title
                             };
@@ -217,32 +212,30 @@ namespace Gooee
                         }
                         else if ( element is GooeeSettingDropdown dropDown )
                         {
-                            AutomaticSettings.SettingItemData settingItemData = new AutomaticSettings.SettingItemData( AutomaticSettings.WidgetType.StringDropdown )
+                            SettingItemData settingItemData = new SettingItemData( WidgetType.StringDropdown, this, new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), dropDown.Selected )
                             {
-                                setting = this,
-                                property = new AutomaticSettings.ManualProperty( GetType( ), typeof( string ), dropDown.Selected )
-                                {
-                                    canRead = true,
-                                    canWrite = true,
-                                    attributes = 
+                                canRead = true,
+                                canWrite = true,
+                                attributes =
                                     {
                                         new SettingsUIDropdownAttribute( GetType(), dropDown.Options )
                                     },
-                                    getter = ( instance ) =>
-                                    {
-                                        var settings = ( GooeeSettings ) instance;
-                                        var property = settings.GetType( ).GetProperty( dropDown.Selected, BindingFlags.Instance | BindingFlags.Public );
+                                getter = ( instance ) =>
+                                {
+                                    var settings = ( GooeeSettings ) instance;
+                                    var property = settings.GetType( ).GetProperty( dropDown.Selected, BindingFlags.Instance | BindingFlags.Public );
 
-                                        return ( string ) property.GetValue( settings );
-                                    },
-                                    setter = ( instance, value ) =>
-                                    {
-                                        var settings = ( GooeeSettings ) instance;
-                                        var property = settings.GetType( ).GetProperty( dropDown.Selected, BindingFlags.Instance | BindingFlags.Public );
-
-                                        property.SetValue( settings, value );
-                                    },
+                                    return ( string ) property.GetValue( settings );
                                 },
+                                setter = ( instance, value ) =>
+                                {
+                                    var settings = ( GooeeSettings ) instance;
+                                    var property = settings.GetType( ).GetProperty( dropDown.Selected, BindingFlags.Instance | BindingFlags.Public );
+
+                                    property.SetValue( settings, value );
+                                },
+                            } )
+                            {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title
                             };
