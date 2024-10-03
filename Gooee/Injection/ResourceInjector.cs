@@ -19,10 +19,13 @@ namespace Gooee.Injection
 {
     internal class ResourceInjector
     {
+        const string DATA_FOLDER = "Cities2Modding";
         const string UI_IDENTIFIER = "gooeeui";
         const string URL_PREFIX = $"coui://{UI_IDENTIFIER}/";
 
-        public static readonly string MOD_PATH = Path.Combine( Application.persistentDataPath, "ModsData", "Gooee" );
+        public static readonly string DATA_PATH = Path.Combine( Application.persistentDataPath, DATA_FOLDER );
+        public static readonly string MOD_PATH = Path.Combine( DATA_PATH, "Gooee" );
+
         static readonly string PLUGIN_PATH = Path.Combine( MOD_PATH, "Plugins" );
         static readonly string CHANGELOG_READ_PATH = Path.Combine( MOD_PATH, "changelog.ini" );
 
@@ -288,7 +291,7 @@ namespace Gooee.Injection
         private static void SaveResources( )
         {
             SaveResource( "Gooee.Resources", CV_JS_FILENAME );
-            SaveResource( "Gooee.Resources", CV_MJS_FILENAME );
+            //SaveResource( "Gooee.Resources", CV_MJS_FILENAME ); This should be copied to output directory and held in the PDX mods cache instead
             SaveResource( "Gooee.Resources", CV_CSS_FILENAME );
             ExtractIcons( );
         }

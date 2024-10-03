@@ -47,10 +47,10 @@
 	
 	<ItemGroup>
 	  <EmbeddedResource Include="Resources\Gooee.Core.js">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </EmbeddedResource>
 	  <EmbeddedResource Include="Resources\gooee.css" />
-	  <EmbeddedResource Include="Resources\Gooee.mjs">
+	  <EmbeddedResource Include="Gooee.mjs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </EmbeddedResource>
 	  <EmbeddedResource Include="Resources\lang\en-US.yml" />

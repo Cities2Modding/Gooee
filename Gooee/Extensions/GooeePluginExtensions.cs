@@ -1,6 +1,6 @@
-﻿using Gooee.Plugins;
+﻿using Gooee.Injection;
+using Gooee.Plugins;
 using System.IO;
-using UnityEngine;
 
 namespace Gooee.Extensions
 {
@@ -13,7 +13,7 @@ namespace Gooee.Extensions
         /// <returns></returns>
         public static string GetPath( this IGooeePlugin plugin )
         {
-            return Path.Combine( Application.persistentDataPath, "ModsData", plugin.Name );
+            return Path.Combine( ResourceInjector.DATA_PATH, plugin.Name );
         }
     }
 }

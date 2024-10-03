@@ -53,7 +53,7 @@ Special thanks to 89Pleasure, Konsi and the Cities2Modding community and everyon
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.1.9.5" />
+	<ModVersion Value="1.1.9.6" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.1.*" />
 	
@@ -61,7 +61,7 @@ Special thanks to 89Pleasure, Konsi and the Cities2Modding community and everyon
 	<Dependency Id="77209" /> <!-- Dependency Pack -->
 	
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-	<ChangeLog Value="Implement changes by Konsi." />
+	<ChangeLog Value="Compatibility fixes, bug fix for mjs file" />
 	<!--ChangeLog>
 	</ChangeLog-->
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->

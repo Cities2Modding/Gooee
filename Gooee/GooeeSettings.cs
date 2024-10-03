@@ -134,7 +134,7 @@ namespace Gooee
                         {
                             return group.Description;
                         },
-                    } )
+                    }, "" )
                     {
                         simpleGroup = group.Title,
                         advancedGroup = group.Title,
@@ -164,7 +164,7 @@ namespace Gooee
                                     var method = settings.GetType( ).GetMethod( button.Content, BindingFlags.Instance | BindingFlags.Public );
                                     method?.Invoke( instance, null );
                                 },
-                            } )
+                            }, "" )
                             {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title,
@@ -201,7 +201,7 @@ namespace Gooee
 
                                     property.SetValue( settings, value );
                                 },
-                            } )
+                            }, "" )
                             {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title
@@ -234,7 +234,7 @@ namespace Gooee
 
                                     property.SetValue( settings, value );
                                 },
-                            } )
+                            }, "" )
                             {
                                 simpleGroup = group.Title,
                                 advancedGroup = group.Title
